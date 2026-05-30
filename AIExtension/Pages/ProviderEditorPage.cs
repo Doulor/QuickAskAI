@@ -37,12 +37,12 @@ internal sealed partial class ProviderEditorPage : ContentPage
                 return CommandResult.ShowToast("无法读取提供商配置。");
             }
 
-            _profile.Name = payload["Name"]?.ToString() ?? string.Empty;
-            _profile.BaseUrl = payload["BaseUrl"]?.ToString() ?? string.Empty;
-            _profile.ApiKey = payload["ApiKey"]?.ToString() ?? string.Empty;
-            _profile.Model = payload["Model"]?.ToString() ?? string.Empty;
-            _profile.SystemPrompt = payload["SystemPrompt"]?.ToString() ?? string.Empty;
-            _profile.Temperature = payload["Temperature"]?.ToString() ?? string.Empty;
+            _profile.Name = ReadString(payload, "Name", _profile.Name);
+            _profile.BaseUrl = ReadString(payload, "BaseUrl", _profile.BaseUrl);
+            _profile.ApiKey = ReadString(payload, "ApiKey", _profile.ApiKey);
+            _profile.Model = ReadString(payload, "Model", _profile.Model);
+            _profile.SystemPrompt = ReadString(payload, "SystemPrompt", _profile.SystemPrompt);
+            _profile.Temperature = ReadString(payload, "Temperature", _profile.Temperature);
 
             if (string.IsNullOrWhiteSpace(_profile.Name))
             {
@@ -66,6 +66,13 @@ internal sealed partial class ProviderEditorPage : ContentPage
         {
             return CommandResult.ShowToast("无法读取提供商配置。");
         }
+    }
+
+    private static string ReadString(JsonObject payload, string key, string fallback)
+    {
+        return payload[key]?.ToString()
+            ?? payload[char.ToLowerInvariant(key[0]) + key[1..]]?.ToString()
+            ?? fallback;
     }
 
     private sealed partial class ProviderEditorForm : FormContent

@@ -2,6 +2,7 @@
 // The Microsoft Corporation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Linq;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 
@@ -23,7 +24,9 @@ internal sealed partial class ProviderManagementPage : ListPage
     public override IListItem[] GetItems()
     {
         var items = new System.Collections.Generic.List<IListItem>();
-        foreach (var profile in _settingsManager.Profiles)
+        foreach (var profile in _settingsManager.Profiles
+            .OrderByDescending(profile => profile.Id == _settingsManager.ActiveProvider.Id)
+            .ThenBy(profile => profile.Name))
         {
             items.Add(CreateProviderItem(profile));
         }

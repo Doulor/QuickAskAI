@@ -44,7 +44,7 @@ internal sealed partial class ConversationManagementPage : ListPage
         foreach (var session in _conversationStore.Sessions)
         {
             var isActive = session.Id == _conversationStore.ActiveSession.Id;
-            items.Add(new ListItem(new SelectConversationCommand(this, session.Id))
+            items.Add(new ListItem(new ConversationDetailPage(_conversationStore, session.Id, _onChanged))
             {
                 Title = isActive ? $"当前：{session.Title}" : session.Title,
                 Subtitle = $"{session.Messages.Count} 条消息 · {session.UpdatedAt:MM-dd HH:mm}",
@@ -58,13 +58,6 @@ internal sealed partial class ConversationManagementPage : ListPage
     private void StartNewConversation()
     {
         _conversationStore.StartNewSession();
-        _onChanged();
-        RaiseItemsChanged();
-    }
-
-    private void SelectConversation(string sessionId)
-    {
-        _conversationStore.SelectSession(sessionId);
         _onChanged();
         RaiseItemsChanged();
     }
@@ -83,26 +76,6 @@ internal sealed partial class ConversationManagementPage : ListPage
         public override ICommandResult Invoke()
         {
             _page.StartNewConversation();
-            return CommandResult.KeepOpen();
-        }
-    }
-
-    private sealed partial class SelectConversationCommand : InvokableCommand
-    {
-        private readonly ConversationManagementPage _page;
-        private readonly string _sessionId;
-
-        public SelectConversationCommand(ConversationManagementPage page, string sessionId)
-        {
-            _page = page;
-            _sessionId = sessionId;
-            Name = "选择会话";
-            Icon = new IconInfo("");
-        }
-
-        public override ICommandResult Invoke()
-        {
-            _page.SelectConversation(_sessionId);
             return CommandResult.KeepOpen();
         }
     }

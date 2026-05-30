@@ -96,7 +96,6 @@ internal sealed class SettingsManager
         _settings.Add(systemPrompt);
         _settings.Add(temperature);
         _settings.Add(activeProvider);
-        _settings.SettingsChanged += OnSettingsChanged;
     }
 
     public ICommandSettings Settings => _settings;
@@ -196,17 +195,6 @@ internal sealed class SettingsManager
         SystemPrompt = "你是一个简洁、可靠的中文 AI 助手。",
         Temperature = "0.7",
     };
-
-    private void OnSettingsChanged(object? sender, Settings args)
-    {
-        var current = ActiveProvider;
-        current.BaseUrl = (_settings.GetSetting<string>(BaseUrlKey) ?? current.BaseUrl).Trim();
-        current.ApiKey = (_settings.GetSetting<string>(ApiKeyKey) ?? current.ApiKey).Trim();
-        current.Model = (_settings.GetSetting<string>(ModelKey) ?? current.Model).Trim();
-        current.SystemPrompt = (_settings.GetSetting<string>(SystemPromptKey) ?? current.SystemPrompt).Trim();
-        current.Temperature = (_settings.GetSetting<string>(TemperatureKey) ?? current.Temperature).Trim();
-        SaveProfiles();
-    }
 
     private List<ProviderProfile> LoadProfiles()
     {

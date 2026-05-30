@@ -132,7 +132,7 @@ internal sealed class SettingsManager
         }
     }
 
-    public AiChatRequest CreateRequest(string prompt) => new()
+    public AiChatRequest CreateRequest(string prompt, IReadOnlyList<ChatMessage> messages) => new()
     {
         BaseUrl = BaseUrl,
         ApiKey = ApiKey,
@@ -140,6 +140,7 @@ internal sealed class SettingsManager
         SystemPrompt = SystemPrompt,
         Temperature = Temperature,
         Prompt = prompt,
+        Messages = messages,
     };
 
     public ProviderProfile? GetProvider(string id) => _profiles.FirstOrDefault(p => p.Id == id);

@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions;
@@ -13,15 +14,17 @@ namespace AIExtension;
 internal sealed partial class AskAiPage : DynamicListPage
 {
     private readonly SettingsManager _settingsManager;
+    private readonly ConversationStore _conversationStore;
     private readonly AiChatService _chatService;
     private int _requestVersion;
     private string _lastPrompt = string.Empty;
     private AiChatResponse? _lastResponse;
     private bool _isBusy;
 
-    public AskAiPage(SettingsManager settingsManager, AiChatService chatService)
+    public AskAiPage(SettingsManager settingsManager, ConversationStore conversationStore, AiChatService chatService)
     {
         _settingsManager = settingsManager;
+        _conversationStore = conversationStore;
         _chatService = chatService;
 
         Icon = new IconInfo("");
@@ -50,7 +53,10 @@ internal sealed partial class AskAiPage : DynamicListPage
     internal ICommandResult SubmitPrompt(string prompt)
     {
         prompt = prompt.Trim();
-        var request = _settingsManager.CreateRequest(prompt);
+        var messages = _conversationStore.ActiveSession.Messages
+            .Concat([new ChatMessage { Role = "user", Content = prompt }])
+            .ToArray();
+        var request = _settingsManager.CreateRequest(prompt, messages);
         var validationError = AiChatService.Validate(request);
 
         if (validationError is not null)
@@ -60,6 +66,7 @@ internal sealed partial class AskAiPage : DynamicListPage
         }
 
         var requestVersion = Interlocked.Increment(ref _requestVersion);
+        _conversationStore.AddUserMessage(prompt);
         _lastPrompt = prompt;
         _lastResponse = null;
         _isBusy = true;
@@ -125,10 +132,22 @@ internal sealed partial class AskAiPage : DynamicListPage
             items.Add(CreateHelpItem());
         }
 
+        items.Add(CreateConversationEntryItem());
         items.Add(CreateProviderSummaryItem());
         items.Add(CreateManageProvidersItem());
 
         return [.. items];
+    }
+
+    private ListItem CreateConversationEntryItem()
+    {
+        var session = _conversationStore.ActiveSession;
+        return new ListItem(new ConversationManagementPage(_conversationStore, RefreshFromActiveSession))
+        {
+            Title = $"会话：{session.Title}",
+            Subtitle = $"{session.Messages.Count} 条消息 · 进入后可新建或选择历史会话",
+            Icon = new IconInfo(""),
+        };
     }
 
     private ListItem CreateProviderSummaryItem()
@@ -222,6 +241,15 @@ internal sealed partial class AskAiPage : DynamicListPage
     {
         _lastPrompt = prompt;
         _lastResponse = response;
+        if (response.IsSuccess)
+        {
+            _conversationStore.AddAssistantMessage(response.Content);
+        }
+        else
+        {
+            _conversationStore.AddErrorMessage(response.ErrorMessage);
+        }
+
         _isBusy = false;
         IsLoading = false;
         if (SearchText.Trim().Equals(prompt, StringComparison.Ordinal))
@@ -230,6 +258,18 @@ internal sealed partial class AskAiPage : DynamicListPage
             OnPropertyChanged(nameof(SearchText));
         }
 
+        RaiseItemsChanged();
+    }
+
+    private void RefreshFromActiveSession()
+    {
+        var lastAssistantMessage = _conversationStore.ActiveSession.Messages.LastOrDefault(message => message.Role == "assistant");
+        _lastPrompt = _conversationStore.ActiveSession.Messages.LastOrDefault(message => message.Role == "user")?.Content ?? string.Empty;
+        _lastResponse = lastAssistantMessage is null
+            ? null
+            : AiChatResponse.Success(lastAssistantMessage.Content, _settingsManager.Model, _settingsManager.ActiveProvider.Name);
+        _isBusy = false;
+        IsLoading = false;
         RaiseItemsChanged();
     }
 

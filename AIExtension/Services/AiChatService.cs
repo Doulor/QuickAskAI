@@ -158,10 +158,19 @@ internal sealed class AiChatService
                 writer.WriteEndObject();
             }
 
-            writer.WriteStartObject();
-            writer.WriteString("role", "user");
-            writer.WriteString("content", request.Prompt);
-            writer.WriteEndObject();
+            foreach (var message in request.Messages)
+            {
+                if (string.IsNullOrWhiteSpace(message.Role) || string.IsNullOrWhiteSpace(message.Content))
+                {
+                    continue;
+                }
+
+                writer.WriteStartObject();
+                writer.WriteString("role", message.Role);
+                writer.WriteString("content", message.Content);
+                writer.WriteEndObject();
+            }
+
             writer.WriteEndArray();
 
             if (request.Temperature is not null)

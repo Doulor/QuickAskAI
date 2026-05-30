@@ -10,6 +10,7 @@ namespace AIExtension;
 public partial class AIExtensionCommandsProvider : CommandProvider
 {
     private readonly SettingsManager _settingsManager = new();
+    private readonly ConversationStore _conversationStore = new();
     private readonly AiChatService _chatService = new();
     private readonly ICommandItem[] _commands;
 
@@ -19,7 +20,7 @@ public partial class AIExtensionCommandsProvider : CommandProvider
         Icon = IconHelpers.FromRelativePath("Assets\\StoreLogo.png");
         Settings = _settingsManager.Settings;
         _commands = [
-            new CommandItem(new AskAiPage(_settingsManager, _chatService)) { Title = DisplayName },
+            new CommandItem(new AskAiPage(_settingsManager, _conversationStore, _chatService)) { Title = DisplayName },
         ];
     }
 

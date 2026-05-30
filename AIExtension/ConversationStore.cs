@@ -18,10 +18,8 @@ internal sealed class ConversationStore
 
     public ConversationStore()
     {
-        _sessionsPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "QuickAskAI",
-            "conversations.json");
+        _sessionsPath = StableStorage.GetPath("conversations.json");
+        StableStorage.MigrateFromLegacyPath("conversations.json", _sessionsPath);
         _sessions = LoadSessions();
         if (_sessions.Count == 0)
         {
@@ -54,6 +52,11 @@ internal sealed class ConversationStore
         ActiveSessionId = session.Id;
         Save();
         return session;
+    }
+
+    public ConversationSession EnsureUnusedSessionActive()
+    {
+        return StartNewSession();
     }
 
     public void SelectSession(string id)

@@ -26,6 +26,8 @@ internal sealed partial class AskAiPage : DynamicListPage
         _settingsManager = settingsManager;
         _conversationStore = conversationStore;
         _chatService = chatService;
+        _settingsManager.ProvidersChanged += OnProvidersChanged;
+        _conversationStore.EnsureUnusedSessionActive();
 
         Icon = new IconInfo("");
         Title = "快速询问AI";
@@ -133,8 +135,7 @@ internal sealed partial class AskAiPage : DynamicListPage
         }
 
         items.Add(CreateConversationEntryItem());
-        items.Add(CreateProviderSummaryItem());
-        items.Add(CreateManageProvidersItem());
+        items.Add(CreateProviderManagementItem());
 
         return [.. items];
     }
@@ -150,23 +151,16 @@ internal sealed partial class AskAiPage : DynamicListPage
         };
     }
 
-    private ListItem CreateProviderSummaryItem()
+    private ListItem CreateProviderManagementItem()
     {
         var provider = _settingsManager.ActiveProvider;
-        return new ListItem(new NoOpCommand())
+        return new ListItem(new ProviderManagementPage(_settingsManager))
         {
-            Title = $"当前提供商：{provider.Name}",
-            Subtitle = $"{provider.Model} · {MaskBaseUrl(provider.BaseUrl)}",
+            Title = $"模型提供商：{provider.Name}",
+            Subtitle = $"{provider.Model} · {MaskBaseUrl(provider.BaseUrl)} · 进入后可添加、选择或编辑",
             Icon = new IconInfo(""),
         };
     }
-
-    private ListItem CreateManageProvidersItem() => new(new ProviderManagementPage(_settingsManager))
-    {
-        Title = "管理模型提供商",
-        Subtitle = "添加、选择或编辑 Base URL、API Key 和模型名",
-        Icon = new IconInfo(""),
-    };
 
     private ListItem CreateBusyItem() => new(new NoOpCommand())
     {
@@ -270,6 +264,11 @@ internal sealed partial class AskAiPage : DynamicListPage
             : AiChatResponse.Success(lastAssistantMessage.Content, _settingsManager.Model, _settingsManager.ActiveProvider.Name);
         _isBusy = false;
         IsLoading = false;
+        RaiseItemsChanged();
+    }
+
+    private void OnProvidersChanged(object? sender, EventArgs e)
+    {
         RaiseItemsChanged();
     }
 

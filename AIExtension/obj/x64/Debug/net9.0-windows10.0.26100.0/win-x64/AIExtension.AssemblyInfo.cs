@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AIExtension")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+56af6c610c6fe316adcef6e829f2c93759b12071")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4be57ca5e6ddfae23249532825c83b1e76186440")]
 [assembly: System.Reflection.AssemblyProductAttribute("AIExtension")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AIExtension")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

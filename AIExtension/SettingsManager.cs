@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Microsoft.CommandPalette.Extensions;
@@ -29,10 +30,8 @@ internal sealed class SettingsManager
 
     public SettingsManager()
     {
-        _profilesPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "QuickAskAI",
-            "providers.json");
+        _profilesPath = StableStorage.GetPath("providers.json");
+        StableStorage.MigrateFromLegacyPath("providers.json", _profilesPath);
 
         _profiles = LoadProfiles();
 
@@ -102,6 +101,8 @@ internal sealed class SettingsManager
 
     public ICommandSettings Settings => _settings;
 
+    public event EventHandler? ProvidersChanged;
+
     public IReadOnlyList<ProviderProfile> Profiles => _profiles;
 
     public ProviderProfile ActiveProvider => _profiles.FirstOrDefault(p => p.Id == ActiveProviderId) ?? _profiles[0];
@@ -151,6 +152,7 @@ internal sealed class SettingsManager
         {
             ActiveProviderId = id;
             SaveProfiles();
+            ProvidersChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -181,6 +183,7 @@ internal sealed class SettingsManager
         }
 
         SaveProfiles();
+        ProvidersChanged?.Invoke(this, EventArgs.Empty);
         return profile;
     }
 
@@ -238,27 +241,32 @@ internal sealed class SettingsManager
     private void SaveProfiles()
     {
         Directory.CreateDirectory(Path.GetDirectoryName(_profilesPath)!);
-        var profiles = new JsonArray();
-        foreach (var profile in _profiles)
+        using var stream = new MemoryStream();
+        using (var writer = new Utf8JsonWriter(stream, new JsonWriterOptions { Indented = true }))
         {
-            profiles.Add(JsonValue.Create(new JsonObject
+            writer.WriteStartObject();
+            writer.WriteString("activeProviderId", ActiveProviderId);
+            writer.WritePropertyName("profiles");
+            writer.WriteStartArray();
+
+            foreach (var profile in _profiles)
             {
-                ["id"] = profile.Id,
-                ["name"] = profile.Name,
-                ["baseUrl"] = profile.BaseUrl,
-                ["apiKey"] = profile.ApiKey,
-                ["model"] = profile.Model,
-                ["systemPrompt"] = profile.SystemPrompt,
-                ["temperature"] = profile.Temperature,
-            }));
+                writer.WriteStartObject();
+                writer.WriteString("id", profile.Id);
+                writer.WriteString("name", profile.Name);
+                writer.WriteString("baseUrl", profile.BaseUrl);
+                writer.WriteString("apiKey", profile.ApiKey);
+                writer.WriteString("model", profile.Model);
+                writer.WriteString("systemPrompt", profile.SystemPrompt);
+                writer.WriteString("temperature", profile.Temperature);
+                writer.WriteEndObject();
+            }
+
+            writer.WriteEndArray();
+            writer.WriteEndObject();
         }
 
-        var state = new JsonObject
-        {
-            ["activeProviderId"] = ActiveProviderId,
-            ["profiles"] = profiles,
-        };
-        File.WriteAllText(_profilesPath, state.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+        File.WriteAllText(_profilesPath, Encoding.UTF8.GetString(stream.ToArray()));
     }
 
     private static ProviderProfile ReadProfile(JsonNode? node)

@@ -14,13 +14,11 @@ internal sealed partial class ProviderEditorPage : ContentPage
 {
     private readonly SettingsManager _settingsManager;
     private readonly ProviderProfile _profile;
-    private readonly Action _onSaved;
 
-    public ProviderEditorPage(SettingsManager settingsManager, ProviderProfile profile, Action onSaved)
+    public ProviderEditorPage(SettingsManager settingsManager, ProviderProfile profile, Action? onSaved = null)
     {
         _settingsManager = settingsManager;
         _profile = profile.Clone();
-        _onSaved = onSaved;
 
         Icon = new IconInfo("");
         Title = string.IsNullOrWhiteSpace(_profile.Name) ? "添加模型提供商" : $"编辑 {_profile.Name}";
@@ -62,7 +60,6 @@ internal sealed partial class ProviderEditorPage : ContentPage
             }
 
             _settingsManager.SaveProvider(_profile);
-            _onSaved();
             return CommandResult.ShowToast($"已保存 {_profile.Name}");
         }
         catch (JsonException)

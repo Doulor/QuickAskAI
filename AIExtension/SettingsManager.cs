@@ -142,6 +142,8 @@ internal sealed class SettingsManager
         Prompt = prompt,
     };
 
+    public ProviderProfile? GetProvider(string id) => _profiles.FirstOrDefault(p => p.Id == id);
+
     public void SelectProvider(string id)
     {
         if (_profiles.Any(p => p.Id == id))

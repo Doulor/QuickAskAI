@@ -110,10 +110,7 @@ internal sealed partial class AskAiPage : DynamicListPage
 
     private IListItem[] BuildHomeItems()
     {
-        var items = new System.Collections.Generic.List<IListItem>
-        {
-            CreateProviderSummaryItem(),
-        };
+        var items = new System.Collections.Generic.List<IListItem>();
 
         if (_isBusy)
         {

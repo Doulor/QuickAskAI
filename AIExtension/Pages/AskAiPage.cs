@@ -29,7 +29,7 @@ internal sealed partial class AskAiPage : DynamicListPage
         _settingsManager.ProvidersChanged += OnProvidersChanged;
         _conversationStore.EnsureUnusedSessionActive();
 
-        Icon = IconHelpers.FromRelativePath("Assets\\ICON.png");
+        Icon = IconHelpers.FromRelativePath("Assets\\QuickAskAIIcon.png");
         Title = "快速询问AI";
         Name = "询问";
         PlaceholderText = "输入问题，按 Enter 询问 AI";

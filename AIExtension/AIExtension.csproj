@@ -38,6 +38,7 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="GitHub.Copilot.SDK" />
     <PackageReference Include="Microsoft.CommandPalette.Extensions" />
     <PackageReference Include="Microsoft.Windows.CsWinRT" />
     <PackageReference Include="Shmuelie.WinRTServer" />

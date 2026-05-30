@@ -157,7 +157,7 @@ internal sealed partial class AskAiPage : DynamicListPage
         return new ListItem(new ProviderManagementPage(_settingsManager))
         {
             Title = $"模型提供商：{provider.Name}",
-            Subtitle = $"{provider.Model} · {MaskBaseUrl(provider.BaseUrl)} · 进入后可添加、选择或编辑",
+            Subtitle = BuildProviderSubtitle(provider),
             Icon = new IconInfo(""),
         };
     }
@@ -275,6 +275,19 @@ internal sealed partial class AskAiPage : DynamicListPage
     private static string Preview(string value, int maxLength) => value.Length <= maxLength
         ? value
         : value[..maxLength] + "...";
+
+    private static string BuildProviderSubtitle(ProviderProfile provider)
+    {
+        if (provider.ProviderType.Equals("copilot", StringComparison.OrdinalIgnoreCase))
+        {
+            var authState = SettingsManager.HasCopilotToken(provider)
+                ? string.IsNullOrWhiteSpace(provider.GitHubLogin) ? "GitHub 已连接" : $"GitHub: {provider.GitHubLogin}"
+                : "未连接 GitHub";
+            return $"{provider.Model} · {authState} · 进入后可连接、选择或编辑";
+        }
+
+        return $"{provider.Model} · {MaskBaseUrl(provider.BaseUrl)} · 进入后可添加、选择或编辑";
+    }
 
     private static string MaskBaseUrl(string value)
     {

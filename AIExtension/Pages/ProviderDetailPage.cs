@@ -53,12 +53,20 @@ internal sealed partial class ProviderDetailPage : ListPage
         Icon = new IconInfo(""),
     };
 
-    private ListItem CreateEditItem(ProviderProfile provider) => new(new ProviderEditorPage(_settingsManager, provider, () => RaiseItemsChanged()))
+    private ListItem CreateEditItem(ProviderProfile provider)
     {
-        Title = "编辑提供商",
-        Subtitle = "修改 Base URL、API Key、模型名和系统提示词",
-        Icon = new IconInfo(""),
-    };
+        var page = provider.ProviderType.Equals("copilot", System.StringComparison.OrdinalIgnoreCase)
+            ? (ICommand)new CopilotProviderPage(_settingsManager, provider.Id)
+            : new ProviderEditorPage(_settingsManager, provider, () => RaiseItemsChanged());
+        return new ListItem(page)
+        {
+            Title = provider.ProviderType.Equals("copilot", System.StringComparison.OrdinalIgnoreCase) ? "管理 Copilot 登录" : "编辑提供商",
+            Subtitle = provider.ProviderType.Equals("copilot", System.StringComparison.OrdinalIgnoreCase)
+                ? "连接 GitHub 或修改 Copilot 配置"
+                : "修改 Base URL、API Key、模型名和系统提示词",
+            Icon = new IconInfo(""),
+        };
+    }
 
     private void SelectProvider(string providerId)
     {

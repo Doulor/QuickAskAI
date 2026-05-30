@@ -36,6 +36,18 @@ internal sealed class AiChatService
             return "请输入要询问 AI 的内容。";
         }
 
+        if (IsCopilot(request))
+        {
+            if (string.IsNullOrWhiteSpace(request.Model))
+            {
+                return "请填写 Copilot 模型名，例如 gpt-4.1。";
+            }
+
+            return string.IsNullOrWhiteSpace(request.ApiKey)
+                ? "请先在 GitHub Copilot 提供商中连接 GitHub 账号。"
+                : null;
+        }
+
         if (string.IsNullOrWhiteSpace(request.BaseUrl))
         {
             return "请先在扩展设置里填写 Base URL。";
@@ -61,6 +73,11 @@ internal sealed class AiChatService
 
     public async Task<AiChatResponse> AskAsync(AiChatRequest chatRequest, CancellationToken cancellationToken = default)
     {
+        if (IsCopilot(chatRequest))
+        {
+            return await CopilotChatService.AskAsync(chatRequest, cancellationToken).ConfigureAwait(false);
+        }
+
         var validationError = Validate(chatRequest);
         if (validationError is not null)
         {
@@ -104,6 +121,8 @@ internal sealed class AiChatService
             return AiChatResponse.Failure($"AI 服务返回了无法解析的 JSON：{ex.Message}", chatRequest.Model, endpoint.Host);
         }
     }
+
+    private static bool IsCopilot(AiChatRequest request) => request.ProviderType.Equals("copilot", StringComparison.OrdinalIgnoreCase);
 
     private static bool TryCreateEndpoint(string baseUrl, out Uri endpoint)
     {

@@ -34,6 +34,7 @@ internal sealed class SettingsManager
         StableStorage.MigrateFromLegacyPath("providers.json", _profilesPath);
 
         _profiles = LoadProfiles();
+        MigrateCopilotApiKeysToCredentialStore();
 
         var baseUrl = new TextSetting(
             BaseUrlKey,
@@ -110,7 +111,9 @@ internal sealed class SettingsManager
 
     public string BaseUrl => ActiveProvider.BaseUrl.Trim();
 
-    public string ApiKey => ActiveProvider.ApiKey.Trim();
+    public string ApiKey => ActiveProvider.ProviderType.Equals("copilot", StringComparison.OrdinalIgnoreCase)
+        ? GetCopilotToken(ActiveProvider) ?? ActiveProvider.ApiKey.Trim()
+        : ActiveProvider.ApiKey.Trim();
 
     public string Model => ActiveProvider.Model.Trim();
 
@@ -134,6 +137,7 @@ internal sealed class SettingsManager
 
     public AiChatRequest CreateRequest(string prompt, IReadOnlyList<ChatMessage> messages) => new()
     {
+        ProviderType = ActiveProvider.ProviderType,
         BaseUrl = BaseUrl,
         ApiKey = ApiKey,
         Model = Model,
@@ -144,6 +148,86 @@ internal sealed class SettingsManager
     };
 
     public ProviderProfile? GetProvider(string id) => _profiles.FirstOrDefault(p => p.Id == id);
+
+    public static bool IsCopilotProvider(ProviderProfile profile) => profile.ProviderType.Equals("copilot", StringComparison.OrdinalIgnoreCase);
+
+    public static bool HasCopilotToken(ProviderProfile profile)
+    {
+        return IsCopilotProvider(profile)
+            && (!string.IsNullOrWhiteSpace(profile.ApiKey) || CopilotCredentialStore.HasToken(profile.Id));
+    }
+
+    public static string? GetCopilotToken(ProviderProfile profile)
+    {
+        if (!IsCopilotProvider(profile))
+        {
+            return null;
+        }
+
+        var storedToken = CopilotCredentialStore.TryGetToken(profile.Id);
+        return !string.IsNullOrWhiteSpace(storedToken)
+            ? storedToken
+            : profile.ApiKey.Trim();
+    }
+
+    public void SaveCopilotToken(string providerId, string token, string login, string tokenTypeHint = "")
+    {
+        var provider = GetProvider(providerId);
+        if (provider is null || !IsCopilotProvider(provider))
+        {
+            return;
+        }
+
+        if (!CopilotCredentialStore.TrySaveToken(providerId, token))
+        {
+            throw new InvalidOperationException("无法保存 GitHub 授权，请检查 Windows 凭据存储是否可用。");
+        }
+
+        provider.AuthType = "device-code";
+        provider.GitHubLogin = login.Trim();
+        provider.TokenTypeHint = tokenTypeHint.Trim();
+        provider.ApiKey = string.Empty;
+        SaveProfiles();
+        ProvidersChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void RemoveCopilotToken(string providerId)
+    {
+        var provider = GetProvider(providerId);
+        if (provider is null || !IsCopilotProvider(provider))
+        {
+            return;
+        }
+
+        CopilotCredentialStore.RemoveToken(providerId);
+        provider.AuthType = string.Empty;
+        provider.GitHubLogin = string.Empty;
+        provider.TokenTypeHint = string.Empty;
+        provider.ApiKey = string.Empty;
+        SaveProfiles();
+        ProvidersChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void MigrateCopilotApiKeysToCredentialStore()
+    {
+        var changed = false;
+        foreach (var profile in _profiles.Where(profile => IsCopilotProvider(profile) && !string.IsNullOrWhiteSpace(profile.ApiKey)))
+        {
+            if (!CopilotCredentialStore.HasToken(profile.Id) && !CopilotCredentialStore.TrySaveToken(profile.Id, profile.ApiKey))
+            {
+                continue;
+            }
+
+            profile.ApiKey = string.Empty;
+            profile.AuthType = string.IsNullOrWhiteSpace(profile.AuthType) ? "device-code" : profile.AuthType;
+            changed = true;
+        }
+
+        if (changed)
+        {
+            SaveProfiles();
+        }
+    }
 
     public void SelectProvider(string id)
     {
@@ -160,8 +244,13 @@ internal sealed class SettingsManager
         var profile = input.Clone();
         profile.Id = string.IsNullOrWhiteSpace(profile.Id) ? CreateId() : profile.Id;
         profile.Name = string.IsNullOrWhiteSpace(profile.Name) ? "未命名提供商" : profile.Name.Trim();
+        profile.ProviderType = NormalizeProviderType(profile.ProviderType);
         profile.BaseUrl = profile.BaseUrl.Trim();
         profile.ApiKey = profile.ApiKey.Trim();
+        profile.AuthType = profile.AuthType.Trim();
+        profile.GitHubLogin = profile.GitHubLogin.Trim();
+        profile.GitHubClientId = profile.GitHubClientId.Trim();
+        profile.TokenTypeHint = profile.TokenTypeHint.Trim();
         profile.Model = profile.Model.Trim();
         profile.SystemPrompt = profile.SystemPrompt.Trim();
         profile.Temperature = profile.Temperature.Trim();
@@ -190,10 +279,22 @@ internal sealed class SettingsManager
     {
         Id = CreateId(),
         Name = $"提供商 {_profiles.Count + 1}",
+        ProviderType = "openai",
         BaseUrl = "https://api.openai.com/v1",
         Model = "gpt-4.1-mini",
         SystemPrompt = "你是一个简洁、可靠的中文 AI 助手。",
         Temperature = "0.7",
+    };
+
+    public static ProviderProfile CreateCopilotProvider() => new()
+    {
+        Id = CreateId(),
+        Name = "GitHub Copilot",
+        ProviderType = "copilot",
+        AuthType = "device-code",
+        Model = "gpt-4.1",
+        SystemPrompt = "你是一个简洁、可靠的中文 AI 助手。",
+        Temperature = string.Empty,
     };
 
     private List<ProviderProfile> LoadProfiles()
@@ -242,8 +343,13 @@ internal sealed class SettingsManager
                 writer.WriteStartObject();
                 writer.WriteString("id", profile.Id);
                 writer.WriteString("name", profile.Name);
+                writer.WriteString("providerType", profile.ProviderType);
                 writer.WriteString("baseUrl", profile.BaseUrl);
                 writer.WriteString("apiKey", profile.ApiKey);
+                writer.WriteString("authType", profile.AuthType);
+                writer.WriteString("gitHubLogin", profile.GitHubLogin);
+                writer.WriteString("gitHubClientId", profile.GitHubClientId);
+                writer.WriteString("tokenTypeHint", profile.TokenTypeHint);
                 writer.WriteString("model", profile.Model);
                 writer.WriteString("systemPrompt", profile.SystemPrompt);
                 writer.WriteString("temperature", profile.Temperature);
@@ -263,8 +369,13 @@ internal sealed class SettingsManager
         {
             Id = node?["id"]?.ToString() ?? string.Empty,
             Name = node?["name"]?.ToString() ?? string.Empty,
+            ProviderType = NormalizeProviderType(node?["providerType"]?.ToString()),
             BaseUrl = node?["baseUrl"]?.ToString() ?? string.Empty,
             ApiKey = node?["apiKey"]?.ToString() ?? string.Empty,
+            AuthType = node?["authType"]?.ToString() ?? string.Empty,
+            GitHubLogin = node?["gitHubLogin"]?.ToString() ?? string.Empty,
+            GitHubClientId = node?["gitHubClientId"]?.ToString() ?? string.Empty,
+            TokenTypeHint = node?["tokenTypeHint"]?.ToString() ?? string.Empty,
             Model = node?["model"]?.ToString() ?? string.Empty,
             SystemPrompt = node?["systemPrompt"]?.ToString() ?? string.Empty,
             Temperature = node?["temperature"]?.ToString() ?? string.Empty,
@@ -275,11 +386,19 @@ internal sealed class SettingsManager
     {
         Id = "default",
         Name = "OpenAI",
+        ProviderType = "openai",
         BaseUrl = "https://api.openai.com/v1",
         Model = "gpt-4.1-mini",
         SystemPrompt = "你是一个简洁、可靠的中文 AI 助手。",
         Temperature = "0.7",
     };
+
+    private static string NormalizeProviderType(string? providerType)
+    {
+        return providerType?.Trim().Equals("copilot", StringComparison.OrdinalIgnoreCase) == true
+            ? "copilot"
+            : "openai";
+    }
 
     private static string CreateId() => Guid.NewGuid().ToString("N");
 }

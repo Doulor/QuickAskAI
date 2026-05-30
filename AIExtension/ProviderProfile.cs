@@ -10,9 +10,19 @@ internal sealed class ProviderProfile
 
     public string Name { get; set; } = string.Empty;
 
+    public string ProviderType { get; set; } = "openai";
+
     public string BaseUrl { get; set; } = string.Empty;
 
     public string ApiKey { get; set; } = string.Empty;
+
+    public string AuthType { get; set; } = string.Empty;
+
+    public string GitHubLogin { get; set; } = string.Empty;
+
+    public string GitHubClientId { get; set; } = string.Empty;
+
+    public string TokenTypeHint { get; set; } = string.Empty;
 
     public string Model { get; set; } = string.Empty;
 
@@ -24,8 +34,13 @@ internal sealed class ProviderProfile
     {
         Id = Id,
         Name = Name,
+        ProviderType = ProviderType,
         BaseUrl = BaseUrl,
         ApiKey = ApiKey,
+        AuthType = AuthType,
+        GitHubLogin = GitHubLogin,
+        GitHubClientId = GitHubClientId,
+        TokenTypeHint = TokenTypeHint,
         Model = Model,
         SystemPrompt = SystemPrompt,
         Temperature = Temperature,

@@ -31,27 +31,51 @@ internal sealed partial class ProviderManagementPage : ListPage
             items.Add(CreateProviderItem(profile));
         }
 
-        items.Add(CreateAddProviderItem());
+        items.Add(CreateAddOpenAiProviderItem());
+        items.Add(CreateAddCopilotProviderItem());
         return [.. items];
     }
 
     private ListItem CreateProviderItem(ProviderProfile profile)
     {
         var isActive = profile.Id == _settingsManager.ActiveProvider.Id;
-        return new ListItem(new ProviderDetailPage(_settingsManager, profile.Id))
+        var page = profile.ProviderType.Equals("copilot", System.StringComparison.OrdinalIgnoreCase)
+            ? (ICommand)new CopilotProviderPage(_settingsManager, profile.Id)
+            : new ProviderDetailPage(_settingsManager, profile.Id);
+        return new ListItem(page)
         {
             Title = isActive ? $"当前：{profile.Name}" : profile.Name,
-            Subtitle = $"{profile.Model} · {MaskBaseUrl(profile.BaseUrl)}",
-            Icon = new IconInfo(isActive ? "" : ""),
+            Subtitle = BuildProviderSubtitle(profile),
+            Icon = new IconInfo(isActive ? "" : profile.ProviderType.Equals("copilot", System.StringComparison.OrdinalIgnoreCase) ? "" : ""),
         };
     }
 
-    private ListItem CreateAddProviderItem() => new(new ProviderEditorPage(_settingsManager, _settingsManager.CreateEmptyProvider(), () => RaiseItemsChanged()))
+    private ListItem CreateAddOpenAiProviderItem() => new(new ProviderEditorPage(_settingsManager, _settingsManager.CreateEmptyProvider(), () => RaiseItemsChanged()))
     {
-        Title = "添加模型提供商",
+        Title = "添加 OpenAI 兼容提供商",
         Subtitle = "添加新的 Base URL、API Key 和模型名",
         Icon = new IconInfo(""),
     };
+
+    private ListItem CreateAddCopilotProviderItem() => new(new CopilotProviderEditorPage(_settingsManager, SettingsManager.CreateCopilotProvider(), () => RaiseItemsChanged()))
+    {
+        Title = "添加 GitHub Copilot 提供商",
+        Subtitle = "使用 GitHub 网页登录连接 Copilot",
+        Icon = new IconInfo(""),
+    };
+
+    private static string BuildProviderSubtitle(ProviderProfile profile)
+    {
+        if (profile.ProviderType.Equals("copilot", System.StringComparison.OrdinalIgnoreCase))
+        {
+            var authState = SettingsManager.HasCopilotToken(profile)
+                ? string.IsNullOrWhiteSpace(profile.GitHubLogin) ? "GitHub 已连接" : $"GitHub: {profile.GitHubLogin}"
+                : "未连接 GitHub";
+            return $"{profile.Model} · {authState}";
+        }
+
+        return $"{profile.Model} · {MaskBaseUrl(profile.BaseUrl)}";
+    }
 
     private static string MaskBaseUrl(string value)
     {

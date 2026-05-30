@@ -1,0 +1,43 @@
+# Build outputs
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio / Rider / VS Code
+.vs/
+.idea/
+.vscode/.vsconfig
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# NuGet
+*.nupkg
+packages/
+
+# MSIX / AppX packaging outputs
+AppPackages/
+BundleArtifacts/
+Package.StoreAssociation.xml
+*.appx
+*.appxbundle
+*.appxupload
+*.msix
+*.msixbundle
+*.cer
+*.pfx
+
+# Logs and local diagnostics
+*.log
+*.binlog
+TestResults/
+coverage/
+
+# QuickAskAI local user data / secrets
+providers.json
+conversations.json
+QuickAskAI/
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,1 +1,0 @@
-C:\Users\Doulor\Desktop\AIExtension\AIExtension\AIExtension.csproj;x64

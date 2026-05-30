@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -129,35 +130,41 @@ internal sealed class ConversationStore
     private void Save()
     {
         Directory.CreateDirectory(Path.GetDirectoryName(_sessionsPath)!);
-        var sessions = new JsonArray();
-        foreach (var session in _sessions.OrderByDescending(session => session.UpdatedAt))
+        using var stream = new MemoryStream();
+        using (var writer = new Utf8JsonWriter(stream, new JsonWriterOptions { Indented = true }))
         {
-            var messages = new JsonArray();
-            foreach (var message in session.Messages)
+            writer.WriteStartObject();
+            writer.WriteString("activeSessionId", ActiveSessionId);
+            writer.WritePropertyName("sessions");
+            writer.WriteStartArray();
+
+            foreach (var session in _sessions.OrderByDescending(session => session.UpdatedAt))
             {
-                messages.Add(new JsonObject
+                writer.WriteStartObject();
+                writer.WriteString("id", session.Id);
+                writer.WriteString("title", session.Title);
+                writer.WriteString("createdAt", session.CreatedAt.ToString("O"));
+                writer.WriteString("updatedAt", session.UpdatedAt.ToString("O"));
+                writer.WritePropertyName("messages");
+                writer.WriteStartArray();
+
+                foreach (var message in session.Messages)
                 {
-                    ["role"] = message.Role,
-                    ["content"] = message.Content,
-                });
+                    writer.WriteStartObject();
+                    writer.WriteString("role", message.Role);
+                    writer.WriteString("content", message.Content);
+                    writer.WriteEndObject();
+                }
+
+                writer.WriteEndArray();
+                writer.WriteEndObject();
             }
 
-            sessions.Add(new JsonObject
-            {
-                ["id"] = session.Id,
-                ["title"] = session.Title,
-                ["createdAt"] = session.CreatedAt.ToString("O"),
-                ["updatedAt"] = session.UpdatedAt.ToString("O"),
-                ["messages"] = messages,
-            });
+            writer.WriteEndArray();
+            writer.WriteEndObject();
         }
 
-        var root = new JsonObject
-        {
-            ["activeSessionId"] = ActiveSessionId,
-            ["sessions"] = sessions,
-        };
-        File.WriteAllText(_sessionsPath, root.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+        File.WriteAllText(_sessionsPath, Encoding.UTF8.GetString(stream.ToArray()));
     }
 
     private static ConversationSession ReadSession(JsonNode? node)

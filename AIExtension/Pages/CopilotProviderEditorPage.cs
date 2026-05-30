@@ -10,22 +10,23 @@ using Microsoft.CommandPalette.Extensions.Toolkit;
 
 namespace AIExtension;
 
-internal sealed partial class ProviderEditorPage : ContentPage
+internal sealed partial class CopilotProviderEditorPage : ContentPage
 {
     private readonly SettingsManager _settingsManager;
     private readonly ProviderProfile _profile;
 
-    public ProviderEditorPage(SettingsManager settingsManager, ProviderProfile profile, Action? onSaved = null)
+    public CopilotProviderEditorPage(SettingsManager settingsManager, ProviderProfile profile, Action? onSaved = null)
     {
         _settingsManager = settingsManager;
         _profile = profile.Clone();
+        _profile.ProviderType = "copilot";
 
-        Icon = new IconInfo("");
-        Title = string.IsNullOrWhiteSpace(_profile.Name) ? "添加模型提供商" : $"编辑 {_profile.Name}";
+        Icon = new IconInfo("");
+        Title = string.IsNullOrWhiteSpace(_profile.Name) ? "添加 GitHub Copilot" : $"编辑 {_profile.Name}";
         Name = "配置";
     }
 
-    public override IContent[] GetContent() => [new ProviderEditorForm(this, _profile)];
+    public override IContent[] GetContent() => [new CopilotProviderEditorForm(this, _profile)];
 
     private CommandResult Save(string inputs)
     {
@@ -34,30 +35,26 @@ internal sealed partial class ProviderEditorPage : ContentPage
             var payload = JsonNode.Parse(inputs)?.AsObject();
             if (payload is null)
             {
-                return CommandResult.ShowToast("无法读取提供商配置。");
+                return CommandResult.ShowToast("无法读取 Copilot 配置。");
             }
 
             _profile.Name = ReadString(payload, "Name", _profile.Name);
-            _profile.ProviderType = ReadString(payload, "ProviderType", _profile.ProviderType);
-            _profile.BaseUrl = ReadString(payload, "BaseUrl", _profile.BaseUrl);
-            _profile.ApiKey = ReadString(payload, "ApiKey", _profile.ApiKey);
+            _profile.GitHubClientId = ReadString(payload, "GitHubClientId", _profile.GitHubClientId);
             _profile.Model = ReadString(payload, "Model", _profile.Model);
             _profile.SystemPrompt = ReadString(payload, "SystemPrompt", _profile.SystemPrompt);
-            _profile.Temperature = ReadString(payload, "Temperature", _profile.Temperature);
+            _profile.ProviderType = "copilot";
+            _profile.BaseUrl = string.Empty;
+            _profile.ApiKey = string.Empty;
+            _profile.AuthType = string.IsNullOrWhiteSpace(_profile.AuthType) ? "device-code" : _profile.AuthType;
 
             if (string.IsNullOrWhiteSpace(_profile.Name))
             {
                 return CommandResult.ShowToast("请填写提供商名称。");
             }
 
-            if (string.IsNullOrWhiteSpace(_profile.BaseUrl))
-            {
-                return CommandResult.ShowToast("请填写 Base URL。");
-            }
-
             if (string.IsNullOrWhiteSpace(_profile.Model))
             {
-                return CommandResult.ShowToast("请填写模型名。");
+                return CommandResult.ShowToast("请填写 Copilot 模型名，例如 gpt-4.1。");
             }
 
             _settingsManager.SaveProvider(_profile);
@@ -65,7 +62,7 @@ internal sealed partial class ProviderEditorPage : ContentPage
         }
         catch (JsonException)
         {
-            return CommandResult.ShowToast("无法读取提供商配置。");
+            return CommandResult.ShowToast("无法读取 Copilot 配置。");
         }
     }
 
@@ -76,11 +73,11 @@ internal sealed partial class ProviderEditorPage : ContentPage
             ?? fallback;
     }
 
-    private sealed partial class ProviderEditorForm : FormContent
+    private sealed partial class CopilotProviderEditorForm : FormContent
     {
-        private readonly ProviderEditorPage _page;
+        private readonly CopilotProviderEditorPage _page;
 
-        public ProviderEditorForm(ProviderEditorPage page, ProviderProfile profile)
+        public CopilotProviderEditorForm(CopilotProviderEditorPage page, ProviderProfile profile)
         {
             _page = page;
             TemplateJson = """
@@ -95,31 +92,15 @@ internal sealed partial class ProviderEditorPage : ContentPage
                   "label": "提供商名称",
                   "isRequired": true,
                   "errorMessage": "请填写提供商名称",
-                  "placeholder": "OpenAI",
+                  "placeholder": "GitHub Copilot",
                   "value": "${Name}"
                 },
                 {
                   "type": "Input.Text",
-                  "id": "ProviderType",
-                  "label": "Provider Type",
-                  "placeholder": "openai 或 copilot",
-                  "value": "${ProviderType}"
-                },
-                {
-                  "type": "Input.Text",
-                  "id": "BaseUrl",
-                  "label": "Base URL",
-                  "isRequired": true,
-                  "errorMessage": "请填写 Base URL",
-                  "placeholder": "https://api.example.com/v1",
-                  "value": "${BaseUrl}"
-                },
-                {
-                  "type": "Input.Text",
-                  "id": "ApiKey",
-                  "label": "API Key",
-                  "placeholder": "sk-...",
-                  "value": "${ApiKey}"
+                  "id": "GitHubClientId",
+                  "label": "GitHub OAuth Client ID",
+                  "placeholder": "从 GitHub OAuth App 复制 Client ID",
+                  "value": "${GitHubClientId}"
                 },
                 {
                   "type": "Input.Text",
@@ -127,7 +108,7 @@ internal sealed partial class ProviderEditorPage : ContentPage
                   "label": "Model",
                   "isRequired": true,
                   "errorMessage": "请填写模型名",
-                  "placeholder": "gpt-4.1-mini",
+                  "placeholder": "gpt-4.1",
                   "value": "${Model}"
                 },
                 {
@@ -137,13 +118,6 @@ internal sealed partial class ProviderEditorPage : ContentPage
                   "isMultiline": true,
                   "placeholder": "你是一个简洁、可靠的中文 AI 助手。",
                   "value": "${SystemPrompt}"
-                },
-                {
-                  "type": "Input.Text",
-                  "id": "Temperature",
-                  "label": "Temperature",
-                  "placeholder": "0.7",
-                  "value": "${Temperature}"
                 }
               ],
               "actions": [
@@ -157,12 +131,9 @@ internal sealed partial class ProviderEditorPage : ContentPage
             DataJson = new JsonObject
             {
                 ["Name"] = profile.Name,
-                ["ProviderType"] = profile.ProviderType,
-                ["BaseUrl"] = profile.BaseUrl,
-                ["ApiKey"] = profile.ApiKey,
+                ["GitHubClientId"] = profile.GitHubClientId,
                 ["Model"] = profile.Model,
                 ["SystemPrompt"] = profile.SystemPrompt,
-                ["Temperature"] = profile.Temperature,
             }.ToJsonString();
         }
 

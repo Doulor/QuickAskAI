@@ -20,7 +20,11 @@ public partial class AIExtensionCommandsProvider : CommandProvider
         Icon = IconHelpers.FromRelativePath("Assets\\ICON.png");
         Settings = _settingsManager.Settings;
         _commands = [
-            new CommandItem(new AskAiPage(_settingsManager, _conversationStore, _chatService)) { Title = DisplayName },
+            new CommandItem(new AskAiPage(_settingsManager, _conversationStore, _chatService))
+            {
+                Title = DisplayName,
+                Icon = IconHelpers.FromRelativePath("Assets\\ICON.png"),
+            },
         ];
     }
 

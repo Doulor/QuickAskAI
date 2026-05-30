@@ -25,18 +25,18 @@
 
 ## GitHub Copilot 登录
 
-Copilot provider 使用 GitHub OAuth Device Flow：
+Copilot provider 使用 GitHub OAuth Device Flow。Release 版本已经内置默认 GitHub OAuth Client ID，普通用户不需要自己创建 OAuth App：
 
-1. 在 GitHub 创建一个 OAuth App。
-2. 启用 Device Flow。
-3. 复制 OAuth App 的 Client ID。
-4. 在扩展中添加 `GitHub Copilot` 提供商，并填写 Client ID。
-5. 选择 `连接 GitHub`，打开页面提示的 GitHub 验证网址并输入验证码。
-6. 授权完成后回到扩展，选择 `我已完成授权，继续`。
+1. 在扩展中添加 `GitHub Copilot` 提供商。
+2. 选择 `连接 GitHub`。
+3. 打开页面提示的 GitHub 验证网址并输入验证码。
+4. 授权完成后回到扩展，选择 `我已完成授权，继续`。
 
-Client ID 是公开标识，不是密码，也不是 API key。不要把 Client Secret 填入扩展或提交到仓库。
+用户登录的是自己的 GitHub 账号，使用的是自己的 GitHub Copilot 权益。
 
-### 创建 GitHub OAuth App
+### 维护者：创建自己的 GitHub OAuth App
+
+如果你 fork 了项目，或想发布自己的版本，可以创建自己的 OAuth App 并替换默认 Client ID：
 
 1. 打开 <https://github.com/settings/developers>。
 2. 进入 `OAuth Apps`。
@@ -48,7 +48,7 @@ Client ID 是公开标识，不是密码，也不是 API key。不要把 Client 
 5. 创建后进入 App 设置，启用 `Device Flow`。
 6. 复制 `Client ID`。
 
-这个扩展使用 Device Flow，不需要 Client Secret。
+Client ID 是公开标识，不是密码，也不是 API key。这个扩展使用 Device Flow，不需要 Client Secret。不要把 Client Secret 填入扩展或提交到仓库。
 
 Copilot SDK 第一次启动时会解压它自带的 Copilot CLI。如果遇到 `EXDEV: cross-device link not permitted` 这类首次解压错误，扩展会自动运行一次随包带的 `copilot.exe --help` 预热缓存后重试。
 

@@ -25,23 +25,16 @@ powershell -ExecutionPolicy Bypass -File .\uninstall.ps1
 
 ## GitHub Copilot 登录
 
-要使用 Copilot provider，需要 GitHub OAuth App 的 Client ID。Client ID 是公开标识，不是密码。
+Release 版本已经内置默认 GitHub OAuth Client ID。普通用户不需要自己创建 OAuth App，也不需要填写 API key。
 
-创建方法：
+1. 在扩展中添加 GitHub Copilot 提供商。
+2. 选择 `连接 GitHub`。
+3. 按提示打开 GitHub 验证页面并输入验证码。
+4. 授权完成后回到扩展，选择 `我已完成授权，继续`。
 
-1. 打开 https://github.com/settings/developers
-2. 进入 `OAuth Apps`。
-3. 点击 `New OAuth App`。
-4. 填写：
-   - Application name: `快速询问AI`
-   - Homepage URL: 你的项目 GitHub 地址，例如 `https://github.com/<owner>/<repo>`
-   - Authorization callback URL: `http://localhost`
-5. 创建后进入 App 设置，启用 `Device Flow`。
-6. 复制 `Client ID`。
-7. 在扩展中添加 GitHub Copilot 提供商并填写 Client ID。
-8. 选择 `连接 GitHub`，按提示网页登录。
+用户登录的是自己的 GitHub 账号，使用的是自己的 GitHub Copilot 权益。
 
-不要把 Client Secret 填入扩展。这个扩展使用 Device Flow，不需要 Client Secret。
+如果你 fork 了项目，或想发布自己的版本，可以在 GitHub 创建自己的 OAuth App，启用 Device Flow，然后在 Copilot 提供商配置页替换 Client ID。不要把 Client Secret 填入扩展；这个扩展使用 Device Flow，不需要 Client Secret。
 
 ## 本地数据
 

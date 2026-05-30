@@ -167,10 +167,10 @@ internal sealed partial class GitHubDeviceLoginPage : ListPage
 
     private ListItem CreateMissingClientIdItem(ProviderProfile provider) => new(new CopilotProviderEditorPage(_settingsManager, provider, () => RaiseItemsChanged()))
     {
-        Title = "请先填写 GitHub OAuth Client ID",
-        Subtitle = "进入配置页填写 Client ID 后再连接 GitHub",
+        Title = "GitHub 登录配置异常",
+        Subtitle = "这个版本缺少内置 Client ID，请进入配置页填写",
         Icon = new IconInfo(""),
-        Details = CreateDetails("缺少 GitHub OAuth Client ID", "这个值来自你创建的 GitHub OAuth App。它是公开 Client ID，不是密码，也不是个人 API key。"),
+        Details = CreateDetails("缺少 GitHub OAuth Client ID", "普通用户通常不需要处理这个值。这个版本应当内置 Client ID；如果你 fork 了项目，也可以在配置页替换为自己的 GitHub OAuth App Client ID。"),
     };
 
     private ListItem CreateStatusItem(ProviderProfile provider) => new(new NoOpCommand())

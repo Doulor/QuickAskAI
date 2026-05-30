@@ -98,8 +98,8 @@ internal sealed partial class CopilotProviderEditorPage : ContentPage
                 {
                   "type": "Input.Text",
                   "id": "GitHubClientId",
-                  "label": "GitHub OAuth Client ID",
-                  "placeholder": "从 GitHub OAuth App 复制 Client ID",
+                  "label": "GitHub OAuth Client ID（高级选项）",
+                  "placeholder": "默认使用内置 Client ID；fork 项目后可替换为自己的 Client ID",
                   "value": "${GitHubClientId}"
                 },
                 {

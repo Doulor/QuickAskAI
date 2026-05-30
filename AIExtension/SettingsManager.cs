@@ -23,6 +23,7 @@ internal sealed class SettingsManager
     private const string SystemPromptKey = "systemPrompt";
     private const string TemperatureKey = "temperature";
     private const string ActiveProviderKey = "activeProvider";
+    private const string DefaultGitHubClientId = "Ov23liDa9NDfYl29YozQ";
 
     private readonly Settings _settings = new();
     private readonly string _profilesPath;
@@ -250,6 +251,11 @@ internal sealed class SettingsManager
         profile.AuthType = profile.AuthType.Trim();
         profile.GitHubLogin = profile.GitHubLogin.Trim();
         profile.GitHubClientId = profile.GitHubClientId.Trim();
+        if (IsCopilotProvider(profile) && string.IsNullOrWhiteSpace(profile.GitHubClientId))
+        {
+            profile.GitHubClientId = DefaultGitHubClientId;
+        }
+
         profile.TokenTypeHint = profile.TokenTypeHint.Trim();
         profile.Model = profile.Model.Trim();
         profile.SystemPrompt = profile.SystemPrompt.Trim();
@@ -292,6 +298,7 @@ internal sealed class SettingsManager
         Name = "GitHub Copilot",
         ProviderType = "copilot",
         AuthType = "device-code",
+        GitHubClientId = DefaultGitHubClientId,
         Model = "gpt-4.1",
         SystemPrompt = "你是一个简洁、可靠的中文 AI 助手。",
         Temperature = string.Empty,
@@ -374,7 +381,9 @@ internal sealed class SettingsManager
             ApiKey = node?["apiKey"]?.ToString() ?? string.Empty,
             AuthType = node?["authType"]?.ToString() ?? string.Empty,
             GitHubLogin = node?["gitHubLogin"]?.ToString() ?? string.Empty,
-            GitHubClientId = node?["gitHubClientId"]?.ToString() ?? string.Empty,
+            GitHubClientId = string.IsNullOrWhiteSpace(node?["gitHubClientId"]?.ToString())
+                ? DefaultGitHubClientId
+                : node?["gitHubClientId"]?.ToString() ?? string.Empty,
             TokenTypeHint = node?["tokenTypeHint"]?.ToString() ?? string.Empty,
             Model = node?["model"]?.ToString() ?? string.Empty,
             SystemPrompt = node?["systemPrompt"]?.ToString() ?? string.Empty,

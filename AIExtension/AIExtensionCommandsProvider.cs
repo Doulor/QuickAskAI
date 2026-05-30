@@ -17,7 +17,7 @@ public partial class AIExtensionCommandsProvider : CommandProvider
     public AIExtensionCommandsProvider()
     {
         DisplayName = "快速询问AI";
-        Icon = IconHelpers.FromRelativePath("Assets\\StoreLogo.png");
+        Icon = IconHelpers.FromRelativePath("Assets\\ICON.png");
         Settings = _settingsManager.Settings;
         _commands = [
             new CommandItem(new AskAiPage(_settingsManager, _conversationStore, _chatService)) { Title = DisplayName },

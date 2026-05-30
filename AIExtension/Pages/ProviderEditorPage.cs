@@ -1,0 +1,158 @@
+// Copyright (c) Microsoft Corporation
+// The Microsoft Corporation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using Microsoft.CommandPalette.Extensions;
+using Microsoft.CommandPalette.Extensions.Toolkit;
+
+namespace AIExtension;
+
+internal sealed partial class ProviderEditorPage : ContentPage
+{
+    private readonly SettingsManager _settingsManager;
+    private readonly ProviderProfile _profile;
+    private readonly Action _onSaved;
+
+    public ProviderEditorPage(SettingsManager settingsManager, ProviderProfile profile, Action onSaved)
+    {
+        _settingsManager = settingsManager;
+        _profile = profile.Clone();
+        _onSaved = onSaved;
+
+        Icon = new IconInfo("");
+        Title = string.IsNullOrWhiteSpace(_profile.Name) ? "添加模型提供商" : $"编辑 {_profile.Name}";
+        Name = "配置";
+    }
+
+    public override IContent[] GetContent() => [new ProviderEditorForm(this, _profile)];
+
+    private CommandResult Save(string inputs)
+    {
+        try
+        {
+            var payload = JsonNode.Parse(inputs)?.AsObject();
+            if (payload is null)
+            {
+                return CommandResult.ShowToast("无法读取提供商配置。");
+            }
+
+            _profile.Name = payload["Name"]?.ToString() ?? string.Empty;
+            _profile.BaseUrl = payload["BaseUrl"]?.ToString() ?? string.Empty;
+            _profile.ApiKey = payload["ApiKey"]?.ToString() ?? string.Empty;
+            _profile.Model = payload["Model"]?.ToString() ?? string.Empty;
+            _profile.SystemPrompt = payload["SystemPrompt"]?.ToString() ?? string.Empty;
+            _profile.Temperature = payload["Temperature"]?.ToString() ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(_profile.Name))
+            {
+                return CommandResult.ShowToast("请填写提供商名称。");
+            }
+
+            if (string.IsNullOrWhiteSpace(_profile.BaseUrl))
+            {
+                return CommandResult.ShowToast("请填写 Base URL。");
+            }
+
+            if (string.IsNullOrWhiteSpace(_profile.Model))
+            {
+                return CommandResult.ShowToast("请填写模型名。");
+            }
+
+            _settingsManager.SaveProvider(_profile);
+            _onSaved();
+            return CommandResult.GoBack();
+        }
+        catch (JsonException)
+        {
+            return CommandResult.ShowToast("无法读取提供商配置。");
+        }
+    }
+
+    private sealed partial class ProviderEditorForm : FormContent
+    {
+        private readonly ProviderEditorPage _page;
+
+        public ProviderEditorForm(ProviderEditorPage page, ProviderProfile profile)
+        {
+            _page = page;
+            TemplateJson = """
+            {
+              "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+              "type": "AdaptiveCard",
+              "version": "1.5",
+              "body": [
+                {
+                  "type": "Input.Text",
+                  "id": "Name",
+                  "label": "提供商名称",
+                  "isRequired": true,
+                  "errorMessage": "请填写提供商名称",
+                  "placeholder": "OpenAI",
+                  "value": "${Name}"
+                },
+                {
+                  "type": "Input.Text",
+                  "id": "BaseUrl",
+                  "label": "Base URL",
+                  "isRequired": true,
+                  "errorMessage": "请填写 Base URL",
+                  "placeholder": "https://api.example.com/v1",
+                  "value": "${BaseUrl}"
+                },
+                {
+                  "type": "Input.Text",
+                  "id": "ApiKey",
+                  "label": "API Key",
+                  "placeholder": "sk-...",
+                  "value": "${ApiKey}"
+                },
+                {
+                  "type": "Input.Text",
+                  "id": "Model",
+                  "label": "Model",
+                  "isRequired": true,
+                  "errorMessage": "请填写模型名",
+                  "placeholder": "gpt-4.1-mini",
+                  "value": "${Model}"
+                },
+                {
+                  "type": "Input.Text",
+                  "id": "SystemPrompt",
+                  "label": "System Prompt",
+                  "isMultiline": true,
+                  "placeholder": "你是一个简洁、可靠的中文 AI 助手。",
+                  "value": "${SystemPrompt}"
+                },
+                {
+                  "type": "Input.Text",
+                  "id": "Temperature",
+                  "label": "Temperature",
+                  "placeholder": "0.7",
+                  "value": "${Temperature}"
+                }
+              ],
+              "actions": [
+                {
+                  "type": "Action.Submit",
+                  "title": "保存并选择"
+                }
+              ]
+            }
+            """;
+            DataJson = new JsonObject
+            {
+                ["Name"] = profile.Name,
+                ["BaseUrl"] = profile.BaseUrl,
+                ["ApiKey"] = profile.ApiKey,
+                ["Model"] = profile.Model,
+                ["SystemPrompt"] = profile.SystemPrompt,
+                ["Temperature"] = profile.Temperature,
+            }.ToJsonString();
+        }
+
+        public override CommandResult SubmitForm(string inputs) => _page.Save(inputs);
+    }
+}

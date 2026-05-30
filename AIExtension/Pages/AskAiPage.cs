@@ -28,7 +28,7 @@ internal sealed partial class AskAiPage : DynamicListPage
         Title = "快速询问AI";
         Name = "询问";
         PlaceholderText = "输入问题，按 Enter 询问 AI";
-        ShowDetails = false;
+        ShowDetails = true;
     }
 
     public override void UpdateSearchText(string oldSearch, string newSearch)
@@ -115,26 +115,21 @@ internal sealed partial class AskAiPage : DynamicListPage
             CreateProviderSummaryItem(),
         };
 
-        foreach (var profile in _settingsManager.Profiles)
-        {
-            items.Add(CreateProviderItem(profile));
-            items.Add(CreateEditProviderItem(profile));
-        }
-
-        items.Add(CreateAddProviderItem());
-
         if (_isBusy)
         {
             items.Add(CreateBusyItem());
         }
         else if (_lastResponse is not null)
         {
-            items.Add(CreateResultItem(_lastResponse));
+            items.Add(CreateResultFocusItem());
         }
         else
         {
             items.Add(CreateHelpItem());
         }
+
+        items.Add(CreateProviderSummaryItem());
+        items.Add(CreateManageProvidersItem());
 
         return [.. items];
     }
@@ -150,30 +145,11 @@ internal sealed partial class AskAiPage : DynamicListPage
         };
     }
 
-    private ListItem CreateProviderItem(ProviderProfile profile)
+    private ListItem CreateManageProvidersItem() => new(new ProviderManagementPage(_settingsManager))
     {
-        var isActive = profile.Id == _settingsManager.ActiveProvider.Id;
-        return new ListItem(new SelectProviderCommand(this, profile.Id))
-        {
-            Title = isActive ? $"已选择：{profile.Name}" : $"选择：{profile.Name}",
-            Subtitle = $"{profile.Model} · {MaskBaseUrl(profile.BaseUrl)}",
-            Icon = new IconInfo(isActive ? "" : ""),
-            MoreCommands = [],
-        };
-    }
-
-    private ListItem CreateEditProviderItem(ProviderProfile profile) => new(new ProviderEditorPage(_settingsManager, profile, () => RaiseItemsChanged()))
-    {
-        Title = $"编辑：{profile.Name}",
-        Subtitle = "修改 Base URL、API Key、模型名和系统提示词",
-        Icon = new IconInfo(""),
-    };
-
-    private ListItem CreateAddProviderItem() => new(new ProviderEditorPage(_settingsManager, _settingsManager.CreateEmptyProvider(), () => RaiseItemsChanged()))
-    {
-        Title = "添加模型提供商",
-        Subtitle = "添加新的 Base URL、API Key 和模型名",
-        Icon = new IconInfo(""),
+        Title = "管理模型提供商",
+        Subtitle = "添加、选择或编辑 Base URL、API Key 和模型名",
+        Icon = new IconInfo(""),
     };
 
     private ListItem CreateBusyItem() => new(new NoOpCommand())
@@ -183,25 +159,43 @@ internal sealed partial class AskAiPage : DynamicListPage
         Icon = new IconInfo(""),
     };
 
-    private static ListItem CreateResultItem(AiChatResponse response)
+    private ListItem CreateResultFocusItem()
     {
-        if (!response.IsSuccess)
+        if (_lastResponse is null)
         {
-            return new ListItem(new NoOpCommand())
-            {
-                Title = "请求失败",
-                Subtitle = Preview(response.ErrorMessage.ReplaceLineEndings(" "), 140),
-                Icon = new IconInfo(""),
-            };
+            return CreateHelpItem();
         }
 
-        return new ListItem(new CopyTextCommand(response.Content))
+        var response = _lastResponse;
+        var body = response.IsSuccess
+            ? $"{response.Content}\n\n---\n\n模型：{EscapeInline(response.Model)}\n\n服务：{EscapeInline(response.Endpoint)}"
+            : CodeBlock(response.ErrorMessage);
+
+        return new ListItem(response.IsSuccess ? new CopyTextCommand(response.Content) : new NoOpCommand())
         {
-            Title = Preview(response.Content.ReplaceLineEndings(" "), 140),
-            Subtitle = $"回答 · {response.Model} · 按 Enter 复制",
-            Icon = new IconInfo(""),
-            MoreCommands = [new CommandContextItem(new CopyTextCommand(response.Content)) { Title = "复制回答" }],
+            Title = response.IsSuccess ? "回答" : "请求失败",
+            Subtitle = response.IsSuccess ? "右侧显示完整回答；按 Enter 复制" : "右侧显示错误详情",
+            Icon = new IconInfo(response.IsSuccess ? "" : ""),
+            Details = new Details
+            {
+                Title = response.IsSuccess ? "回答" : "请求失败",
+                Body = body,
+                Size = ContentSize.Large,
+            },
+            MoreCommands = response.IsSuccess
+                ? [new CommandContextItem(new CopyTextCommand(response.Content)) { Title = "复制回答" }]
+                : [],
         };
+    }
+
+    private static string EscapeInline(string value) => string.IsNullOrWhiteSpace(value)
+        ? "未提供"
+        : value.Replace("`", "\\`");
+
+    private static string CodeBlock(string value)
+    {
+        var safeValue = string.IsNullOrWhiteSpace(value) ? "未知错误。" : value.Replace("```", "` ` `");
+        return $"```text\n{safeValue}\n```";
     }
 
     private static ListItem CreateHelpItem() => new(new NoOpCommand())
@@ -242,12 +236,6 @@ internal sealed partial class AskAiPage : DynamicListPage
         RaiseItemsChanged();
     }
 
-    private void SelectProvider(string providerId)
-    {
-        _settingsManager.SelectProvider(providerId);
-        RaiseItemsChanged();
-    }
-
     private static string Preview(string value, int maxLength) => value.Length <= maxLength
         ? value
         : value[..maxLength] + "...";
@@ -276,25 +264,5 @@ internal sealed partial class AskAiPage : DynamicListPage
         }
 
         public override ICommandResult Invoke() => _page.SubmitPrompt(_prompt);
-    }
-
-    private sealed partial class SelectProviderCommand : InvokableCommand
-    {
-        private readonly AskAiPage _page;
-        private readonly string _providerId;
-
-        public SelectProviderCommand(AskAiPage page, string providerId)
-        {
-            _page = page;
-            _providerId = providerId;
-            Name = "选择提供商";
-            Icon = new IconInfo("");
-        }
-
-        public override ICommandResult Invoke()
-        {
-            _page.SelectProvider(_providerId);
-            return CommandResult.KeepOpen();
-        }
     }
 }

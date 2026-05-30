@@ -63,7 +63,7 @@ internal sealed partial class ProviderEditorPage : ContentPage
 
             _settingsManager.SaveProvider(_profile);
             _onSaved();
-            return CommandResult.GoBack();
+            return CommandResult.ShowToast($"已保存 {_profile.Name}");
         }
         catch (JsonException)
         {

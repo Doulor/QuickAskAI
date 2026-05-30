@@ -1,148 +1,123 @@
 # 快速询问AI
 
-[English README](README.en.md)
+[English](README.en.md)
 
-快速询问AI是一个 PowerToys Command Palette 扩展。它把命令面板顶部输入框变成提问框，按 Enter 即可向配置好的 AI 提问，并在右侧详情区域显示回答。
+快速询问AI是一个给 PowerToys Command Palette 使用的 AI 提问插件。安装后，你可以直接在命令面板里输入问题，选择这个插件，把问题发给 GitHub Copilot 或你配置的 OpenAI 兼容模型，然后在命令面板右侧查看回答。
 
-## 功能
+## 适合谁使用
 
-- OpenAI-compatible Chat Completions 调用，支持自定义 Base URL、API Key、模型名、系统提示词和 temperature。
-- 多模型提供商管理，可以添加、选择和编辑不同提供商。
-- GitHub Copilot provider，支持 GitHub 网页设备码登录，不需要用户手动准备 API key。
-- 会话管理，默认保留上下文，并支持新建会话、切换历史会话和查看聊天记录。
-- 回答支持复制，错误信息会尽量保留可诊断内容，同时避免显示 API key 或 GitHub token。
+- 想在 Windows 命令面板里快速问 AI 的用户。
+- 已经在使用 GitHub Copilot，希望不用另外准备 API key 的用户。
+- 有自己的 OpenAI 兼容服务，希望在 PowerToys Command Palette 里调用它的用户。
 
-## 普通用户安装
+## 主要功能
 
-你需要先安装 Microsoft PowerToys，并启用 PowerToys 里的 Command Palette。
+- 在 PowerToys Command Palette 中直接提问。
+- 支持 GitHub Copilot 登录，使用 GitHub 设备码授权，不需要手动填写 Copilot API key。
+- 支持 OpenAI 兼容 Chat Completions 接口，可以配置 Base URL、API Key、模型名、系统提示词和 temperature。
+- 支持多个模型提供商，方便在不同 AI 服务之间切换。
+- 保留会话上下文，支持新建会话、切换历史会话和查看聊天记录。
+- 支持复制回答。
 
-1. 打开本仓库的 GitHub Releases 页面。
-2. 下载 release assets 里的 `QuickAskAI-<版本>-x64.zip`，不要下载 `Source code.zip`，那个是源码包。
-3. 把整个 zip 解压到普通文件夹，例如“下载\\QuickAskAI”。不要直接在压缩包预览窗口里运行脚本。
-4. 进入解压后的文件夹，右键 `install.ps1`，选择“使用 PowerShell 运行”。
-5. 如果 PowerShell 阻止脚本运行，在这个文件夹空白处打开 PowerShell，然后运行：
+## 安装前准备
+
+你需要一台 Windows 电脑，并安装 Microsoft PowerToys。安装后，请打开 PowerToys 设置，确认 Command Palette 已启用。
+
+## 下载
+
+请在 GitHub Releases 页面下载最新版：
+
+<https://github.com/Doulor/AIExtension-for-Powertoys-CMDPanel/releases>
+
+在 release 页面底部的 Assets 区域，下载类似下面名字的文件：
+
+```text
+QuickAskAI-v版本号-x64.zip
+```
+
+不要下载 `Source code.zip` 或 `Source code.tar.gz`，那是源码包，普通用户不能直接拿来安装。
+
+## 安装和加载到 Command Palette
+
+1. 把下载的 `QuickAskAI-...-x64.zip` 完整解压到一个普通文件夹，例如“下载\QuickAskAI”。
+2. 进入解压后的文件夹。
+3. 右键 `install.ps1`，选择“使用 PowerShell 运行”。
+4. 如果 PowerShell 阻止脚本运行，在当前文件夹打开 PowerShell 后运行：
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\install.ps1
 ```
 
-6. 打开 PowerToys Command Palette，输入 `Reload`，选择 `Reload Command Palette extensions`。也可以直接重启 PowerToys。
-7. 在 Command Palette 里搜索 `快速询问AI`。
+5. 看到 `快速询问AI installed.` 后，打开 PowerToys Command Palette。
+6. 在 Command Palette 中输入 `Reload`，选择 `Reload Command Palette extensions`。
+7. 重新打开 Command Palette，搜索 `快速询问AI`。
 
-`install.ps1` 会把解压目录里的扩展 layout 注册到 Windows。注册完成后，PowerToys Command Palette 才能发现并加载这个扩展。
+如果没有搜到，重启 PowerToys 后再试一次。
 
-## 数据存储
+## 第一次使用
 
-用户配置和聊天记录不会存放在 Git 仓库里。
+### 使用 GitHub Copilot
+
+1. 在 Command Palette 里打开 `快速询问AI`。
+2. 添加或选择 GitHub Copilot 提供商。
+3. 选择 `连接 GitHub`。
+4. 按页面提示打开 GitHub 验证网址，并输入验证码。
+5. 授权完成后回到扩展，选择 `我已完成授权，继续`。
+
+你登录的是自己的 GitHub 账号，使用的是自己的 GitHub Copilot 权益。
+
+### 使用 OpenAI 兼容服务
+
+如果你有 OpenAI、Azure OpenAI、本地大模型网关或其他兼容 Chat Completions 的服务，可以添加一个自定义提供商，并填写：
+
+- Base URL
+- API Key
+- 模型名
+- 系统提示词
+- temperature
+
+## 卸载
+
+如果你还保留着解压后的文件夹，可以在里面运行：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\uninstall.ps1
+```
+
+卸载后，在 Command Palette 中执行 `Reload Command Palette extensions`，或重启 PowerToys。
+
+## 本地数据保存在哪里
+
+这个插件会把配置和聊天记录保存在你的电脑本地。
 
 | 数据 | 路径 |
 | --- | --- |
-| 模型提供商配置 | `%USERPROFILE%\\Documents\\QuickAskAI\\providers.json` |
-| 会话聊天记录 | `%USERPROFILE%\\Documents\\QuickAskAI\\conversations.json` |
+| 模型提供商配置 | `%USERPROFILE%\Documents\QuickAskAI\providers.json` |
+| 会话聊天记录 | `%USERPROFILE%\Documents\QuickAskAI\conversations.json` |
 | GitHub Copilot token | Windows Credential Manager / PasswordVault，资源名 `QuickAskAI.GitHubCopilot` |
-| Copilot CLI 本机缓存 | `%LOCALAPPDATA%\\copilot\\pkg\\win32-x64` |
+| Copilot CLI 本机缓存 | `%LOCALAPPDATA%\copilot\pkg\win32-x64` |
 
-`providers.json` 可能包含 OpenAI-compatible provider 的 API Key，请不要提交到 GitHub。GitHub Copilot 网页登录得到的 token 不写入 `providers.json`，而是保存到 Windows 凭据存储。
+`providers.json` 可能包含你的 OpenAI 兼容服务 API key，请不要公开分享这个文件。GitHub Copilot 登录得到的 token 不写入 `providers.json`，而是保存在 Windows 凭据存储中。
 
-## GitHub Copilot 登录
+## 给开发者
 
-Copilot provider 使用 GitHub OAuth Device Flow。Release 版本已经内置默认 GitHub OAuth Client ID，普通用户不需要自己创建 OAuth App：
-
-1. 在扩展中添加 `GitHub Copilot` 提供商。
-2. 选择 `连接 GitHub`。
-3. 打开页面提示的 GitHub 验证网址并输入验证码。
-4. 授权完成后回到扩展，选择 `我已完成授权，继续`。
-
-用户登录的是自己的 GitHub 账号，使用的是自己的 GitHub Copilot 权益。
-
-### 维护者：创建自己的 GitHub OAuth App
-
-如果你 fork 了项目，或想发布自己的版本，可以创建自己的 OAuth App 并替换默认 Client ID：
-
-1. 打开 <https://github.com/settings/developers>。
-2. 进入 `OAuth Apps`。
-3. 点击 `New OAuth App`。
-4. 填写：
-   - Application name: `快速询问AI`
-   - Homepage URL: 你的项目 GitHub 地址，例如 `https://github.com/<owner>/<repo>`
-   - Authorization callback URL: `http://localhost`
-5. 创建后进入 App 设置，启用 `Device Flow`。
-6. 复制 `Client ID`。
-
-Client ID 是公开标识，不是密码，也不是 API key。这个扩展使用 Device Flow，不需要 Client Secret。不要把 Client Secret 填入扩展或提交到仓库。
-
-Copilot SDK 第一次启动时会解压它自带的 Copilot CLI。如果遇到 `EXDEV: cross-device link not permitted` 这类首次解压错误，扩展会自动运行一次随包带的 `copilot.exe --help` 预热缓存后重试。
-
-## 构建
-
-需要：
-
-- Windows 10 19041 或更高版本。
-- .NET 9 SDK。
-- Windows 11 SDK 10.0.26100。
-- PowerToys Command Palette。
+如果你想从源码构建，需要 Windows 10 19041 或更高版本、.NET 9 SDK、Windows 11 SDK 10.0.26100，以及 PowerToys Command Palette。
 
 构建 x64 Debug：
-
-```powershell
-$env:DOTNET_ROOT = Join-Path $env:USERPROFILE ".dotnet"
-& "$env:DOTNET_ROOT\dotnet.exe" build .\AIExtension.sln -p:Platform=x64
-```
-
-如果 `dotnet` 已在 PATH 中，也可以直接运行：
 
 ```powershell
 dotnet build .\AIExtension.sln -p:Platform=x64
 ```
 
-## 本地注册测试
-
-构建后，可以注册 Debug appx layout：
+注册 Debug layout：
 
 ```powershell
 Get-Process AIExtension -ErrorAction SilentlyContinue | Stop-Process -Force
 Add-AppxPackage -Register .\AIExtension\bin\x64\Debug\net9.0-windows10.0.26100.0\win-x64\AppxManifest.xml -ForceApplicationShutdown -ForceUpdateFromAnyVersion
 ```
 
-然后重新打开或 Reload PowerToys Command Palette。
-
-## GitHub Release 测试包
-
-可以用 `build-release.ps1` 生成适合上传到 GitHub Release 的 zip：
+生成 GitHub Release 用的 zip：
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\build-release.ps1 -Configuration Release -Platform x64 -Version v1.1.0-beta.1
+powershell -ExecutionPolicy Bypass -File .\build-release.ps1 -Configuration Release -Platform x64 -Version v1.1.0-beta.2
 ```
-
-生成文件位于：
-
-```text
-release\artifacts\QuickAskAI-v1.1.0-beta.1-x64.zip
-```
-
-这个 zip 是 appx layout 测试包，包含：
-
-- 扩展运行文件。
-- `AppxManifest.xml`。
-- `install.ps1`。
-- `uninstall.ps1`。
-- 安装和 OAuth App 说明。
-
-用户下载后解压整个 zip，运行：
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\install.ps1
-```
-
-## Git 仓库说明
-
-仓库只应提交源码、项目文件、资源文件和文档。不要提交：
-
-- `AIExtension/bin/`
-- `AIExtension/obj/`
-- `.appx` / `.msix` 包输出
-- `providers.json`
-- `conversations.json`
-- API Key、GitHub token、Client Secret 或证书私钥
-
-这些内容已经写入 `.gitignore`。

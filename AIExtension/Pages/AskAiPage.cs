@@ -3,8 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Text.Json;
-using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions;
@@ -12,12 +10,12 @@ using Microsoft.CommandPalette.Extensions.Toolkit;
 
 namespace AIExtension;
 
-internal sealed partial class AskAiPage : ContentPage
+internal sealed partial class AskAiPage : DynamicListPage
 {
     private readonly SettingsManager _settingsManager;
     private readonly AiChatService _chatService;
-    private readonly AskAiForm _form;
     private int _requestVersion;
+    private string _lastPrompt = string.Empty;
     private AiChatResponse? _lastResponse;
     private bool _isBusy;
 
@@ -25,18 +23,40 @@ internal sealed partial class AskAiPage : ContentPage
     {
         _settingsManager = settingsManager;
         _chatService = chatService;
-        _form = new AskAiForm(this);
 
         Icon = new IconInfo("");
         Title = "快速询问AI";
         Name = "询问";
+        PlaceholderText = "输入问题，按 Enter 询问 AI";
+        ShowDetails = true;
     }
 
-    public override IContent[] GetContent() =>
-    [
-        new MarkdownContent(BuildStatusMarkdown()),
-        _form,
-    ];
+    public override void UpdateSearchText(string oldSearch, string newSearch)
+    {
+        RaiseItemsChanged();
+    }
+
+    public override IListItem[] GetItems()
+    {
+        var query = SearchText.Trim();
+
+        if (_isBusy)
+        {
+            return [CreateBusyItem()];
+        }
+
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            return [CreateAskItem(query)];
+        }
+
+        if (_lastResponse is not null)
+        {
+            return [CreateResultItem(_lastResponse)];
+        }
+
+        return [CreateHelpItem()];
+    }
 
     internal ICommandResult SubmitPrompt(string prompt)
     {
@@ -46,15 +66,15 @@ internal sealed partial class AskAiPage : ContentPage
 
         if (validationError is not null)
         {
-            ShowCompletedResult(AiChatResponse.Failure(validationError, request.Model));
+            ShowCompletedResult(prompt, AiChatResponse.Failure(validationError, request.Model));
             return CommandResult.KeepOpen();
         }
 
         var requestVersion = Interlocked.Increment(ref _requestVersion);
+        _lastPrompt = prompt;
         _lastResponse = null;
         _isBusy = true;
         IsLoading = true;
-        Commands = [];
         RaiseItemsChanged();
 
         var status = new StatusMessage
@@ -71,12 +91,13 @@ internal sealed partial class AskAiPage : ContentPage
             try
             {
                 var response = await _chatService.AskAsync(request).ConfigureAwait(false);
-                ShowCompletedResult(requestVersion, response);
+                ShowCompletedResult(requestVersion, prompt, response);
             }
             catch (Exception ex)
             {
                 ShowCompletedResult(
                     requestVersion,
+                    prompt,
                     AiChatResponse.Failure($"请求处理失败：{ex.Message}", request.Model));
             }
             finally
@@ -88,52 +109,112 @@ internal sealed partial class AskAiPage : ContentPage
         return CommandResult.KeepOpen();
     }
 
-    private void ShowCompletedResult(AiChatResponse response)
+    private ListItem CreateAskItem(string query)
     {
-        Interlocked.Increment(ref _requestVersion);
-        ApplyCompletedResult(response);
+        return new ListItem(new SubmitPromptCommand(this, query))
+        {
+            Title = $"询问：{Preview(query, 80)}",
+            Subtitle = "按 Enter 发送",
+            Icon = new IconInfo(""),
+            Details = new Details
+            {
+                Title = "将发送的问题",
+                Body = query,
+                Size = ContentSize.Medium,
+            },
+        };
     }
 
-    private void ShowCompletedResult(int requestVersion, AiChatResponse response)
+    private ListItem CreateBusyItem()
+    {
+        return new ListItem(new NoOpCommand())
+        {
+            Title = "正在询问 AI...",
+            Subtitle = Preview(_lastPrompt, 100),
+            Icon = new IconInfo(""),
+            Details = new Details
+            {
+                Title = "正在生成回答",
+                Body = _lastPrompt,
+                Size = ContentSize.Medium,
+            },
+        };
+    }
+
+    private static ListItem CreateResultItem(AiChatResponse response)
+    {
+        var title = response.IsSuccess ? "回答" : "请求失败";
+        var body = response.IsSuccess
+            ? $"{response.Content}\n\n---\n\n模型：{EscapeInline(response.Model)}\n\n服务：{EscapeInline(response.Endpoint)}"
+            : CodeBlock(response.ErrorMessage);
+
+        return new ListItem(response.IsSuccess ? new CopyTextCommand(response.Content) : new NoOpCommand())
+        {
+            Title = title,
+            Subtitle = response.IsSuccess ? "输入新问题可继续询问；按 Enter 可复制回答" : "输入新问题后按 Enter 重试",
+            Icon = new IconInfo(response.IsSuccess ? "" : ""),
+            Details = new Details
+            {
+                Title = title,
+                Body = body,
+                Size = ContentSize.Large,
+            },
+            MoreCommands = response.IsSuccess
+                ? [new CommandContextItem(new CopyTextCommand(response.Content)) { Title = "复制回答" }]
+                : [],
+        };
+    }
+
+    private static ListItem CreateHelpItem()
+    {
+        return new ListItem(new NoOpCommand())
+        {
+            Title = "直接输入问题",
+            Subtitle = "上方输入框默认选中，输入后按 Enter 询问 AI",
+            Icon = new IconInfo(""),
+            Details = new Details
+            {
+                Title = "快速询问AI",
+                Body = "在顶部输入框输入问题，然后按 Enter。首次使用前请在扩展设置里填写 Base URL、API Key 和模型名。",
+                Size = ContentSize.Medium,
+            },
+        };
+    }
+
+    private void ShowCompletedResult(string prompt, AiChatResponse response)
+    {
+        Interlocked.Increment(ref _requestVersion);
+        ApplyCompletedResult(prompt, response);
+    }
+
+    private void ShowCompletedResult(int requestVersion, string prompt, AiChatResponse response)
     {
         if (requestVersion != _requestVersion)
         {
             return;
         }
 
-        ApplyCompletedResult(response);
+        ApplyCompletedResult(prompt, response);
     }
 
-    private void ApplyCompletedResult(AiChatResponse response)
+    private void ApplyCompletedResult(string prompt, AiChatResponse response)
     {
+        _lastPrompt = prompt;
         _lastResponse = response;
         _isBusy = false;
         IsLoading = false;
-        Commands = response.IsSuccess
-            ? [new CommandContextItem(new CopyTextCommand(response.Content)) { Title = "复制回答" }]
-            : [];
+        if (SearchText.Trim().Equals(prompt, StringComparison.Ordinal))
+        {
+            SetSearchNoUpdate(string.Empty);
+            OnPropertyChanged(nameof(SearchText));
+        }
+
         RaiseItemsChanged();
     }
 
-    private string BuildStatusMarkdown()
-    {
-        if (_isBusy)
-        {
-            return "## 正在询问AI\n\n请稍候，回答生成后会自动显示在这里。";
-        }
-
-        if (_lastResponse is null)
-        {
-            return "## 快速询问AI\n\n在下方输入问题后提交。";
-        }
-
-        if (_lastResponse.IsSuccess)
-        {
-            return $"## 回答\n\n{_lastResponse.Content}\n\n---\n\n模型：{EscapeInline(_lastResponse.Model)}\n\n服务：{EscapeInline(_lastResponse.Endpoint)}";
-        }
-
-        return $"## 请求失败\n\n{CodeBlock(_lastResponse.ErrorMessage)}";
-    }
+    private static string Preview(string value, int maxLength) => value.Length <= maxLength
+        ? value
+        : string.Concat(value.AsSpan(0, maxLength), "...");
 
     private static string EscapeInline(string value) => string.IsNullOrWhiteSpace(value)
         ? "未提供"
@@ -145,51 +226,19 @@ internal sealed partial class AskAiPage : ContentPage
         return $"```text\n{safeValue}\n```";
     }
 
-    private sealed partial class AskAiForm : FormContent
+    private sealed partial class SubmitPromptCommand : InvokableCommand
     {
         private readonly AskAiPage _page;
+        private readonly string _prompt;
 
-        public AskAiForm(AskAiPage page)
+        public SubmitPromptCommand(AskAiPage page, string prompt)
         {
             _page = page;
-            TemplateJson = """
-            {
-              "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-              "type": "AdaptiveCard",
-              "version": "1.5",
-              "body": [
-                {
-                  "type": "Input.Text",
-                  "id": "Prompt",
-                  "label": "问题",
-                  "placeholder": "输入你想询问的内容",
-                  "isRequired": true,
-                  "errorMessage": "请输入问题",
-                  "isMultiline": true
-                }
-              ],
-              "actions": [
-                {
-                  "type": "Action.Submit",
-                  "title": "询问"
-                }
-              ]
-            }
-            """;
+            _prompt = prompt;
+            Name = "询问";
+            Icon = new IconInfo("");
         }
 
-        public override ICommandResult SubmitForm(string inputs)
-        {
-            try
-            {
-                var formInput = JsonNode.Parse(inputs)?.AsObject();
-                var prompt = formInput?["Prompt"]?.ToString() ?? string.Empty;
-                return _page.SubmitPrompt(prompt);
-            }
-            catch (JsonException)
-            {
-                return CommandResult.ShowToast("无法读取表单内容，请重试。");
-            }
-        }
+        public override ICommandResult Invoke() => _page.SubmitPrompt(_prompt);
     }
 }

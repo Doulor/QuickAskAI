@@ -1,7 +1,7 @@
 --target
-C:\Users\Doulor\Desktop\AIExtension\AIExtension\obj\x64\Debug\net9.0-windows10.0.26100.0\win-x64\AIExtension.dll
+D:\build\GitLocal\AIExtension\AIExtension\obj\x64\Debug\net9.0-windows10.0.26100.0\win-x64\AIExtension.dll
 --outdir
-C:\Users\Doulor\Desktop\AIExtension\AIExtension\obj\x64\Debug\net9.0-windows10.0.26100.0\win-x64\IIDOptimizer\
+D:\build\GitLocal\AIExtension\AIExtension\obj\x64\Debug\net9.0-windows10.0.26100.0\win-x64\IIDOptimizer\
 --refs 
  C:\Users\Doulor\.nuget\packages\microsoft.commandpalette.extensions\0.9.260303001\lib\net8.0-windows10.0.19041.0\Microsoft.CommandPalette.Extensions.Toolkit.dll
 --refs 

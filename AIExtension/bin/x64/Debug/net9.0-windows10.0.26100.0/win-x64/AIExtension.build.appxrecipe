@@ -10,28 +10,28 @@
     <PackageArchitecture>x64</PackageArchitecture>
     <PackageIdentityName>AIExtension</PackageIdentityName>
     <PackageIdentityPublisher>CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US</PackageIdentityPublisher>
-    <IntermediateOutputPath>C:\Users\Doulor\Desktop\AIExtension\AIExtension\obj\x64\Debug\net9.0-windows10.0.26100.0\win-x64\</IntermediateOutputPath>
+    <IntermediateOutputPath>D:\build\GitLocal\AIExtension\AIExtension\obj\x64\Debug\net9.0-windows10.0.26100.0\win-x64\</IntermediateOutputPath>
     <RemoteDeploymentType>CopyToDevice</RemoteDeploymentType>
     <PackageRegistrationPath></PackageRegistrationPath>
     <RemoveNonLayoutFiles>false</RemoveNonLayoutFiles>
     <DeployOptionalPackages>false</DeployOptionalPackages>
     <WindowsSdkPath></WindowsSdkPath>
-    <LayoutDir>C:\Users\Doulor\Desktop\AIExtension\AIExtension\bin\x64\Debug\net9.0-windows10.0.26100.0\win-x64\AppX</LayoutDir>
+    <LayoutDir>D:\build\GitLocal\AIExtension\AIExtension\bin\x64\Debug\net9.0-windows10.0.26100.0\win-x64\AppX</LayoutDir>
   </PropertyGroup>
   <ItemGroup>
-    <AppXManifest Include="C:\Users\Doulor\Desktop\AIExtension\AIExtension\bin\x64\Debug\net9.0-windows10.0.26100.0\win-x64\AppxManifest.xml">
+    <AppXManifest Include="D:\build\GitLocal\AIExtension\AIExtension\bin\x64\Debug\net9.0-windows10.0.26100.0\win-x64\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
-    <AppxPackagedFile Include="C:\Users\Doulor\Desktop\AIExtension\AIExtension\bin\x64\Debug\net9.0-windows10.0.26100.0\win-x64\AIExtension.runtimeconfig.json">
+    <AppxPackagedFile Include="D:\build\GitLocal\AIExtension\AIExtension\bin\x64\Debug\net9.0-windows10.0.26100.0\win-x64\AIExtension.runtimeconfig.json">
       <PackagePath>AIExtension.runtimeconfig.json</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Doulor\.nuget\packages\microsoft.commandpalette.extensions\0.9.260303001\winmd\Microsoft.CommandPalette.Extensions.winmd">
       <PackagePath>Microsoft.CommandPalette.Extensions.winmd</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Doulor\Desktop\AIExtension\AIExtension\obj\x64\Debug\net9.0-windows10.0.26100.0\win-x64\apphost.exe">
+    <AppxPackagedFile Include="D:\build\GitLocal\AIExtension\AIExtension\obj\x64\Debug\net9.0-windows10.0.26100.0\win-x64\apphost.exe">
       <PackagePath>AIExtension.exe</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Doulor\.nuget\packages\microsoft.netcore.app.runtime.win-x64\9.0.16\runtimes\win-x64\native\Microsoft.DiaSymReader.Native.amd64.dll">
@@ -589,46 +589,46 @@
     <AppxPackagedFile Include="C:\Users\Doulor\.nuget\packages\microsoft.netcore.app.runtime.win-x64\9.0.16\runtimes\win-x64\lib\net9.0\netstandard.dll">
       <PackagePath>netstandard.dll</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Doulor\Desktop\AIExtension\AIExtension\obj\x64\Debug\net9.0-windows10.0.26100.0\win-x64\R2R\Microsoft.CommandPalette.Extensions.Toolkit.dll">
+    <AppxPackagedFile Include="D:\build\GitLocal\AIExtension\AIExtension\obj\x64\Debug\net9.0-windows10.0.26100.0\win-x64\R2R\Microsoft.CommandPalette.Extensions.Toolkit.dll">
       <PackagePath>Microsoft.CommandPalette.Extensions.Toolkit.dll</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Doulor\Desktop\AIExtension\AIExtension\obj\x64\Debug\net9.0-windows10.0.26100.0\win-x64\R2R\Shmuelie.WinRTServer.dll">
+    <AppxPackagedFile Include="D:\build\GitLocal\AIExtension\AIExtension\obj\x64\Debug\net9.0-windows10.0.26100.0\win-x64\R2R\Shmuelie.WinRTServer.dll">
       <PackagePath>Shmuelie.WinRTServer.dll</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Doulor\Desktop\AIExtension\AIExtension\obj\x64\Debug\net9.0-windows10.0.26100.0\win-x64\R2R\AIExtension.dll">
+    <AppxPackagedFile Include="D:\build\GitLocal\AIExtension\AIExtension\obj\x64\Debug\net9.0-windows10.0.26100.0\win-x64\R2R\AIExtension.dll">
       <PackagePath>AIExtension.dll</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Doulor\Desktop\AIExtension\AIExtension\obj\x64\Debug\net9.0-windows10.0.26100.0\win-x64\R2R\Microsoft.Windows.SDK.NET.dll">
+    <AppxPackagedFile Include="D:\build\GitLocal\AIExtension\AIExtension\obj\x64\Debug\net9.0-windows10.0.26100.0\win-x64\R2R\Microsoft.Windows.SDK.NET.dll">
       <PackagePath>Microsoft.Windows.SDK.NET.dll</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Doulor\Desktop\AIExtension\AIExtension\obj\x64\Debug\net9.0-windows10.0.26100.0\win-x64\R2R\WinRT.Runtime.dll">
+    <AppxPackagedFile Include="D:\build\GitLocal\AIExtension\AIExtension\obj\x64\Debug\net9.0-windows10.0.26100.0\win-x64\R2R\WinRT.Runtime.dll">
       <PackagePath>WinRT.Runtime.dll</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Doulor\Desktop\AIExtension\AIExtension\obj\x64\Debug\net9.0-windows10.0.26100.0\win-x64\AIExtension.deps.json">
+    <AppxPackagedFile Include="D:\build\GitLocal\AIExtension\AIExtension\obj\x64\Debug\net9.0-windows10.0.26100.0\win-x64\AIExtension.deps.json">
       <PackagePath>AIExtension.deps.json</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Doulor\Desktop\AIExtension\AIExtension\Assets\SplashScreen.scale-200.png">
+    <AppxPackagedFile Include="D:\build\GitLocal\AIExtension\AIExtension\Assets\SplashScreen.scale-200.png">
       <PackagePath>Assets\SplashScreen.scale-200.png</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Doulor\Desktop\AIExtension\AIExtension\Assets\LockScreenLogo.scale-200.png">
+    <AppxPackagedFile Include="D:\build\GitLocal\AIExtension\AIExtension\Assets\LockScreenLogo.scale-200.png">
       <PackagePath>Assets\LockScreenLogo.scale-200.png</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Doulor\Desktop\AIExtension\AIExtension\Assets\Square150x150Logo.scale-200.png">
+    <AppxPackagedFile Include="D:\build\GitLocal\AIExtension\AIExtension\Assets\Square150x150Logo.scale-200.png">
       <PackagePath>Assets\Square150x150Logo.scale-200.png</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Doulor\Desktop\AIExtension\AIExtension\Assets\Square44x44Logo.scale-200.png">
+    <AppxPackagedFile Include="D:\build\GitLocal\AIExtension\AIExtension\Assets\Square44x44Logo.scale-200.png">
       <PackagePath>Assets\Square44x44Logo.scale-200.png</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Doulor\Desktop\AIExtension\AIExtension\Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
+    <AppxPackagedFile Include="D:\build\GitLocal\AIExtension\AIExtension\Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
       <PackagePath>Assets\Square44x44Logo.targetsize-24_altform-unplated.png</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Doulor\Desktop\AIExtension\AIExtension\Assets\StoreLogo.png">
+    <AppxPackagedFile Include="D:\build\GitLocal\AIExtension\AIExtension\Assets\StoreLogo.png">
       <PackagePath>Assets\StoreLogo.png</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Doulor\Desktop\AIExtension\AIExtension\Assets\Wide310x150Logo.scale-200.png">
+    <AppxPackagedFile Include="D:\build\GitLocal\AIExtension\AIExtension\Assets\Wide310x150Logo.scale-200.png">
       <PackagePath>Assets\Wide310x150Logo.scale-200.png</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Doulor\Desktop\AIExtension\AIExtension\bin\x64\Debug\net9.0-windows10.0.26100.0\win-x64\resources.pri">
+    <AppxPackagedFile Include="D:\build\GitLocal\AIExtension\AIExtension\bin\x64\Debug\net9.0-windows10.0.26100.0\win-x64\resources.pri">
       <PackagePath>resources.pri</PackagePath>
     </AppxPackagedFile>
   </ItemGroup>

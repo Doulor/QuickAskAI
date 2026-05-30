@@ -36,6 +36,20 @@ Copilot provider 使用 GitHub OAuth Device Flow：
 
 Client ID 是公开标识，不是密码，也不是 API key。不要把 Client Secret 填入扩展或提交到仓库。
 
+### 创建 GitHub OAuth App
+
+1. 打开 <https://github.com/settings/developers>。
+2. 进入 `OAuth Apps`。
+3. 点击 `New OAuth App`。
+4. 填写：
+   - Application name: `快速询问AI`
+   - Homepage URL: 你的项目 GitHub 地址，例如 `https://github.com/<owner>/<repo>`
+   - Authorization callback URL: `http://localhost`
+5. 创建后进入 App 设置，启用 `Device Flow`。
+6. 复制 `Client ID`。
+
+这个扩展使用 Device Flow，不需要 Client Secret。
+
 Copilot SDK 第一次启动时会解压它自带的 Copilot CLI。如果遇到 `EXDEV: cross-device link not permitted` 这类首次解压错误，扩展会自动运行一次随包带的 `copilot.exe --help` 预热缓存后重试。
 
 ## 构建
@@ -70,6 +84,34 @@ Add-AppxPackage -Register .\AIExtension\bin\x64\Debug\net9.0-windows10.0.26100.0
 ```
 
 然后重新打开或 Reload PowerToys Command Palette。
+
+## GitHub Release 测试包
+
+可以用 `build-release.ps1` 生成适合上传到 GitHub Release 的 zip：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\build-release.ps1 -Configuration Release -Platform x64 -Version v1.1.0-beta.1
+```
+
+生成文件位于：
+
+```text
+release\artifacts\QuickAskAI-v1.1.0-beta.1-x64.zip
+```
+
+这个 zip 是 appx layout 测试包，包含：
+
+- 扩展运行文件。
+- `AppxManifest.xml`。
+- `install.ps1`。
+- `uninstall.ps1`。
+- 安装和 OAuth App 说明。
+
+用户下载后解压整个 zip，运行：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\install.ps1
+```
 
 ## Git 仓库说明
 

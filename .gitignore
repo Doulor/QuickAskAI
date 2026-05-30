@@ -27,6 +27,9 @@ Package.StoreAssociation.xml
 *.cer
 *.pfx
 
+# Release artifacts
+release/artifacts/
+
 # Logs and local diagnostics
 *.log
 *.binlog

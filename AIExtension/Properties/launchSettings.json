@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "AIExtension (Package)": {
+      "commandName": "MsixPackage",
+      "doNotLaunchApp": true
+    },
+    "AIExtension (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+-target net8.0
+-input 10.0.26100.0
+-input 
+-output "C:\Users\Doulor\Desktop\AIExtension\AIExtension\obj\x64\Release\net9.0-windows10.0.26100.0\win-x64\Generated Files\CsWinRT"
+
+-exclude Windows
+-exclude Microsoft

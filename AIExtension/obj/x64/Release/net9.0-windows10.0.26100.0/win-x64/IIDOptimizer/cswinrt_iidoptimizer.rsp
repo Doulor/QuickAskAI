@@ -1,0 +1,340 @@
+--target
+C:\Users\Doulor\Desktop\AIExtension\AIExtension\obj\x64\Release\net9.0-windows10.0.26100.0\win-x64\AIExtension.dll
+--outdir
+C:\Users\Doulor\Desktop\AIExtension\AIExtension\obj\x64\Release\net9.0-windows10.0.26100.0\win-x64\IIDOptimizer\
+--refs 
+ C:\Users\Doulor\.nuget\packages\microsoft.commandpalette.extensions\0.9.260303001\lib\net8.0-windows10.0.19041.0\Microsoft.CommandPalette.Extensions.Toolkit.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\Microsoft.CSharp.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\Microsoft.VisualBasic.Core.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\Microsoft.VisualBasic.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\Microsoft.Win32.Primitives.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\Microsoft.Win32.Registry.dll
+--refs 
+ C:\Users\Doulor\.nuget\packages\microsoft.windows.sdk.net.ref\10.0.26100.68-preview\lib\net8.0\Microsoft.Windows.SDK.NET.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\mscorlib.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\netstandard.dll
+--refs 
+ C:\Users\Doulor\.nuget\packages\shmuelie.winrtserver\2.1.1\lib\net8.0-windows10.0.22000\Shmuelie.WinRTServer.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.AppContext.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Buffers.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Collections.Concurrent.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Collections.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Collections.Immutable.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Collections.NonGeneric.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Collections.Specialized.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.ComponentModel.Annotations.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.ComponentModel.DataAnnotations.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.ComponentModel.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.ComponentModel.EventBasedAsync.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.ComponentModel.Primitives.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.ComponentModel.TypeConverter.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Configuration.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Console.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Core.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Data.Common.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Data.DataSetExtensions.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Data.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Diagnostics.Contracts.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Diagnostics.Debug.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Diagnostics.DiagnosticSource.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Diagnostics.FileVersionInfo.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Diagnostics.Process.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Diagnostics.StackTrace.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Diagnostics.TextWriterTraceListener.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Diagnostics.Tools.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Diagnostics.TraceSource.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Diagnostics.Tracing.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Drawing.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Drawing.Primitives.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Dynamic.Runtime.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Formats.Asn1.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Formats.Tar.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Globalization.Calendars.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Globalization.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Globalization.Extensions.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.IO.Compression.Brotli.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.IO.Compression.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.IO.Compression.FileSystem.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.IO.Compression.ZipFile.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.IO.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.IO.FileSystem.AccessControl.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.IO.FileSystem.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.IO.FileSystem.DriveInfo.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.IO.FileSystem.Primitives.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.IO.FileSystem.Watcher.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.IO.IsolatedStorage.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.IO.MemoryMappedFiles.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.IO.Pipelines.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.IO.Pipes.AccessControl.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.IO.Pipes.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.IO.UnmanagedMemoryStream.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Linq.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Linq.Expressions.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Linq.Parallel.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Linq.Queryable.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Memory.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Net.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Net.Http.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Net.Http.Json.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Net.HttpListener.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Net.Mail.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Net.NameResolution.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Net.NetworkInformation.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Net.Ping.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Net.Primitives.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Net.Quic.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Net.Requests.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Net.Security.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Net.ServicePoint.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Net.Sockets.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Net.WebClient.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Net.WebHeaderCollection.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Net.WebProxy.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Net.WebSockets.Client.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Net.WebSockets.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Numerics.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Numerics.Vectors.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.ObjectModel.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Reflection.DispatchProxy.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Reflection.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Reflection.Emit.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Reflection.Emit.ILGeneration.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Reflection.Emit.Lightweight.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Reflection.Extensions.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Reflection.Metadata.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Reflection.Primitives.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Reflection.TypeExtensions.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Resources.Reader.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Resources.ResourceManager.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Resources.Writer.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Runtime.CompilerServices.Unsafe.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Runtime.CompilerServices.VisualC.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Runtime.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Runtime.Extensions.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Runtime.Handles.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Runtime.InteropServices.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Runtime.InteropServices.JavaScript.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Runtime.InteropServices.RuntimeInformation.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Runtime.Intrinsics.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Runtime.Loader.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Runtime.Numerics.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Runtime.Serialization.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Runtime.Serialization.Formatters.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Runtime.Serialization.Json.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Runtime.Serialization.Primitives.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Runtime.Serialization.Xml.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Security.AccessControl.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Security.Claims.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Security.Cryptography.Algorithms.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Security.Cryptography.Cng.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Security.Cryptography.Csp.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Security.Cryptography.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Security.Cryptography.Encoding.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Security.Cryptography.OpenSsl.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Security.Cryptography.Primitives.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Security.Cryptography.X509Certificates.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Security.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Security.Principal.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Security.Principal.Windows.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Security.SecureString.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.ServiceModel.Web.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.ServiceProcess.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Text.Encoding.CodePages.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Text.Encoding.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Text.Encoding.Extensions.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Text.Encodings.Web.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Text.Json.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Text.RegularExpressions.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Threading.Channels.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Threading.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Threading.Overlapped.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Threading.Tasks.Dataflow.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Threading.Tasks.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Threading.Tasks.Extensions.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Threading.Tasks.Parallel.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Threading.Thread.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Threading.ThreadPool.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Threading.Timer.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Transactions.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Transactions.Local.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.ValueTuple.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Web.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Web.HttpUtility.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Windows.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Xml.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Xml.Linq.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Xml.ReaderWriter.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Xml.Serialization.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Xml.XDocument.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Xml.XmlDocument.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Xml.XmlSerializer.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Xml.XPath.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\System.Xml.XPath.XDocument.dll
+--refs 
+ C:\Users\Doulor\.dotnet\packs\Microsoft.NETCore.App.Ref\9.0.16\ref\net9.0\WindowsBase.dll
+--refs 
+ C:\Users\Doulor\.nuget\packages\microsoft.windows.sdk.net.ref\10.0.26100.68-preview\lib\net8.0\WinRT.Runtime.dll

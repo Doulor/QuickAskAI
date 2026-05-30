@@ -1,19 +1,33 @@
 # 快速询问AI Release 安装说明
 
-这是 PowerToys Command Palette 扩展的 layout 测试包。
+这是 PowerToys Command Palette 扩展的 layout 测试包。你不需要 Visual Studio，也不需要自己编译；按下面步骤安装后，PowerToys Command Palette 就能加载这个扩展。
+
+## 安装前准备
+
+1. 安装 Microsoft PowerToys。
+2. 打开 PowerToys 设置，确认 Command Palette 已启用。
+3. 如果 PowerToys 正在运行，可以保持运行；安装脚本会处理旧的扩展进程。
 
 ## 安装
 
-1. 解压整个 zip，不要只解压单个文件。
-2. 右键 `install.ps1`，选择 `使用 PowerShell 运行`。
-3. 如果 PowerShell 阻止脚本运行，在当前目录打开 PowerShell 后运行：
+1. 解压整个 zip 到一个普通文件夹，例如“下载\\QuickAskAI”。不要只解压 `install.ps1`，也不要直接在压缩包预览窗口里运行文件。
+2. 进入解压后的文件夹。
+3. 右键 `install.ps1`，选择“使用 PowerShell 运行”。
+4. 如果 PowerShell 阻止脚本运行，在当前文件夹打开 PowerShell 后运行：
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\install.ps1
 ```
 
-4. 打开 PowerToys Command Palette，Reload 扩展或重启 PowerToys。
-5. 搜索 `快速询问AI`。
+5. 看到 `快速询问AI installed.` 后，打开 PowerToys Command Palette。
+6. 在 Command Palette 里输入 `Reload`，选择 `Reload Command Palette extensions`。
+7. 重新打开 Command Palette，搜索 `快速询问AI`。
+
+如果搜索不到，重启 PowerToys 后再试一次。
+
+## 这一步做了什么
+
+`install.ps1` 会把当前文件夹里的 `AppxManifest.xml` 注册到 Windows。Command Palette 扩展是通过 Windows app extension 机制发现的，所以必须先注册，不能只双击 `AIExtension.exe`。
 
 ## 卸载
 
@@ -22,6 +36,8 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\uninstall.ps1
 ```
+
+卸载后，Reload Command Palette extensions 或重启 PowerToys。
 
 ## GitHub Copilot 登录
 

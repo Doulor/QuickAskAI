@@ -1,5 +1,7 @@
 # 快速询问AI
 
+[English README](README.en.md)
+
 快速询问AI是一个 PowerToys Command Palette 扩展。它把命令面板顶部输入框变成提问框，按 Enter 即可向配置好的 AI 提问，并在右侧详情区域显示回答。
 
 ## 功能
@@ -9,6 +11,25 @@
 - GitHub Copilot provider，支持 GitHub 网页设备码登录，不需要用户手动准备 API key。
 - 会话管理，默认保留上下文，并支持新建会话、切换历史会话和查看聊天记录。
 - 回答支持复制，错误信息会尽量保留可诊断内容，同时避免显示 API key 或 GitHub token。
+
+## 普通用户安装
+
+你需要先安装 Microsoft PowerToys，并启用 PowerToys 里的 Command Palette。
+
+1. 打开本仓库的 GitHub Releases 页面。
+2. 下载 release assets 里的 `QuickAskAI-<版本>-x64.zip`，不要下载 `Source code.zip`，那个是源码包。
+3. 把整个 zip 解压到普通文件夹，例如“下载\\QuickAskAI”。不要直接在压缩包预览窗口里运行脚本。
+4. 进入解压后的文件夹，右键 `install.ps1`，选择“使用 PowerShell 运行”。
+5. 如果 PowerShell 阻止脚本运行，在这个文件夹空白处打开 PowerShell，然后运行：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\install.ps1
+```
+
+6. 打开 PowerToys Command Palette，输入 `Reload`，选择 `Reload Command Palette extensions`。也可以直接重启 PowerToys。
+7. 在 Command Palette 里搜索 `快速询问AI`。
+
+`install.ps1` 会把解压目录里的扩展 layout 注册到 Windows。注册完成后，PowerToys Command Palette 才能发现并加载这个扩展。
 
 ## 数据存储
 

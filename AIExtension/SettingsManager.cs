@@ -17,12 +17,6 @@ namespace AIExtension;
 
 internal sealed class SettingsManager
 {
-    private const string BaseUrlKey = "baseUrl";
-    private const string ApiKeyKey = "apiKey";
-    private const string ModelKey = "model";
-    private const string SystemPromptKey = "systemPrompt";
-    private const string TemperatureKey = "temperature";
-    private const string ActiveProviderKey = "activeProvider";
     private const string LegacyGitHubClientId = "Ov23liDa9NDfYl29YozQ";
     private const string DefaultGitHubClientId = "Iv1.b507a08c87ecfe98";
 
@@ -38,68 +32,6 @@ internal sealed class SettingsManager
         _profiles = LoadProfiles();
         MigrateLegacyCopilotClientIds();
         MigrateCopilotApiKeysToCredentialStore();
-
-        var baseUrl = new TextSetting(
-            BaseUrlKey,
-            "Base URL",
-            "当前提供商的 OpenAI-compatible API 地址。保存设置后会同步到已选提供商。",
-            ActiveProvider.BaseUrl)
-        {
-            Placeholder = "https://api.example.com/v1",
-        };
-
-        var apiKey = new TextSetting(
-            ApiKeyKey,
-            "API Key",
-            "当前提供商的 Bearer token。保存设置后会同步到已选提供商。",
-            ActiveProvider.ApiKey)
-        {
-            Placeholder = "sk-...",
-        };
-
-        var model = new TextSetting(
-            ModelKey,
-            "Model",
-            "当前提供商的模型名。",
-            ActiveProvider.Model)
-        {
-            Placeholder = "gpt-4.1-mini",
-        };
-
-        var systemPrompt = new TextSetting(
-            SystemPromptKey,
-            "System Prompt",
-            "当前提供商的系统提示词。",
-            ActiveProvider.SystemPrompt)
-        {
-            Multiline = true,
-            Placeholder = "你是一个简洁、可靠的中文 AI 助手。",
-        };
-
-        var temperature = new TextSetting(
-            TemperatureKey,
-            "Temperature",
-            "当前提供商的 temperature，留空则使用服务默认值。",
-            ActiveProvider.Temperature)
-        {
-            Placeholder = "0.7",
-        };
-
-        var activeProvider = new TextSetting(
-            ActiveProviderKey,
-            "Active Provider",
-            "当前选择的提供商名称。也可以在主界面左侧切换。",
-            ActiveProvider.Name)
-        {
-            Placeholder = "OpenAI",
-        };
-
-        _settings.Add(baseUrl);
-        _settings.Add(apiKey);
-        _settings.Add(model);
-        _settings.Add(systemPrompt);
-        _settings.Add(temperature);
-        _settings.Add(activeProvider);
     }
 
     public ICommandSettings Settings => _settings;

@@ -11,13 +11,13 @@
   <Identity
     Name="AIExtension"
     Publisher="CN=QuickAskAI"
-    Version="1.2.0.0" />
+    Version="1.2.1.0" />
   <!-- When you're ready to publish your extension, you'll need to change the
        Publisher= to match your own identity -->
 
   <Properties>
     <DisplayName>快速询问AI</DisplayName>
-    <PublisherDisplayName>A Lone Developer</PublisherDisplayName>
+    <PublisherDisplayName>Made By Doulor</PublisherDisplayName>
     <Logo>Assets\ICON.png</Logo>
   </Properties>
 

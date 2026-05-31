@@ -101,6 +101,21 @@ QuickAskAI stores settings and chat history locally on your PC.
 
 `providers.json` may contain API keys for OpenAI-compatible providers. Do not share it publicly. GitHub Copilot tokens are not stored in `providers.json`; they are stored in Windows Credential Manager.
 
+## Troubleshooting
+
+### GitHub Copilot fails with EXDEV on first use
+
+If you see `Failed to extract bundled package`, `EXDEV: cross-device link not permitted`, or `Copilot CLI 首次解压失败`, the bundled GitHub Copilot CLI failed while extracting its first-run cache. Newer builds isolate the Copilot runtime cache under `%LOCALAPPDATA%\QuickAskAI\CopilotRuntime` to reduce this problem.
+
+If you already hit this error, close PowerToys and run this in PowerShell before trying again:
+
+```powershell
+Remove-Item "$env:LOCALAPPDATA\copilot\pkg\win32-x64\.extracting-*" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item "$env:LOCALAPPDATA\QuickAskAI\CopilotRuntime\LocalAppData\copilot\pkg\win32-x64\.extracting-*" -Recurse -Force -ErrorAction SilentlyContinue
+```
+
+Then reopen PowerToys Command Palette and try the GitHub Copilot provider again.
+
 ## For Developers
 
 To build from source, you need Windows 10 19041 or later, .NET 9 SDK, Windows 11 SDK 10.0.26100, and PowerToys Command Palette.

@@ -101,6 +101,21 @@ powershell -ExecutionPolicy Bypass -File .\uninstall.ps1
 
 `providers.json` 可能包含你的 OpenAI 兼容服务 API key，请不要公开分享这个文件。GitHub Copilot 登录得到的 token 不写入 `providers.json`，而是保存在 Windows 凭据存储中。
 
+## 常见问题
+
+### GitHub Copilot 首次使用报 EXDEV 怎么办？
+
+如果看到 `Failed to extract bundled package`、`EXDEV: cross-device link not permitted` 或 `Copilot CLI 首次解压失败`，通常是 GitHub Copilot CLI 第一次启动时的本机缓存目录解压失败。新版插件会把 Copilot 运行时缓存隔离到 `%LOCALAPPDATA%\QuickAskAI\CopilotRuntime`，以减少这类问题。
+
+已经遇到过这个错误的用户，可以先关闭 PowerToys，然后在 PowerShell 里清理旧缓存后重试：
+
+```powershell
+Remove-Item "$env:LOCALAPPDATA\copilot\pkg\win32-x64\.extracting-*" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item "$env:LOCALAPPDATA\QuickAskAI\CopilotRuntime\LocalAppData\copilot\pkg\win32-x64\.extracting-*" -Recurse -Force -ErrorAction SilentlyContinue
+```
+
+然后重新打开 PowerToys Command Palette，再使用 GitHub Copilot 提供商。
+
 ## 给开发者
 
 如果你想从源码构建，需要 Windows 10 19041 或更高版本、.NET 9 SDK、Windows 11 SDK 10.0.26100，以及 PowerToys Command Palette。

@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -26,8 +27,13 @@ internal sealed class CopilotChatService
             return AiChatResponse.Failure("请填写 Copilot 模型名，例如 gpt-4.1。", chatRequest.Model, "GitHub Copilot");
         }
 
+        var copilotEnvironment = CreateCopilotEnvironment();
+        CleanupStaleExtractionDirectories(copilotEnvironment.LocalAppData);
+
         var options = new CopilotClientOptions
         {
+            BaseDirectory = copilotEnvironment.Home,
+            Environment = copilotEnvironment.Variables,
             GitHubToken = chatRequest.ApiKey,
             UseLoggedInUser = false,
         };
@@ -123,6 +129,9 @@ internal sealed class CopilotChatService
             return new FileNotFoundException("找不到随扩展打包的 copilot.exe。", cliPath);
         }
 
+        var copilotEnvironment = CreateCopilotEnvironment();
+        CleanupStaleExtractionDirectories(copilotEnvironment.LocalAppData);
+
         try
         {
             using var process = new Process
@@ -138,6 +147,11 @@ internal sealed class CopilotChatService
                 },
             };
 
+            foreach (var variable in copilotEnvironment.Variables)
+            {
+                process.StartInfo.Environment[variable.Key] = variable.Value;
+            }
+
             process.Start();
             var stderrTask = process.StandardError.ReadToEndAsync(cancellationToken);
             var stdoutTask = process.StandardOutput.ReadToEndAsync(cancellationToken);
@@ -152,6 +166,55 @@ internal sealed class CopilotChatService
         catch (Exception ex)
         {
             return ex;
+        }
+    }
+
+    private static CopilotEnvironment CreateCopilotEnvironment()
+    {
+        var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        if (string.IsNullOrWhiteSpace(localAppData))
+        {
+            localAppData = Path.GetTempPath();
+        }
+
+        var root = Path.Combine(localAppData, "QuickAskAI", "CopilotRuntime");
+        var isolatedLocalAppData = Path.Combine(root, "LocalAppData");
+        var temp = Path.Combine(root, "Temp");
+        var home = Path.Combine(root, "Home");
+
+        Directory.CreateDirectory(isolatedLocalAppData);
+        Directory.CreateDirectory(temp);
+        Directory.CreateDirectory(home);
+
+        var variables = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["COPILOT_HOME"] = home,
+            ["LOCALAPPDATA"] = isolatedLocalAppData,
+            ["TEMP"] = temp,
+            ["TMP"] = temp,
+        };
+
+        return new CopilotEnvironment(home, isolatedLocalAppData, variables);
+    }
+
+    private static void CleanupStaleExtractionDirectories(string localAppData)
+    {
+        var packageRoot = Path.Combine(localAppData, "copilot", "pkg", "win32-x64");
+        if (!Directory.Exists(packageRoot))
+        {
+            return;
+        }
+
+        foreach (var directory in Directory.EnumerateDirectories(packageRoot, ".extracting-*"))
+        {
+            try
+            {
+                Directory.Delete(directory, recursive: true);
+            }
+            catch
+            {
+                // Another process may be extracting the CLI at the same time. In that case, leave it alone.
+            }
         }
     }
 
@@ -173,6 +236,8 @@ internal sealed class CopilotChatService
             ? $"{stage}：{exception.GetType().Name}。"
             : $"{stage}：{exception.GetType().Name}：{message}";
     }
+
+    private sealed record CopilotEnvironment(string Home, string LocalAppData, IReadOnlyDictionary<string, string> Variables);
 
     private static string BuildPrompt(AiChatRequest request)
     {

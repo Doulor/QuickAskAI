@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -184,11 +185,17 @@ internal sealed class CopilotChatService
         Directory.CreateDirectory(cache);
         Directory.CreateDirectory(home);
 
-        var variables = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        var variables = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (DictionaryEntry entry in Environment.GetEnvironmentVariables())
         {
-            ["COPILOT_CACHE_HOME"] = cache,
-            ["COPILOT_HOME"] = home,
-        };
+            if (entry.Key is string key && entry.Value is string value)
+            {
+                variables[key] = value;
+            }
+        }
+
+        variables["COPILOT_CACHE_HOME"] = cache;
+        variables["COPILOT_HOME"] = home;
 
         return new CopilotEnvironment(home, cache, variables);
     }

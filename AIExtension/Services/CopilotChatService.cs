@@ -28,7 +28,7 @@ internal sealed class CopilotChatService
         }
 
         var copilotEnvironment = CreateCopilotEnvironment();
-        CleanupStaleExtractionDirectories(copilotEnvironment.LocalAppData);
+        CleanupStaleExtractionDirectories(copilotEnvironment.Cache);
 
         var options = new CopilotClientOptions
         {
@@ -130,7 +130,7 @@ internal sealed class CopilotChatService
         }
 
         var copilotEnvironment = CreateCopilotEnvironment();
-        CleanupStaleExtractionDirectories(copilotEnvironment.LocalAppData);
+        CleanupStaleExtractionDirectories(copilotEnvironment.Cache);
 
         try
         {
@@ -178,28 +178,24 @@ internal sealed class CopilotChatService
         }
 
         var root = Path.Combine(localAppData, "QuickAskAI", "CopilotRuntime");
-        var isolatedLocalAppData = Path.Combine(root, "LocalAppData");
-        var temp = Path.Combine(root, "Temp");
+        var cache = Path.Combine(root, "Cache");
         var home = Path.Combine(root, "Home");
 
-        Directory.CreateDirectory(isolatedLocalAppData);
-        Directory.CreateDirectory(temp);
+        Directory.CreateDirectory(cache);
         Directory.CreateDirectory(home);
 
         var variables = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
+            ["COPILOT_CACHE_HOME"] = cache,
             ["COPILOT_HOME"] = home,
-            ["LOCALAPPDATA"] = isolatedLocalAppData,
-            ["TEMP"] = temp,
-            ["TMP"] = temp,
         };
 
-        return new CopilotEnvironment(home, isolatedLocalAppData, variables);
+        return new CopilotEnvironment(home, cache, variables);
     }
 
-    private static void CleanupStaleExtractionDirectories(string localAppData)
+    private static void CleanupStaleExtractionDirectories(string cache)
     {
-        var packageRoot = Path.Combine(localAppData, "copilot", "pkg", "win32-x64");
+        var packageRoot = Path.Combine(cache, "pkg", "win32-x64");
         if (!Directory.Exists(packageRoot))
         {
             return;
@@ -237,7 +233,7 @@ internal sealed class CopilotChatService
             : $"{stage}：{exception.GetType().Name}：{message}";
     }
 
-    private sealed record CopilotEnvironment(string Home, string LocalAppData, IReadOnlyDictionary<string, string> Variables);
+    private sealed record CopilotEnvironment(string Home, string Cache, IReadOnlyDictionary<string, string> Variables);
 
     private static string BuildPrompt(AiChatRequest request)
     {

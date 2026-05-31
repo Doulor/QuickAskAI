@@ -27,7 +27,7 @@ You need a Windows PC with Microsoft PowerToys installed. Open PowerToys Setting
 
 Download the latest version from GitHub Releases:
 
-<https://github.com/Doulor/AIExtension-for-Powertoys-CMDPanel/releases>
+<https://github.com/Doulor/AIExtension-for-Powertoys-CMDPalette/releases>
 
 In the Assets section of the release page, download the file named like this:
 

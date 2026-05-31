@@ -27,7 +27,7 @@
 
 请在 GitHub Releases 页面下载最新版：
 
-<https://github.com/Doulor/AIExtension-for-Powertoys-CMDPanel/releases>
+<https://github.com/Doulor/AIExtension-for-Powertoys-CMDPalette/releases>
 
 在 release 页面底部的 Assets 区域，下载类似下面名字的文件：
 

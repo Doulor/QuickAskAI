@@ -3,7 +3,6 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="GitHub.Copilot.SDK" Version="1.0.0-beta.10" />
     <PackageVersion Include="Microsoft.CommandPalette.Extensions" Version="0.9.260303001" />
     <PackageVersion Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0-preview.24508.2" />
     <PackageVersion Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />

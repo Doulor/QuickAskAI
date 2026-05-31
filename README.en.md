@@ -103,19 +103,9 @@ QuickAskAI stores settings and chat history locally on your PC.
 
 ## Troubleshooting
 
-### GitHub Copilot fails with EXDEV on first use
+### Does GitHub Copilot require a local CLI?
 
-If you see `Failed to extract bundled package`, `EXDEV: cross-device link not permitted`, or `Copilot CLI 首次解压失败`, the bundled GitHub Copilot CLI failed while extracting its first-run cache. Newer builds set `COPILOT_CACHE_HOME` so the Copilot CLI cache is stored under `%LOCALAPPDATA%\QuickAskAI\CopilotRuntime\Cache`.
-
-If you already hit this error, close PowerToys and run this in PowerShell before trying again:
-
-```powershell
-Remove-Item "$env:LOCALAPPDATA\copilot\pkg\win32-x64\.extracting-*" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item "$env:LOCALAPPDATA\QuickAskAI\CopilotRuntime\Cache\pkg\win32-x64\.extracting-*" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item "$env:LOCALAPPDATA\QuickAskAI\CopilotRuntime\LocalAppData" -Recurse -Force -ErrorAction SilentlyContinue
-```
-
-Then reopen PowerToys Command Palette and try the GitHub Copilot provider again.
+No. Newer builds no longer start the bundled GitHub Copilot CLI. The extension uses the token from GitHub sign-in and calls the Copilot HTTP API directly, so it is not affected by `copilot.exe` first-run extraction, `EXDEV: cross-device link not permitted`, or Node SEA initialization failures.
 
 ## For Developers
 

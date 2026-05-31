@@ -103,19 +103,9 @@ powershell -ExecutionPolicy Bypass -File .\uninstall.ps1
 
 ## 常见问题
 
-### GitHub Copilot 首次使用报 EXDEV 怎么办？
+### GitHub Copilot 首次使用需要本机 CLI 吗？
 
-如果看到 `Failed to extract bundled package`、`EXDEV: cross-device link not permitted` 或 `Copilot CLI 首次解压失败`，通常是 GitHub Copilot CLI 第一次启动时的本机缓存目录解压失败。新版插件会通过 `COPILOT_CACHE_HOME` 把 Copilot CLI 缓存放到 `%LOCALAPPDATA%\QuickAskAI\CopilotRuntime\Cache`，以减少这类问题。
-
-已经遇到过这个错误的用户，可以先关闭 PowerToys，然后在 PowerShell 里清理旧缓存后重试：
-
-```powershell
-Remove-Item "$env:LOCALAPPDATA\copilot\pkg\win32-x64\.extracting-*" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item "$env:LOCALAPPDATA\QuickAskAI\CopilotRuntime\Cache\pkg\win32-x64\.extracting-*" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item "$env:LOCALAPPDATA\QuickAskAI\CopilotRuntime\LocalAppData" -Recurse -Force -ErrorAction SilentlyContinue
-```
-
-然后重新打开 PowerToys Command Palette，再使用 GitHub Copilot 提供商。
+不需要。新版插件不再启动随包的 GitHub Copilot CLI，而是使用 GitHub 登录得到的 token 直接调用 Copilot HTTP 接口。因此不会再受 `copilot.exe` 首次解压、`EXDEV: cross-device link not permitted` 或 Node SEA 初始化失败影响。
 
 ## 给开发者
 

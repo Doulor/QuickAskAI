@@ -23,6 +23,8 @@
 
 你需要一台 Windows 电脑，并安装 Microsoft PowerToys。安装后，请打开 PowerToys 设置，确认 Command Palette 已启用。
 
+当前 Release 是未签名的 appx layout 包，Windows 需要开启开发人员模式才能本地注册。请打开 Windows 设置，进入“系统 > 开发者选项”，开启“开发人员模式”。也可以在运行窗口或 PowerShell 中执行 `start ms-settings:developers` 直接打开这个设置页。
+
 ## 下载
 
 请在 GitHub Releases 页面下载最新版：

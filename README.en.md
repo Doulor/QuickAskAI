@@ -23,6 +23,8 @@ QuickAskAI is an AI prompt extension for Microsoft PowerToys Command Palette. Af
 
 You need a Windows PC with Microsoft PowerToys installed. Open PowerToys Settings and make sure Command Palette is enabled.
 
+The current release is an unsigned appx layout package. Windows requires Developer Mode before it can be registered locally. Open Windows Settings, go to System > For developers, and turn on Developer Mode. You can also run `start ms-settings:developers` to open that settings page directly.
+
 ## Download
 
 Download the latest version from GitHub Releases:

@@ -4,6 +4,8 @@
 
 QuickAskAI is an AI prompt extension for Microsoft PowerToys Command Palette. After installation, you can type a question directly in Command Palette, send it to GitHub Copilot or an OpenAI-compatible model, and read the answer in the Command Palette details pane.
 
+Starting with 1.2.0, the GitHub Copilot provider no longer starts the bundled local `copilot.exe`. It uses the token from GitHub sign-in and calls the Copilot HTTP API directly. This makes the release package smaller, removes one local CLI process at runtime, and avoids first-run `copilot.exe` extraction failures on some PCs.
+
 ## Who This Is For
 
 - Windows users who want a quick AI prompt box inside PowerToys Command Palette.
@@ -14,6 +16,7 @@ QuickAskAI is an AI prompt extension for Microsoft PowerToys Command Palette. Af
 
 - Ask AI questions directly from PowerToys Command Palette.
 - GitHub Copilot sign-in through GitHub Device Flow. No manual Copilot API key is required.
+- The GitHub Copilot provider calls the Copilot HTTP API directly and no longer depends on local `copilot.exe`.
 - OpenAI-compatible Chat Completions providers with configurable Base URL, API key, model name, system prompt, and temperature.
 - Multiple provider profiles, so you can switch between different AI services.
 - Conversation context, new sessions, session switching, and chat history.
@@ -97,7 +100,7 @@ QuickAskAI stores settings and chat history locally on your PC.
 | Provider settings | `%USERPROFILE%\Documents\QuickAskAI\providers.json` |
 | Conversation history | `%USERPROFILE%\Documents\QuickAskAI\conversations.json` |
 | GitHub Copilot token | Windows Credential Manager / PasswordVault, resource name `QuickAskAI.GitHubCopilot` |
-| Copilot CLI cache | `%LOCALAPPDATA%\copilot\pkg\win32-x64` |
+| GitHub Copilot HTTP runtime data | No local `copilot.exe` or CLI extraction cache is used |
 
 `providers.json` may contain API keys for OpenAI-compatible providers. Do not share it publicly. GitHub Copilot tokens are not stored in `providers.json`; they are stored in Windows Credential Manager.
 
@@ -129,5 +132,5 @@ Add-AppxPackage -Register .\AIExtension\bin\x64\Debug\net9.0-windows10.0.26100.0
 Build a GitHub Release zip:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\build-release.ps1 -Configuration Release -Platform x64 -Version v1.1.0-beta.2
+powershell -ExecutionPolicy Bypass -File .\build-release.ps1 -Configuration Release -Platform x64 -Version v1.2.0
 ```

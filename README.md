@@ -4,6 +4,8 @@
 
 快速询问AI是一个给 PowerToys Command Palette 使用的 AI 提问插件。安装后，你可以直接在命令面板里输入问题，选择这个插件，把问题发给 GitHub Copilot 或你配置的 OpenAI 兼容模型，然后在命令面板右侧查看回答。
 
+从 1.2.0 开始，GitHub Copilot provider 不再启动随包的本地 `copilot.exe`，而是使用 GitHub 登录得到的 token 直接调用 Copilot HTTP API。这样 release 包更小，运行时少一个本地 CLI 子进程，也避开了部分电脑上 `copilot.exe` 首次解压失败的问题。
+
 ## 适合谁使用
 
 - 想在 Windows 命令面板里快速问 AI 的用户。
@@ -14,6 +16,7 @@
 
 - 在 PowerToys Command Palette 中直接提问。
 - 支持 GitHub Copilot 登录，使用 GitHub 设备码授权，不需要手动填写 Copilot API key。
+- GitHub Copilot provider 直接调用 Copilot HTTP API，不再依赖本地 `copilot.exe`。
 - 支持 OpenAI 兼容 Chat Completions 接口，可以配置 Base URL、API Key、模型名、系统提示词和 temperature。
 - 支持多个模型提供商，方便在不同 AI 服务之间切换。
 - 保留会话上下文，支持新建会话、切换历史会话和查看聊天记录。
@@ -97,7 +100,7 @@ powershell -ExecutionPolicy Bypass -File .\uninstall.ps1
 | 模型提供商配置 | `%USERPROFILE%\Documents\QuickAskAI\providers.json` |
 | 会话聊天记录 | `%USERPROFILE%\Documents\QuickAskAI\conversations.json` |
 | GitHub Copilot token | Windows Credential Manager / PasswordVault，资源名 `QuickAskAI.GitHubCopilot` |
-| Copilot CLI 本机缓存 | `%LOCALAPPDATA%\copilot\pkg\win32-x64` |
+| GitHub Copilot HTTP 运行数据 | 不再使用本地 `copilot.exe` 或 CLI 解压缓存 |
 
 `providers.json` 可能包含你的 OpenAI 兼容服务 API key，请不要公开分享这个文件。GitHub Copilot 登录得到的 token 不写入 `providers.json`，而是保存在 Windows 凭据存储中。
 
@@ -129,5 +132,5 @@ Add-AppxPackage -Register .\AIExtension\bin\x64\Debug\net9.0-windows10.0.26100.0
 生成 GitHub Release 用的 zip：
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\build-release.ps1 -Configuration Release -Platform x64 -Version v1.1.0-beta.2
+powershell -ExecutionPolicy Bypass -File .\build-release.ps1 -Configuration Release -Platform x64 -Version v1.2.0
 ```

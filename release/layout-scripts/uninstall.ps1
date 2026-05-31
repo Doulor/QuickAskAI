@@ -9,3 +9,14 @@ if ($pkg) {
 } else {
     Write-Host "快速询问AI is not installed." -ForegroundColor Yellow
 }
+
+# Remove the self-signed certificate from the user's Trusted People store
+$cerPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "QuickAskAI.cer"
+if (Test-Path -LiteralPath $cerPath) {
+    try {
+        certutil -user -delstore "TrustedPeople" "QuickAskAI" *> $null
+    }
+    catch {
+        # The certificate may already have been removed.
+    }
+}

@@ -24,9 +24,9 @@ Starting with 1.2.0, the GitHub Copilot provider no longer starts the bundled lo
 
 ## Before You Install
 
-You need a Windows PC with Microsoft PowerToys installed. Open PowerToys Settings and make sure Command Palette is enabled.
+You need a Windows 10 19041 or later PC with Microsoft PowerToys installed. Open PowerToys Settings and make sure Command Palette is enabled.
 
-The current release is an unsigned appx layout package. Windows requires Developer Mode before it can be registered locally. Open Windows Settings, go to System > For developers, and turn on Developer Mode. You can also run `start ms-settings:developers` to open that settings page directly.
+The current release uses a self-signed MSIX package. The installer automatically trusts the signing certificate; regular users do not need to enable Developer Mode. If the installation fails with a sideloading-related error, check your organization's device policy.
 
 ## Download
 

@@ -24,9 +24,9 @@
 
 ## 安装前准备
 
-你需要一台 Windows 电脑，并安装 Microsoft PowerToys。安装后，请打开 PowerToys 设置，确认 Command Palette 已启用。
+你需要一台 Windows 10 19041 或更高版本的电脑，并安装 Microsoft PowerToys。安装后，请打开 PowerToys 设置，确认 Command Palette 已启用。
 
-当前 Release 是未签名的 appx layout 包，Windows 需要开启开发人员模式才能本地注册。请打开 Windows 设置，进入“系统 > 开发者选项”，开启“开发人员模式”。也可以在运行窗口或 PowerShell 中执行 `start ms-settings:developers` 直接打开这个设置页。
+当前 Release 使用自签名 MSIX 分发包。安装脚本会在安装时自动将签名证书导入信任列表，普通用户不需要开启开发人员模式。如果安装失败并提示 sideloading 未启用，请检查企业设备的设备策略。
 
 ## 下载
 

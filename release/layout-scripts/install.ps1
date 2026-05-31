@@ -1,40 +1,36 @@
 $ErrorActionPreference = "Stop"
 
-function Test-DeveloperModeEnabled {
+function Test-SideloadingEnabled {
     $key = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock"
     try {
-        $value = Get-ItemProperty -Path $key -Name AllowDevelopmentWithoutDevLicense -ErrorAction Stop
-        return $value.AllowDevelopmentWithoutDevLicense -eq 1
+        $value = Get-ItemProperty -Path $key -Name AllowAllTrustedApps -ErrorAction Stop
+        return $value.AllowAllTrustedApps -eq 1
     }
     catch {
         return $false
     }
 }
 
-function Write-DeveloperModeHelp {
-    Write-Host "This release package is an unsigned appx layout package." -ForegroundColor Yellow
-    Write-Host "Windows requires Developer Mode to register it locally." -ForegroundColor Yellow
+function Write-SideloadingHelp {
+    Write-Host "Windows sideloading may be disabled on this PC." -ForegroundColor Yellow
     Write-Host ""
-    Write-Host "Please enable Developer Mode, then run install.ps1 again:" -ForegroundColor Yellow
-    Write-Host "1. Open Windows Settings." -ForegroundColor Yellow
-    Write-Host "2. Go to System > For developers." -ForegroundColor Yellow
-    Write-Host "3. Turn on Developer Mode." -ForegroundColor Yellow
-    Write-Host "4. Run this install.ps1 again." -ForegroundColor Yellow
+    Write-Host "This is unusual on Windows 10 version 1903 or later." -ForegroundColor Yellow
+    Write-Host "Please check your organization's device policy, then try again." -ForegroundColor Yellow
     Write-Host ""
-    Write-Host "You can also open the settings page directly with:" -ForegroundColor Yellow
+    Write-Host "You can also enable Developer Mode as a workaround:" -ForegroundColor Yellow
     Write-Host "start ms-settings:developers" -ForegroundColor Yellow
 }
 
 $scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
-$manifest = Join-Path $scriptRoot "AppxManifest.xml"
+$msixPath = Join-Path $scriptRoot "QuickAskAI.msix"
+$cerPath = Join-Path $scriptRoot "QuickAskAI.cer"
 
-if (-not (Test-Path -LiteralPath $manifest)) {
-    Write-Error "AppxManifest.xml was not found next to install.ps1. Please extract the release zip before installing."
+if (-not (Test-Path -LiteralPath $msixPath)) {
+    Write-Error "QuickAskAI.msix was not found next to install.ps1. Please extract the release zip before installing."
 }
 
-if (-not (Test-DeveloperModeEnabled)) {
-    Write-DeveloperModeHelp
-    exit 1
+if (-not (Test-Path -LiteralPath $cerPath)) {
+    Write-Error "QuickAskAI.cer was not found next to install.ps1. Please extract the release zip before installing."
 }
 
 Get-Process AIExtension -ErrorAction SilentlyContinue | Stop-Process -Force
@@ -44,13 +40,28 @@ if ($existing) {
     Remove-AppxPackage -Package $existing.PackageFullName
 }
 
+# Import the self-signed certificate into the user's Trusted People store
+# This is required so Windows trusts the signed MSIX for sideloading
 try {
-    Add-AppxPackage -Register $manifest -ForceApplicationShutdown -ForceUpdateFromAnyVersion
+    certutil -user -addstore "TrustedPeople" $cerPath *> $null
+}
+catch {
+    Write-Error "Unable to import the signing certificate. Please run this script as the current user (not as administrator from a different account)."
+}
+
+try {
+    Add-AppxPackage -Path $msixPath -ForceApplicationShutdown -ForceUpdateFromAnyVersion
 }
 catch {
     $message = $_.Exception.Message
+    if ($message -match "0x80073D0D" -or $message -match "blocked by AppLocker") {
+        Write-Host "This PC has blocked sideloading of unsigned or untrusted packages." -ForegroundColor Red
+        throw
+    }
+
     if ($message -match "0x80073CFF" -or $message -match "developer license" -or $message -match "sideload") {
-        Write-DeveloperModeHelp
+        Write-SideloadingHelp
+        throw
     }
 
     throw

@@ -2,7 +2,6 @@
 setlocal enabledelayedexpansion
 title QuickAskAI Uninstaller
 
-:: Self-elevate if not running as admin
 net session >nul 2>&1
 if %errorlevel% neq 0 (
     echo Requesting administrator privileges...

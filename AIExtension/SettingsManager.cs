@@ -24,13 +24,9 @@ internal sealed class SettingsManager
     private readonly string _profilesPath;
     private readonly List<ProviderProfile> _profiles;
 
-    private TextSetting _providerNameSetting = null!;
-    private TextSetting _providerTypeSetting = null!;
-    private TextSetting _baseUrlSetting = null!;
-    private TextSetting _apiKeySetting = null!;
-    private TextSetting _modelSetting = null!;
-    private TextSetting _systemPromptSetting = null!;
-    private TextSetting _temperatureSetting = null!;
+    private TextSetting _copilotAuthStatusSetting = null!;
+    private TextSetting _copilotModelSetting = null!;
+    private TextSetting _copilotClientIdSetting = null!;
     private TextSetting _clearConversationsSetting = null!;
 
     private bool _suppressSync;
@@ -45,7 +41,7 @@ internal sealed class SettingsManager
         MigrateCopilotApiKeysToCredentialStore();
 
         BuildSettings();
-        SyncSettingsFromActiveProvider();
+        SyncCopilotSettingsFromProvider();
         _settings.SettingsChanged += OnSettingsPageSaved;
         ProvidersChanged += OnProvidersChanged;
     }
@@ -294,70 +290,49 @@ internal sealed class SettingsManager
         Temperature = string.Empty,
     };
 
+    public ProviderProfile? CopilotProvider => _profiles.FirstOrDefault(IsCopilotProvider);
+
+    private string BuildCopilotAuthStatus()
+    {
+        var copilot = CopilotProvider;
+        if (copilot is null)
+        {
+            return "未配置 GitHub Copilot 提供商";
+        }
+
+        if (HasCopilotToken(copilot))
+        {
+            var login = string.IsNullOrWhiteSpace(copilot.GitHubLogin) ? "已连接" : copilot.GitHubLogin;
+            return $"已连接 — {login}";
+        }
+
+        return "未连接 — 请在菜单中连接 GitHub";
+    }
+
     private void BuildSettings()
     {
-        _providerNameSetting = new TextSetting(
-            "providerName",
-            "当前提供商名称",
-            "输入已有提供商名称可切换到该提供商，输入新名称则为当前提供商重命名。",
-            ActiveProvider.Name)
+        _copilotAuthStatusSetting = new TextSetting(
+            "copilotAuthStatus",
+            "Copilot 授权状态",
+            "显示当前 GitHub Copilot 提供商的连接状态。如需登录或断开，请在菜单中使用 GitHub Copilot 提供商页面。",
+            BuildCopilotAuthStatus());
+
+        _copilotModelSetting = new TextSetting(
+            "copilotModel",
+            "Copilot 模型名",
+            "GitHub Copilot 使用的模型，例如 gpt-4.1、gpt-4o-mini、claude-sonnet-4.5。",
+            CopilotProvider?.Model ?? string.Empty)
         {
-            Placeholder = "OpenAI",
+            Placeholder = "gpt-4.1",
         };
 
-        _providerTypeSetting = new TextSetting(
-            "providerType",
-            "提供商类型",
-            "openai（OpenAI 兼容接口）或 copilot（GitHub Copilot）。Copilot 类型提供商需先在菜单中连接 GitHub。",
-            ActiveProvider.ProviderType)
+        _copilotClientIdSetting = new TextSetting(
+            "copilotClientId",
+            "GitHub Client ID",
+            "GitHub OAuth App 的 Client ID。修改后需要在菜单中重新连接 GitHub。默认值为 VS Code Copilot 公开 Client ID。",
+            CopilotProvider?.GitHubClientId ?? DefaultGitHubClientId)
         {
-            Placeholder = "openai",
-        };
-
-        _baseUrlSetting = new TextSetting(
-            "baseUrl",
-            "Base URL",
-            "OpenAI 兼容 API 地址。仅 openai 类型提供商有效。",
-            ActiveProvider.BaseUrl)
-        {
-            Placeholder = "https://api.example.com/v1",
-        };
-
-        _apiKeySetting = new TextSetting(
-            "apiKey",
-            "API Key",
-            "OpenAI 兼容 API 的 Bearer token。仅 openai 类型提供商有效。",
-            ActiveProvider.ApiKey)
-        {
-            Placeholder = "sk-...",
-        };
-
-        _modelSetting = new TextSetting(
-            "model",
-            "模型名",
-            "例如 gpt-4.1、gpt-4o-mini。",
-            ActiveProvider.Model)
-        {
-            Placeholder = "gpt-4.1-mini",
-        };
-
-        _systemPromptSetting = new TextSetting(
-            "systemPrompt",
-            "System Prompt",
-            "系统提示词。",
-            ActiveProvider.SystemPrompt)
-        {
-            Multiline = true,
-            Placeholder = "你是一个简洁、可靠的中文 AI 助手。",
-        };
-
-        _temperatureSetting = new TextSetting(
-            "temperature",
-            "Temperature",
-            "留空则使用服务默认值。有效范围 0～2。",
-            ActiveProvider.Temperature)
-        {
-            Placeholder = "0.7",
+            Placeholder = DefaultGitHubClientId,
         };
 
         _clearConversationsSetting = new TextSetting(
@@ -366,13 +341,9 @@ internal sealed class SettingsManager
             "输入 CLEAR 后点击保存或按 Enter，将删除全部聊天记录并重置会话。",
             string.Empty);
 
-        _settings.Add(_providerNameSetting);
-        _settings.Add(_providerTypeSetting);
-        _settings.Add(_baseUrlSetting);
-        _settings.Add(_apiKeySetting);
-        _settings.Add(_modelSetting);
-        _settings.Add(_systemPromptSetting);
-        _settings.Add(_temperatureSetting);
+        _settings.Add(_copilotAuthStatusSetting);
+        _settings.Add(_copilotModelSetting);
+        _settings.Add(_copilotClientIdSetting);
         _settings.Add(_clearConversationsSetting);
     }
 
@@ -387,30 +358,16 @@ internal sealed class SettingsManager
         {
             ApplyClearConversations();
 
-            var provider = ActiveProvider;
-            provider.BaseUrl = _baseUrlSetting.Value;
-            provider.ApiKey = _apiKeySetting.Value;
-            provider.Model = _modelSetting.Value;
-            provider.SystemPrompt = _systemPromptSetting.Value;
-            provider.Temperature = _temperatureSetting.Value;
-            provider.ProviderType = NormalizeProviderType(_providerTypeSetting.Value);
-
-            var newName = _providerNameSetting.Value.Trim();
-            if (!string.IsNullOrWhiteSpace(newName) && !provider.Name.Equals(newName, StringComparison.OrdinalIgnoreCase))
+            var copilot = CopilotProvider;
+            if (copilot is not null)
             {
-                var match = _profiles.FirstOrDefault(p => p.Name.Equals(newName, StringComparison.OrdinalIgnoreCase));
-                if (match is not null)
-                {
-                    ActiveProviderId = match.Id;
-                }
-                else
-                {
-                    provider.Name = newName;
-                }
+                copilot.Model = _copilotModelSetting.Value.Trim();
+                copilot.GitHubClientId = string.IsNullOrWhiteSpace(_copilotClientIdSetting.Value)
+                    ? DefaultGitHubClientId
+                    : _copilotClientIdSetting.Value.Trim();
+                SaveProfiles();
+                ProvidersChanged?.Invoke(this, EventArgs.Empty);
             }
-
-            SaveProfiles();
-            ProvidersChanged?.Invoke(this, EventArgs.Empty);
         }
         finally
         {
@@ -428,19 +385,15 @@ internal sealed class SettingsManager
 
     private void OnProvidersChanged(object? sender, EventArgs e)
     {
-        SyncSettingsFromActiveProvider();
+        SyncCopilotSettingsFromProvider();
     }
 
-    private void SyncSettingsFromActiveProvider()
+    private void SyncCopilotSettingsFromProvider()
     {
         _suppressSync = true;
-        _providerNameSetting.Value = ActiveProvider.Name;
-        _providerTypeSetting.Value = ActiveProvider.ProviderType;
-        _baseUrlSetting.Value = ActiveProvider.BaseUrl;
-        _apiKeySetting.Value = ActiveProvider.ApiKey;
-        _modelSetting.Value = ActiveProvider.Model;
-        _systemPromptSetting.Value = ActiveProvider.SystemPrompt;
-        _temperatureSetting.Value = ActiveProvider.Temperature;
+        _copilotAuthStatusSetting.Value = BuildCopilotAuthStatus();
+        _copilotModelSetting.Value = CopilotProvider?.Model ?? string.Empty;
+        _copilotClientIdSetting.Value = CopilotProvider?.GitHubClientId ?? DefaultGitHubClientId;
         _clearConversationsSetting.Value = string.Empty;
         _suppressSync = false;
     }

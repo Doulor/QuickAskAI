@@ -26,7 +26,9 @@
 
 你需要一台 Windows 10 19041 或更高版本的电脑，并安装 Microsoft PowerToys。安装后，请打开 PowerToys 设置，确认 Command Palette 已启用。
 
-当前 Release 使用自签名 MSIX 分发包。安装脚本会在安装时自动将签名证书导入信任列表，普通用户不需要开启开发人员模式。如果安装失败并提示 sideloading 未启用，请检查企业设备的设备策略。
+当前 Release 使用自签名 MSIX 分发包。安装脚本会将签名证书安装到系统受信任根目录（需要管理员权限）。证书信任一次即可，后续安装和升级无需再次授权。安装完成后无需开启开发人员模式。
+
+如果 PowerShell 提示权限不足，请右键 PowerShell 选择“以管理员身份运行”，再执行 `install.ps1`。
 
 ## 下载
 

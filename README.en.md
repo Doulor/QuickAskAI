@@ -26,7 +26,9 @@ Starting with 1.2.0, the GitHub Copilot provider no longer starts the bundled lo
 
 You need a Windows 10 19041 or later PC with Microsoft PowerToys installed. Open PowerToys Settings and make sure Command Palette is enabled.
 
-The current release uses a self-signed MSIX package. The installer automatically trusts the signing certificate; regular users do not need to enable Developer Mode. If the installation fails with a sideloading-related error, check your organization's device policy.
+The current release uses a self-signed MSIX package. The installer adds the signing certificate to the machine Trusted Root store (requires administrator privileges). This is needed only once; subsequent installs and upgrades work without admin. After the certificate is trusted, Developer Mode is not required.
+
+If PowerShell refuses the certificate install due to permissions, right-click PowerShell and choose "Run as Administrator", then run install.ps1 again.
 
 ## Download
 

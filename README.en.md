@@ -26,9 +26,7 @@ Starting with 1.2.0, the GitHub Copilot provider no longer starts the bundled lo
 
 You need a Windows 10 19041 or later PC with Microsoft PowerToys installed. Open PowerToys Settings and make sure Command Palette is enabled.
 
-The current release uses a self-signed MSIX package. The installer adds the signing certificate to the machine Trusted Root store (requires administrator privileges). This is needed only once; subsequent installs and upgrades work without admin. After the certificate is trusted, Developer Mode is not required.
-
-If PowerShell refuses the certificate install due to permissions, right-click PowerShell and choose "Run as Administrator", then run install.ps1 again.
+The current release uses a self-signed MSIX package. Right-click `install.bat` in the extracted folder and choose "Run as administrator". The script handles certificate trust and MSIX installation automatically. Developer Mode is not required.
 
 ## Download
 
@@ -48,16 +46,10 @@ Do not download `Source code.zip` or `Source code.tar.gz`. Those files are sourc
 
 1. Extract the entire `QuickAskAI-...-x64.zip` file to a normal folder, such as `Downloads\QuickAskAI`.
 2. Open the extracted folder.
-3. Right-click `install.ps1` and choose `Run with PowerShell`.
-4. If Windows blocks the script, open PowerShell in the extracted folder and run:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\install.ps1
-```
-
-5. After the script prints `快速询问AI installed.`, open PowerToys Command Palette.
-6. Type `Reload` in Command Palette and choose `Reload Command Palette extensions`.
-7. Open Command Palette again and search for `快速询问AI`.
+3. Right-click `install.bat` and choose `Run as administrator`.
+4. After you see `QuickAskAI installed.`, open PowerToys Command Palette.
+5. Type `Reload` in Command Palette and choose `Reload Command Palette extensions`.
+6. Open Command Palette again and search for `快速询问AI`.
 
 If the extension does not appear, restart PowerToys and try again.
 
@@ -85,11 +77,7 @@ If you use OpenAI, Azure OpenAI, a local model gateway, or another Chat Completi
 
 ## Uninstall
 
-If you still have the extracted folder, run:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\uninstall.ps1
-```
+If you still have the extracted folder, right-click `uninstall.bat` and choose `Run as administrator`.
 
 After uninstalling, run `Reload Command Palette extensions` in Command Palette or restart PowerToys.
 

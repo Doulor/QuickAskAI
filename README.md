@@ -26,9 +26,7 @@
 
 你需要一台 Windows 10 19041 或更高版本的电脑，并安装 Microsoft PowerToys。安装后，请打开 PowerToys 设置，确认 Command Palette 已启用。
 
-当前 Release 使用自签名 MSIX 分发包。安装脚本会将签名证书安装到系统受信任根目录（需要管理员权限）。证书信任一次即可，后续安装和升级无需再次授权。安装完成后无需开启开发人员模式。
-
-如果 PowerShell 提示权限不足，请右键 PowerShell 选择“以管理员身份运行”，再执行 `install.ps1`。
+当前 Release 使用自签名 MSIX 分发包。右键解压出来的 `install.bat`，选择”以管理员身份运行”即可。脚本会自动安装签名证书和插件，不需要开启开发人员模式。
 
 ## 下载
 
@@ -46,18 +44,12 @@ QuickAskAI-v版本号-x64.zip
 
 ## 安装和加载到 Command Palette
 
-1. 把下载的 `QuickAskAI-...-x64.zip` 完整解压到一个普通文件夹，例如“下载\QuickAskAI”。
+1. 把下载的 `QuickAskAI-...-x64.zip` 完整解压到一个普通文件夹，例如”下载\QuickAskAI”。
 2. 进入解压后的文件夹。
-3. 右键 `install.ps1`，选择“使用 PowerShell 运行”。
-4. 如果 PowerShell 阻止脚本运行，在当前文件夹打开 PowerShell 后运行：
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\install.ps1
-```
-
-5. 看到 `快速询问AI installed.` 后，打开 PowerToys Command Palette。
-6. 在 Command Palette 中输入 `Reload`，选择 `Reload Command Palette extensions`。
-7. 重新打开 Command Palette，搜索 `快速询问AI`。
+3. 右键 `install.bat`，选择”以管理员身份运行”。
+4. 看到 `QuickAskAI installed.` 后，打开 PowerToys Command Palette。
+5. 在 Command Palette 中输入 `Reload`，选择 `Reload Command Palette extensions`。
+6. 重新打开 Command Palette，搜索 `快速询问AI`。
 
 如果没有搜到，重启 PowerToys 后再试一次。
 
@@ -85,11 +77,7 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1
 
 ## 卸载
 
-如果你还保留着解压后的文件夹，可以在里面运行：
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\uninstall.ps1
-```
+如果你还保留着解压后的文件夹，右键 `uninstall.bat`，选择"以管理员身份运行"。
 
 卸载后，在 Command Palette 中执行 `Reload Command Palette extensions`，或重启 PowerToys。
 

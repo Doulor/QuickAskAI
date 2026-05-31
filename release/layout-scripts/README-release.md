@@ -10,32 +10,18 @@
 
 ## 安装
 
-1. 解压整个 zip 到一个普通文件夹，例如“下载\\QuickAskAI”。不要只解压 `install.ps1`，也不要直接在压缩包预览窗口里运行文件。
+1. 解压整个 zip 到一个普通文件夹，例如”下载\\QuickAskAI”。
 2. 进入解压后的文件夹。
-3. 右键 `install.ps1`，选择“使用 PowerShell 运行”。
-4. 如果 PowerShell 阻止脚本运行，在当前文件夹打开 PowerShell 后运行：
+3. **右键 `install.bat`，选择”以管理员身份运行”**。
+4. 看到 `QuickAskAI installed.` 后，打开 PowerToys Command Palette。
+5. 在 Command Palette 里输入 `Reload`，选择 `Reload Command Palette extensions`。
+6. 重新打开 Command Palette，搜索 `快速询问AI`。
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\install.ps1
-```
-
-5. 看到 `快速询问AI installed.` 后，打开 PowerToys Command Palette。
-6. 在 Command Palette 里输入 `Reload`，选择 `Reload Command Palette extensions`。
-7. 重新打开 Command Palette，搜索 `快速询问AI`。
-
-如果搜索不到，重启 PowerToys 后再试一次。
-
-## 这一步做了什么
-
-`install.ps1` 会把当前文件夹里的 `AppxManifest.xml` 注册到 Windows。Command Palette 扩展是通过 Windows app extension 机制发现的，所以必须先注册，不能只双击 `AIExtension.exe`。
+注意：安装脚本需要管理员权限，用于安装签名证书到系统信任列表。这是一次性操作，后续升级无需再次授权。
 
 ## 卸载
 
-在解压目录运行：
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\uninstall.ps1
-```
+右键 `uninstall.bat`，选择”以管理员身份运行”。
 
 卸载后，Reload Command Palette extensions 或重启 PowerToys。
 

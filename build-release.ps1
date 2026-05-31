@@ -78,6 +78,8 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 # Copy release files to the package directory
 Copy-Item -LiteralPath $cerPath -Destination $packageDir -Force
+Copy-Item -LiteralPath (Join-Path $scriptsDir "install.bat") -Destination $packageDir -Force
+Copy-Item -LiteralPath (Join-Path $scriptsDir "uninstall.bat") -Destination $packageDir -Force
 Copy-Item -LiteralPath (Join-Path $scriptsDir "install.ps1") -Destination $packageDir -Force
 Copy-Item -LiteralPath (Join-Path $scriptsDir "uninstall.ps1") -Destination $packageDir -Force
 Copy-Item -LiteralPath (Join-Path $scriptsDir "README-release.md") -Destination (Join-Path $packageDir "README.md") -Force

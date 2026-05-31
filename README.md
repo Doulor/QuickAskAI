@@ -1,7 +1,5 @@
-# 快速询问AI
-
+# 快速询问AI 
 [English](README.en.md)
-
 快速询问AI是一个给 PowerToys Command Palette 使用的 AI 提问插件。安装后，你可以直接在命令面板里输入问题，选择这个插件，把问题发给 GitHub Copilot 或你配置的 OpenAI 兼容模型，然后在命令面板右侧查看回答。
 
 ## 适合谁使用

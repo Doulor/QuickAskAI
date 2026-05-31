@@ -69,6 +69,29 @@ internal sealed class ConversationStore
         }
     }
 
+    public bool DeleteSession(string id)
+    {
+        var session = _sessions.FirstOrDefault(s => s.Id == id);
+        if (session is null)
+        {
+            return false;
+        }
+
+        _sessions.Remove(session);
+        if (ActiveSessionId == id)
+        {
+            if (_sessions.Count == 0)
+            {
+                _sessions.Add(CreateSession("新会话"));
+            }
+
+            ActiveSessionId = _sessions[0].Id;
+        }
+
+        Save();
+        return true;
+    }
+
     public void AddUserMessage(string content)
     {
         AddMessage("user", content);

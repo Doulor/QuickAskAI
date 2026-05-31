@@ -2,6 +2,7 @@
 // The Microsoft Corporation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
@@ -49,6 +50,9 @@ internal sealed partial class ConversationManagementPage : ListPage
                 Title = isActive ? $"当前：{session.Title}" : session.Title,
                 Subtitle = $"{session.Messages.Count} 条消息 · {session.UpdatedAt:MM-dd HH:mm}",
                 Icon = new IconInfo(isActive ? "" : ""),
+                MoreCommands = [
+                    new CommandContextItem(new DeleteConversationCommand(this, session.Id)),
+                ],
             });
         }
 
@@ -78,5 +82,32 @@ internal sealed partial class ConversationManagementPage : ListPage
             _page.StartNewConversation();
             return CommandResult.KeepOpen();
         }
+    }
+
+    private sealed partial class DeleteConversationCommand : InvokableCommand
+    {
+        private readonly ConversationManagementPage _page;
+        private readonly string _sessionId;
+
+        public DeleteConversationCommand(ConversationManagementPage page, string sessionId)
+        {
+            _page = page;
+            _sessionId = sessionId;
+            Name = "删除会话";
+            Icon = new IconInfo("");
+        }
+
+        public override ICommandResult Invoke()
+        {
+            _page.DeleteConversation(_sessionId);
+            return CommandResult.KeepOpen();
+        }
+    }
+
+    private void DeleteConversation(string sessionId)
+    {
+        _conversationStore.DeleteSession(sessionId);
+        _onChanged();
+        RaiseItemsChanged();
     }
 }

@@ -107,6 +107,8 @@ QuickAskAI stores settings and chat history locally on your PC.
 
 No. Newer builds no longer start the bundled GitHub Copilot CLI. The extension uses the token from GitHub sign-in and calls the Copilot HTTP API directly, so it is not affected by `copilot.exe` first-run extraction, `EXDEV: cross-device link not permitted`, or Node SEA initialization failures.
 
+If Copilot requests return `HTTP 404: Not Found` after upgrading from an older build, disconnect GitHub in the extension and connect again. Newer builds sign in with the public VS Code Copilot client id; tokens minted by the older custom OAuth app cannot be exchanged for Copilot API tokens.
+
 ## For Developers
 
 To build from source, you need Windows 10 19041 or later, .NET 9 SDK, Windows 11 SDK 10.0.26100, and PowerToys Command Palette.

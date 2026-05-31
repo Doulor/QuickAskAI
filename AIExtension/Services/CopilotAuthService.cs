@@ -45,6 +45,7 @@ internal sealed class CopilotAuthService
             Content = new FormUrlEncodedContent(new Dictionary<string, string>
             {
                 ["client_id"] = clientId.Trim(),
+                ["scope"] = "read:user user:email",
             }),
         };
         request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

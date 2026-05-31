@@ -107,6 +107,8 @@ powershell -ExecutionPolicy Bypass -File .\uninstall.ps1
 
 不需要。新版插件不再启动随包的 GitHub Copilot CLI，而是使用 GitHub 登录得到的 token 直接调用 Copilot HTTP 接口。因此不会再受 `copilot.exe` 首次解压、`EXDEV: cross-device link not permitted` 或 Node SEA 初始化失败影响。
 
+如果从旧版本升级后 Copilot 请求返回 `HTTP 404: Not Found`，请先在插件里断开 GitHub，然后重新选择 `连接 GitHub`。新版会使用 VS Code Copilot 的公开 client id 重新登录，旧版自建 OAuth App 登录得到的 token 不能兑换 Copilot API token。
+
 ## 给开发者
 
 如果你想从源码构建，需要 Windows 10 19041 或更高版本、.NET 9 SDK、Windows 11 SDK 10.0.26100，以及 PowerToys Command Palette。

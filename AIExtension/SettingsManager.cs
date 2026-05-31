@@ -23,7 +23,8 @@ internal sealed class SettingsManager
     private const string SystemPromptKey = "systemPrompt";
     private const string TemperatureKey = "temperature";
     private const string ActiveProviderKey = "activeProvider";
-    private const string DefaultGitHubClientId = "Ov23liDa9NDfYl29YozQ";
+    private const string LegacyGitHubClientId = "Ov23liDa9NDfYl29YozQ";
+    private const string DefaultGitHubClientId = "Iv1.b507a08c87ecfe98";
 
     private readonly Settings _settings = new();
     private readonly string _profilesPath;
@@ -35,6 +36,7 @@ internal sealed class SettingsManager
         StableStorage.MigrateFromLegacyPath("providers.json", _profilesPath);
 
         _profiles = LoadProfiles();
+        MigrateLegacyCopilotClientIds();
         MigrateCopilotApiKeysToCredentialStore();
 
         var baseUrl = new TextSetting(
@@ -207,6 +209,31 @@ internal sealed class SettingsManager
         provider.ApiKey = string.Empty;
         SaveProfiles();
         ProvidersChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void MigrateLegacyCopilotClientIds()
+    {
+        var changed = false;
+        foreach (var profile in _profiles.Where(IsCopilotProvider))
+        {
+            if (!profile.GitHubClientId.Equals(LegacyGitHubClientId, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            CopilotCredentialStore.RemoveToken(profile.Id);
+            profile.GitHubClientId = DefaultGitHubClientId;
+            profile.AuthType = string.Empty;
+            profile.GitHubLogin = string.Empty;
+            profile.TokenTypeHint = string.Empty;
+            profile.ApiKey = string.Empty;
+            changed = true;
+        }
+
+        if (changed)
+        {
+            SaveProfiles();
+        }
     }
 
     private void MigrateCopilotApiKeysToCredentialStore()

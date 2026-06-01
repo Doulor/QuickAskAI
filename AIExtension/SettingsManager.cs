@@ -19,13 +19,9 @@ internal sealed class SettingsManager
 {
     private const string LegacyGitHubClientId = "Ov23liDa9NDfYl29YozQ";
     private const string DefaultGitHubClientId = "Iv1.b507a08c87ecfe98";
-    private const string RepoUrl = "https://github.com/Doulor/AIExtension-for-Powertoys-CMDPalette";
-
     private readonly Settings _settings = new();
     private readonly string _profilesPath;
     private readonly List<ProviderProfile> _profiles;
-
-    private TextSetting _clearConversationsSetting = null!;
 
     public SettingsManager()
     {
@@ -35,10 +31,6 @@ internal sealed class SettingsManager
         _profiles = LoadProfiles();
         MigrateLegacyCopilotClientIds();
         MigrateCopilotApiKeysToCredentialStore();
-
-        BuildSettings();
-        _settings.SettingsChanged += OnSettingsPageSaved;
-        ProvidersChanged += OnProvidersChanged;
     }
 
     public ICommandSettings Settings => _settings;
@@ -284,49 +276,6 @@ internal sealed class SettingsManager
         SystemPrompt = "你是一个简洁、可靠的中文 AI 助手。",
         Temperature = string.Empty,
     };
-
-    public ProviderProfile? CopilotProvider => _profiles.FirstOrDefault(IsCopilotProvider);
-
-    private void BuildSettings()
-    {
-        _clearConversationsSetting = new TextSetting(
-            "clearConversations",
-            "清除全部会话",
-            "输入 CLEAR 然后按 Enter 即可删除全部聊天记录。",
-            string.Empty);
-
-        var githubUrlSetting = new TextSetting(
-            "githubRepo",
-            "GitHub 仓库",
-            RepoUrl,
-            RepoUrl);
-
-        _settings.Add(_clearConversationsSetting);
-        _settings.Add(githubUrlSetting);
-    }
-
-    private void OnSettingsPageSaved(object? sender, Settings args)
-    {
-        try
-        {
-            if (_clearConversationsSetting.Value.Trim().Equals("CLEAR", StringComparison.OrdinalIgnoreCase))
-            {
-                ClearConversations();
-            }
-        }
-        finally
-        {
-            _clearConversationsSetting.Value = string.Empty;
-        }
-    }
-
-    private void OnProvidersChanged(object? sender, EventArgs e)
-    {
-        if (_clearConversationsSetting is not null)
-        {
-            _clearConversationsSetting.Value = string.Empty;
-        }
-    }
 
     private List<ProviderProfile> LoadProfiles()
     {

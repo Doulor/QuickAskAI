@@ -109,10 +109,10 @@ To build from source, you need Windows 10 19041 or later, .NET 9 SDK, Windows 11
 Build x64 Debug:
 
 ```powershell
-dotnet build .\AIExtension.sln -p:Platform=x64
+dotnet build AIExtension\AIExtension.csproj -p:Platform=x64
 ```
 
-Register the Debug layout:
+Register the Debug layout (requires Developer Mode):
 
 ```powershell
 Get-Process AIExtension -ErrorAction SilentlyContinue | Stop-Process -Force
@@ -122,5 +122,5 @@ Add-AppxPackage -Register .\AIExtension\bin\x64\Debug\net9.0-windows10.0.26100.0
 Build a GitHub Release zip:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\build-release.ps1 -Configuration Release -Platform x64 -Version v1.2.0
+powershell -ExecutionPolicy Bypass -File .\build-release.ps1 -Configuration Release -Platform x64 -Version v1.2.1
 ```

@@ -109,10 +109,10 @@ QuickAskAI-v版本号-x64.zip
 构建 x64 Debug：
 
 ```powershell
-dotnet build .\AIExtension.sln -p:Platform=x64
+dotnet build AIExtension\AIExtension.csproj -p:Platform=x64
 ```
 
-注册 Debug layout：
+注册 Debug layout（需要开发人员模式）：
 
 ```powershell
 Get-Process AIExtension -ErrorAction SilentlyContinue | Stop-Process -Force
@@ -122,5 +122,5 @@ Add-AppxPackage -Register .\AIExtension\bin\x64\Debug\net9.0-windows10.0.26100.0
 生成 GitHub Release 用的 zip：
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\build-release.ps1 -Configuration Release -Platform x64 -Version v1.2.0
+powershell -ExecutionPolicy Bypass -File .\build-release.ps1 -Configuration Release -Platform x64 -Version v1.2.1
 ```

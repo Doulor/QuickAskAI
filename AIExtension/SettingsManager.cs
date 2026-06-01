@@ -19,17 +19,13 @@ internal sealed class SettingsManager
 {
     private const string LegacyGitHubClientId = "Ov23liDa9NDfYl29YozQ";
     private const string DefaultGitHubClientId = "Iv1.b507a08c87ecfe98";
+    private const string RepoUrl = "https://github.com/Doulor/AIExtension-for-Powertoys-CMDPalette";
 
     private readonly Settings _settings = new();
     private readonly string _profilesPath;
     private readonly List<ProviderProfile> _profiles;
 
-    private TextSetting _copilotAuthStatusSetting = null!;
-    private TextSetting _copilotModelSetting = null!;
-    private TextSetting _copilotClientIdSetting = null!;
     private TextSetting _clearConversationsSetting = null!;
-
-    private bool _suppressSync;
 
     public SettingsManager()
     {
@@ -41,7 +37,6 @@ internal sealed class SettingsManager
         MigrateCopilotApiKeysToCredentialStore();
 
         BuildSettings();
-        SyncCopilotSettingsFromProvider();
         _settings.SettingsChanged += OnSettingsPageSaved;
         ProvidersChanged += OnProvidersChanged;
     }
@@ -292,81 +287,31 @@ internal sealed class SettingsManager
 
     public ProviderProfile? CopilotProvider => _profiles.FirstOrDefault(IsCopilotProvider);
 
-    private string BuildCopilotAuthStatus()
-    {
-        var copilot = CopilotProvider;
-        if (copilot is null)
-        {
-            return "未配置 GitHub Copilot 提供商";
-        }
-
-        if (HasCopilotToken(copilot))
-        {
-            var login = string.IsNullOrWhiteSpace(copilot.GitHubLogin) ? "已连接" : copilot.GitHubLogin;
-            return $"已连接 — {login}";
-        }
-
-        return "未连接 — 请在菜单中连接 GitHub";
-    }
-
     private void BuildSettings()
     {
-        _copilotAuthStatusSetting = new TextSetting(
-            "copilotAuthStatus",
-            "Copilot 授权状态",
-            "显示当前 GitHub Copilot 提供商的连接状态。如需登录或断开，请在菜单中使用 GitHub Copilot 提供商页面。",
-            BuildCopilotAuthStatus());
-
-        _copilotModelSetting = new TextSetting(
-            "copilotModel",
-            "Copilot 模型名",
-            "GitHub Copilot 使用的模型，例如 gpt-4.1、gpt-4o-mini、claude-sonnet-4.5。",
-            CopilotProvider?.Model ?? string.Empty)
-        {
-            Placeholder = "gpt-4.1",
-        };
-
-        _copilotClientIdSetting = new TextSetting(
-            "copilotClientId",
-            "GitHub Client ID",
-            "GitHub OAuth App 的 Client ID。修改后需要在菜单中重新连接 GitHub。默认值为 VS Code Copilot 公开 Client ID。",
-            CopilotProvider?.GitHubClientId ?? DefaultGitHubClientId)
-        {
-            Placeholder = DefaultGitHubClientId,
-        };
-
         _clearConversationsSetting = new TextSetting(
             "clearConversations",
-            "清除所有会话",
-            "输入 CLEAR 后点击保存或按 Enter，将删除全部聊天记录并重置会话。",
+            "清除全部会话",
+            "输入 CLEAR 然后按 Enter 即可删除全部聊天记录。",
             string.Empty);
 
-        _settings.Add(_copilotAuthStatusSetting);
-        _settings.Add(_copilotModelSetting);
-        _settings.Add(_copilotClientIdSetting);
+        var githubUrlSetting = new TextSetting(
+            "githubRepo",
+            "GitHub 仓库",
+            RepoUrl,
+            RepoUrl);
+
         _settings.Add(_clearConversationsSetting);
+        _settings.Add(githubUrlSetting);
     }
 
     private void OnSettingsPageSaved(object? sender, Settings args)
     {
-        if (_suppressSync)
-        {
-            return;
-        }
-
         try
         {
-            ApplyClearConversations();
-
-            var copilot = CopilotProvider;
-            if (copilot is not null)
+            if (_clearConversationsSetting.Value.Trim().Equals("CLEAR", StringComparison.OrdinalIgnoreCase))
             {
-                copilot.Model = _copilotModelSetting.Value.Trim();
-                copilot.GitHubClientId = string.IsNullOrWhiteSpace(_copilotClientIdSetting.Value)
-                    ? DefaultGitHubClientId
-                    : _copilotClientIdSetting.Value.Trim();
-                SaveProfiles();
-                ProvidersChanged?.Invoke(this, EventArgs.Empty);
+                ClearConversations();
             }
         }
         finally
@@ -375,27 +320,12 @@ internal sealed class SettingsManager
         }
     }
 
-    private void ApplyClearConversations()
-    {
-        if (_clearConversationsSetting.Value.Trim().Equals("CLEAR", StringComparison.OrdinalIgnoreCase))
-        {
-            ClearConversations();
-        }
-    }
-
     private void OnProvidersChanged(object? sender, EventArgs e)
     {
-        SyncCopilotSettingsFromProvider();
-    }
-
-    private void SyncCopilotSettingsFromProvider()
-    {
-        _suppressSync = true;
-        _copilotAuthStatusSetting.Value = BuildCopilotAuthStatus();
-        _copilotModelSetting.Value = CopilotProvider?.Model ?? string.Empty;
-        _copilotClientIdSetting.Value = CopilotProvider?.GitHubClientId ?? DefaultGitHubClientId;
-        _clearConversationsSetting.Value = string.Empty;
-        _suppressSync = false;
+        if (_clearConversationsSetting is not null)
+        {
+            _clearConversationsSetting.Value = string.Empty;
+        }
     }
 
     private List<ProviderProfile> LoadProfiles()

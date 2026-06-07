@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="AppDisplayName" xml:space="preserve">
+    <value>QuickAskAI</value>
+  </data>
+  <data name="AppDescription" xml:space="preserve">
+    <value>Ask AI questions directly from PowerToys Command Palette. Supports GitHub Copilot and OpenAI-compatible services.</value>
+  </data>
+</root>

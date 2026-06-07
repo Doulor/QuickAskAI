@@ -21,19 +21,33 @@ internal sealed class SettingsManager
     private const string DefaultGitHubClientId = "Iv1.b507a08c87ecfe98";
     private readonly Settings _settings = new();
     private readonly string _profilesPath;
+    private readonly string _appSettingsPath;
     private readonly List<ProviderProfile> _profiles;
+    private AppSettings _appSettings;
 
     public SettingsManager()
     {
         _profilesPath = StableStorage.GetPath("providers.json");
+        _appSettingsPath = StableStorage.GetPath("settings.json");
         StableStorage.MigrateFromLegacyPath("providers.json", _profilesPath);
 
         _profiles = LoadProfiles();
+        _appSettings = LoadAppSettings();
         MigrateLegacyCopilotClientIds();
         MigrateCopilotApiKeysToCredentialStore();
     }
 
     public ICommandSettings Settings => _settings;
+
+    public string Language
+    {
+        get => _appSettings.Language;
+        set
+        {
+            _appSettings.Language = value;
+            SaveAppSettings();
+        }
+    }
 
     public event EventHandler? ProvidersChanged;
 
@@ -383,4 +397,47 @@ internal sealed class SettingsManager
     }
 
     private static string CreateId() => Guid.NewGuid().ToString("N");
+
+    private AppSettings LoadAppSettings()
+    {
+        try
+        {
+            if (File.Exists(_appSettingsPath))
+            {
+                var json = File.ReadAllText(_appSettingsPath);
+                var node = JsonNode.Parse(json)?.AsObject();
+                return new AppSettings
+                {
+                    Language = node?["language"]?.ToString() ?? "auto",
+                };
+            }
+        }
+        catch (JsonException)
+        {
+        }
+        catch (IOException)
+        {
+        }
+
+        return new AppSettings { Language = "auto" };
+    }
+
+    private void SaveAppSettings()
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(_appSettingsPath)!);
+        using var stream = new MemoryStream();
+        using (var writer = new Utf8JsonWriter(stream, new JsonWriterOptions { Indented = true }))
+        {
+            writer.WriteStartObject();
+            writer.WriteString("language", _appSettings.Language);
+            writer.WriteEndObject();
+        }
+
+        File.WriteAllText(_appSettingsPath, Encoding.UTF8.GetString(stream.ToArray()));
+    }
+
+    private sealed class AppSettings
+    {
+        public string Language { get; set; } = "auto";
+    }
 }

@@ -136,8 +136,19 @@ internal sealed partial class AskAiPage : DynamicListPage
 
         items.Add(CreateConversationEntryItem());
         items.Add(CreateProviderManagementItem());
+        items.Add(CreateSettingsItem());
 
         return [.. items];
+    }
+
+    private ListItem CreateSettingsItem()
+    {
+        return new ListItem(new SettingsPage(_settingsManager, () => RaiseItemsChanged()))
+        {
+            Title = "设置",
+            Subtitle = "语言偏好和扩展设置",
+            Icon = new IconInfo(""),
+        };
     }
 
     private ListItem CreateConversationEntryItem()

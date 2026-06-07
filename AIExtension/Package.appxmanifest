@@ -9,15 +9,15 @@
   IgnorableNamespaces="uap uap3 rescap">
 
   <Identity
-    Name="AIExtension"
-    Publisher="CN=QuickAskAI"
+    Name="Doulor.QuickAskAI"
+    Publisher="CN=5C8008C8-1050-4708-808B-18F2CF9F9C64"
     Version="1.2.1.0" />
   <!-- When you're ready to publish your extension, you'll need to change the
        Publisher= to match your own identity -->
 
   <Properties>
-    <DisplayName>快速询问AI</DisplayName>
-    <PublisherDisplayName>Made By Doulor</PublisherDisplayName>
+    <DisplayName>ms-resource:AppDisplayName</DisplayName>
+    <PublisherDisplayName>Doulor</PublisherDisplayName>
     <Logo>Assets\ICON.png</Logo>
   </Properties>
 
@@ -27,7 +27,8 @@
   </Dependencies>
 
   <Resources>
-    <Resource Language="x-generate"/>
+    <Resource Language="en-US"/>
+    <Resource Language="zh-CN"/>
   </Resources>
 
   <Applications>
@@ -35,8 +36,8 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="快速询问AI"
-        Description="快速询问AI"
+        DisplayName="ms-resource:AppDisplayName"
+        Description="ms-resource:AppDescription"
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png">
@@ -46,8 +47,8 @@
       <Extensions>
         <com:Extension Category="windows.comServer">
           <com:ComServer>
-            <com:ExeServer Executable="AIExtension.exe" Arguments="-RegisterProcessAsComServer" DisplayName="快速询问AI">
-              <com:Class Id="9430d8e9-b108-4318-a8a8-164c4bc71385" DisplayName="快速询问AI" />
+            <com:ExeServer Executable="AIExtension.exe" Arguments="-RegisterProcessAsComServer" DisplayName="ms-resource:AppDisplayName">
+              <com:Class Id="9430d8e9-b108-4318-a8a8-164c4bc71385" DisplayName="ms-resource:AppDisplayName" />
             </com:ExeServer>
           </com:ComServer>
         </com:Extension>
@@ -55,8 +56,8 @@
           <uap3:AppExtension Name="com.microsoft.commandpalette"
             Id="QuickAskAI"
             PublicFolder="Public"
-            DisplayName="快速询问AI"
-            Description="快速询问AI">
+            DisplayName="ms-resource:AppDisplayName"
+            Description="ms-resource:AppDescription">
             <uap3:Properties>
               <CmdPalProvider>
                 <Activation>

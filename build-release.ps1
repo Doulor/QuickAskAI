@@ -32,11 +32,12 @@ $scriptsDir = Join-Path $releaseRoot "layout-scripts"
 Get-Process AIExtension -ErrorAction SilentlyContinue | Stop-Process -Force
 
 # Generate self-signed certificate if not already present
+# For Microsoft Store submission, replace this with the certificate from Partner Center
 if (-not (Test-Path -LiteralPath $pfxPath)) {
     New-Item -ItemType Directory -Path $certDir -Force | Out-Null
     $cert = New-SelfSignedCertificate `
         -Type Custom `
-        -Subject "CN=QuickAskAI" `
+        -Subject "CN=Doulor" `
         -KeyUsage DigitalSignature `
         -FriendlyName "QuickAskAI" `
         -CertStoreLocation "Cert:\CurrentUser\My" `
@@ -72,9 +73,11 @@ $msixPath = Join-Path $packageDir $msixName
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 # Sign the MSIX using cert from the user's certificate store
+# For Microsoft Store submission: Partner Center will re-sign the package automatically
+# Local installation testing requires signing; comment out the next 3 lines if not needed
 $signtool = "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.0.26100.0\x64\SignTool.exe"
-& $signtool sign /fd SHA256 /n "QuickAskAI" /a $msixPath
-if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& $signtool sign /fd SHA256 /n "Doulor" /a $msixPath
+if ($LASTEXITCODE -ne 0) { Write-Host "Warning: Signing failed, but Store submission will re-sign automatically" -ForegroundColor Yellow }
 
 # Copy release files to the package directory
 Copy-Item -LiteralPath $cerPath -Destination $packageDir -Force

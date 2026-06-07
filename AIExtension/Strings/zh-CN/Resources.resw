@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="AppDisplayName" xml:space="preserve">
+    <value>快速询问AI</value>
+  </data>
+  <data name="AppDescription" xml:space="preserve">
+    <value>在 PowerToys 命令面板中快速向 AI 提问。支持 GitHub Copilot 和 OpenAI 兼容服务。</value>
+  </data>
+</root>

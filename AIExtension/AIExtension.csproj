@@ -49,6 +49,11 @@
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
+  <!-- Localized resources -->
+  <ItemGroup>
+    <EmbeddedResource Include="Strings\**\*.resw" />
+  </ItemGroup>
+
   <!--
     Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
     Tools extension to be activated for this project even if the Windows App SDK Nuget
@@ -79,6 +84,10 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <!-- Store publishing properties -->
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+
     <PublishSingleFile>true</PublishSingleFile>
     <IsAotCompatible>true</IsAotCompatible>
 

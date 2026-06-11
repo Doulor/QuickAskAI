@@ -21,8 +21,8 @@ internal sealed partial class ProviderEditorPage : ContentPage
         _profile = profile.Clone();
 
         Icon = new IconInfo("");
-        Title = string.IsNullOrWhiteSpace(_profile.Name) ? "添加模型提供商" : $"编辑 {_profile.Name}";
-        Name = "配置";
+        Title = string.IsNullOrWhiteSpace(_profile.Name) ? ResourceHelper.GetString("ProvEditor_AddTitle") : ResourceHelper.GetString("ProvEditor_EditTitlePrefix") + _profile.Name;
+        Name = ResourceHelper.GetString("ProvEditor_Name");
     }
 
     public override IContent[] GetContent() => [new ProviderEditorForm(this, _profile)];
@@ -34,7 +34,7 @@ internal sealed partial class ProviderEditorPage : ContentPage
             var payload = JsonNode.Parse(inputs)?.AsObject();
             if (payload is null)
             {
-                return CommandResult.ShowToast("无法读取提供商配置。");
+                return CommandResult.ShowToast(ResourceHelper.GetString("ProvEditor_CannotReadConfig"));
             }
 
             _profile.Name = ReadString(payload, "Name", _profile.Name);
@@ -47,25 +47,25 @@ internal sealed partial class ProviderEditorPage : ContentPage
 
             if (string.IsNullOrWhiteSpace(_profile.Name))
             {
-                return CommandResult.ShowToast("请填写提供商名称。");
+                return CommandResult.ShowToast(ResourceHelper.GetString("ProvEditor_FillName"));
             }
 
             if (string.IsNullOrWhiteSpace(_profile.BaseUrl))
             {
-                return CommandResult.ShowToast("请填写 Base URL。");
+                return CommandResult.ShowToast(ResourceHelper.GetString("ProvEditor_FillBaseUrl"));
             }
 
             if (string.IsNullOrWhiteSpace(_profile.Model))
             {
-                return CommandResult.ShowToast("请填写模型名。");
+                return CommandResult.ShowToast(ResourceHelper.GetString("ProvEditor_FillModel"));
             }
 
             _settingsManager.SaveProvider(_profile);
-            return CommandResult.ShowToast($"已保存 {_profile.Name}");
+            return CommandResult.ShowToast(ResourceHelper.GetString("ProvEditor_Saved") + _profile.Name);
         }
         catch (JsonException)
         {
-            return CommandResult.ShowToast("无法读取提供商配置。");
+            return CommandResult.ShowToast(ResourceHelper.GetString("ProvEditor_CannotReadConfig"));
         }
     }
 
@@ -92,9 +92,9 @@ internal sealed partial class ProviderEditorPage : ContentPage
                 {
                   "type": "Input.Text",
                   "id": "Name",
-                  "label": "提供商名称",
+                  "label": "${AC_ProviderName}",
                   "isRequired": true,
-                  "errorMessage": "请填写提供商名称",
+                  "errorMessage": "${AC_ProviderNameError}",
                   "placeholder": "OpenAI",
                   "value": "${Name}"
                 },
@@ -102,7 +102,7 @@ internal sealed partial class ProviderEditorPage : ContentPage
                   "type": "Input.Text",
                   "id": "ProviderType",
                   "label": "Provider Type",
-                  "placeholder": "openai 或 copilot",
+                  "placeholder": "${AC_ProviderTypePlaceholder}",
                   "value": "${ProviderType}"
                 },
                 {
@@ -110,7 +110,7 @@ internal sealed partial class ProviderEditorPage : ContentPage
                   "id": "BaseUrl",
                   "label": "Base URL",
                   "isRequired": true,
-                  "errorMessage": "请填写 Base URL",
+                  "errorMessage": "${AC_BaseUrlError}",
                   "placeholder": "https://api.example.com/v1",
                   "value": "${BaseUrl}"
                 },
@@ -126,7 +126,7 @@ internal sealed partial class ProviderEditorPage : ContentPage
                   "id": "Model",
                   "label": "Model",
                   "isRequired": true,
-                  "errorMessage": "请填写模型名",
+                  "errorMessage": "${AC_ModelError}",
                   "placeholder": "gpt-4.1-mini",
                   "value": "${Model}"
                 },
@@ -135,7 +135,7 @@ internal sealed partial class ProviderEditorPage : ContentPage
                   "id": "SystemPrompt",
                   "label": "System Prompt",
                   "isMultiline": true,
-                  "placeholder": "你是一个简洁、可靠的中文 AI 助手。",
+                  "placeholder": "${AC_SystemPromptPlaceholder}",
                   "value": "${SystemPrompt}"
                 },
                 {
@@ -149,7 +149,7 @@ internal sealed partial class ProviderEditorPage : ContentPage
               "actions": [
                 {
                   "type": "Action.Submit",
-                  "title": "保存并选择"
+                  "title": "${AC_SaveButton}"
                 }
               ]
             }
@@ -163,6 +163,13 @@ internal sealed partial class ProviderEditorPage : ContentPage
                 ["Model"] = profile.Model,
                 ["SystemPrompt"] = profile.SystemPrompt,
                 ["Temperature"] = profile.Temperature,
+                ["AC_ProviderName"] = ResourceHelper.GetString("ProvEditor_AC_ProviderName"),
+                ["AC_ProviderNameError"] = ResourceHelper.GetString("ProvEditor_AC_ProviderNameError"),
+                ["AC_BaseUrlError"] = ResourceHelper.GetString("ProvEditor_AC_BaseUrlError"),
+                ["AC_ModelError"] = ResourceHelper.GetString("ProvEditor_AC_ModelError"),
+                ["AC_SystemPromptPlaceholder"] = ResourceHelper.GetString("ProvEditor_AC_SystemPromptPlaceholder"),
+                ["AC_SaveButton"] = ResourceHelper.GetString("ProvEditor_AC_SaveButton"),
+                ["AC_ProviderTypePlaceholder"] = ResourceHelper.GetString("ProvEditor_ProviderTypePlaceholder"),
             }.ToJsonString();
         }
 

@@ -1,9 +1,272 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <data name="AppDisplayName" xml:space="preserve">
-    <value>QuickAskAI</value>
-  </data>
-  <data name="AppDescription" xml:space="preserve">
-    <value>Ask AI questions directly from PowerToys Command Palette. Supports GitHub Copilot and OpenAI-compatible services.</value>
-  </data>
+  <!-- Manifest -->
+  <data name="AppDisplayName" xml:space="preserve"><value>QuickAskAI</value></data>
+  <data name="AppDescription" xml:space="preserve"><value>Ask AI questions directly from PowerToys Command Palette. Supports GitHub Copilot and OpenAI-compatible services.</value></data>
+
+  <!-- Program.cs -->
+  <data name="LaunchInfoMessage" xml:space="preserve"><value>QuickAskAI is a PowerToys Command Palette extension.\n\nOpen Microsoft PowerToys Command Palette and search for QuickAskAI.</value></data>
+  <data name="LaunchInfoTitle" xml:space="preserve"><value>QuickAskAI</value></data>
+
+  <!-- AIExtensionCommandsProvider -->
+  <data name="CommandsProvider_DisplayName" xml:space="preserve"><value>QuickAskAI</value></data>
+
+  <!-- AskAiPage -->
+  <data name="AskAi_Title" xml:space="preserve"><value>QuickAskAI</value></data>
+  <data name="AskAi_Name" xml:space="preserve"><value>Ask</value></data>
+  <data name="AskAi_Placeholder" xml:space="preserve"><value>Enter your question, press Enter to ask AI</value></data>
+  <data name="AskAi_StatusMessage" xml:space="preserve"><value>Asking AI...</value></data>
+  <data name="AskAi_RequestFailed" xml:space="preserve"><value>Request failed: </value></data>
+  <data name="AskAi_AskTitle" xml:space="preserve"><value>Ask: </value></data>
+  <data name="AskAi_UsingProvider" xml:space="preserve"><value>Using </value></data>
+  <data name="AskAi_SettingsTitle" xml:space="preserve"><value>Settings</value></data>
+  <data name="AskAi_SettingsSubtitle" xml:space="preserve"><value>Language preferences and extension settings</value></data>
+  <data name="AskAi_ConversationTitle" xml:space="preserve"><value>Chat: </value></data>
+  <data name="AskAi_ConversationSubtitle" xml:space="preserve"><value>messages · Enter to create or select a history chat</value></data>
+  <data name="AskAi_ProviderTitle" xml:space="preserve"><value>Model provider: </value></data>
+  <data name="AskAi_BusyTitle" xml:space="preserve"><value>Asking AI...</value></data>
+  <data name="AskAi_AnswerTitle" xml:space="preserve"><value>Answer</value></data>
+  <data name="AskAi_RequestFailedTitle" xml:space="preserve"><value>Request failed</value></data>
+  <data name="AskAi_AnswerSubtitle" xml:space="preserve"><value>Full answer shown on the right; press Enter to copy</value></data>
+  <data name="AskAi_ErrorSubtitle" xml:space="preserve"><value>Error details shown on the right</value></data>
+  <data name="AskAi_AnswerDetailTitle" xml:space="preserve"><value>Answer</value></data>
+  <data name="AskAi_ErrorDetailTitle" xml:space="preserve"><value>Request failed</value></data>
+  <data name="AskAi_ModelLabel" xml:space="preserve"><value>Model: </value></data>
+  <data name="AskAi_ServiceLabel" xml:space="preserve"><value>Service: </value></data>
+  <data name="AskAi_CopyAnswer" xml:space="preserve"><value>Copy answer</value></data>
+  <data name="AskAi_NotProvided" xml:space="preserve"><value>Not provided</value></data>
+  <data name="AskAi_UnknownError" xml:space="preserve"><value>Unknown error.</value></data>
+  <data name="AskAi_HelpTitle" xml:space="preserve"><value>Enter your question in the search box above</value></data>
+  <data name="AskAi_HelpSubtitle" xml:space="preserve"><value>Press Enter to send. Select or add a model provider from the left.</value></data>
+  <data name="AskAi_GitHubConnected" xml:space="preserve"><value>GitHub connected</value></data>
+  <data name="AskAi_GitHubNotConnected" xml:space="preserve"><value>GitHub not connected</value></data>
+  <data name="AskAi_ProviderEnterToAdd" xml:space="preserve"><value> · Enter to connect, select or edit</value></data>
+  <data name="AskAi_ProviderEnterToManage" xml:space="preserve"><value> · Enter to add, select or edit</value></data>
+  <data name="AskAi_BaseUrlNotConfigured" xml:space="preserve"><value>Base URL not configured</value></data>
+  <data name="AskAi_SubmitCommand_Name" xml:space="preserve"><value>Ask</value></data>
+
+  <!-- ConversationStore -->
+  <data name="Conversation_NewSession" xml:space="preserve"><value>New chat</value></data>
+  <data name="Conversation_RequestFailed" xml:space="preserve"><value>Request failed: </value></data>
+
+  <!-- ConversationManagementPage -->
+  <data name="ConvManage_Title" xml:space="preserve"><value>Chats</value></data>
+  <data name="ConvManage_Name" xml:space="preserve"><value>Chats</value></data>
+  <data name="ConvManage_StartNew" xml:space="preserve"><value>Start a new chat</value></data>
+  <data name="ConvManage_SwitchToEmpty" xml:space="preserve"><value>Switch to empty new chat</value></data>
+  <data name="ConvManage_NewSubtitle1" xml:space="preserve"><value>Clear context, start a new continuous conversation</value></data>
+  <data name="ConvManage_NewSubtitle2" xml:space="preserve"><value>There is already an unused new chat, no duplicate will be created</value></data>
+  <data name="ConvManage_CurrentPrefix" xml:space="preserve"><value>Current: </value></data>
+  <data name="ConvManage_MessagesLabel" xml:space="preserve"><value> messages · </value></data>
+  <data name="ConvManage_NewCommand_Name" xml:space="preserve"><value>Start new chat</value></data>
+  <data name="ConvManage_DeleteCommand_Name" xml:space="preserve"><value>Delete chat</value></data>
+
+  <!-- ConversationDetailPage -->
+  <data name="ConvDetail_TitleFallback" xml:space="preserve"><value>Chat</value></data>
+  <data name="ConvDetail_Name" xml:space="preserve"><value>History</value></data>
+  <data name="ConvDetail_NotFound" xml:space="preserve"><value>Chat not found</value></data>
+  <data name="ConvDetail_MessagesLabel" xml:space="preserve"><value> messages · </value></data>
+  <data name="ConvDetail_AlreadySelected" xml:space="preserve"><value>Currently selected</value></data>
+  <data name="ConvDetail_SelectThis" xml:space="preserve"><value>Select this chat</value></data>
+  <data name="ConvDetail_SelectSubtitle" xml:space="preserve"><value>Subsequent questions will use this chat context</value></data>
+  <data name="ConvDetail_NoMessages" xml:space="preserve"><value>_This chat has no messages yet._</value></data>
+  <data name="ConvDetail_RoleYou" xml:space="preserve"><value>You</value></data>
+  <data name="ConvDetail_RoleSystem" xml:space="preserve"><value>System</value></data>
+  <data name="ConvDetail_SelectCommand_Name" xml:space="preserve"><value>Select chat</value></data>
+
+  <!-- ProviderManagementPage -->
+  <data name="ProvManage_Title" xml:space="preserve"><value>Model providers</value></data>
+  <data name="ProvManage_Name" xml:space="preserve"><value>Manage</value></data>
+  <data name="ProvManage_CurrentPrefix" xml:space="preserve"><value>Current: </value></data>
+  <data name="ProvManage_AddOpenAI" xml:space="preserve"><value>Add OpenAI-compatible provider</value></data>
+  <data name="ProvManage_AddOpenAISubtitle" xml:space="preserve"><value>Add a new Base URL, API Key and model name</value></data>
+  <data name="ProvManage_AddCopilot" xml:space="preserve"><value>Add GitHub Copilot provider</value></data>
+  <data name="ProvManage_AddCopilotSubtitle" xml:space="preserve"><value>Use GitHub web login to connect Copilot</value></data>
+  <data name="ProvManage_GitHubConnected" xml:space="preserve"><value>GitHub connected</value></data>
+  <data name="ProvManage_GitHubNotConnected" xml:space="preserve"><value>GitHub not connected</value></data>
+  <data name="ProvManage_BaseUrlNotConfigured" xml:space="preserve"><value>Base URL not configured</value></data>
+
+  <!-- ProviderDetailPage -->
+  <data name="ProvDetail_TitleFallback" xml:space="preserve"><value>Model provider</value></data>
+  <data name="ProvDetail_Name" xml:space="preserve"><value>Provider</value></data>
+  <data name="ProvDetail_NotFound" xml:space="preserve"><value>Provider not found</value></data>
+  <data name="ProvDetail_AlreadySelected" xml:space="preserve"><value>Currently selected</value></data>
+  <data name="ProvDetail_SelectThis" xml:space="preserve"><value>Select this provider</value></data>
+  <data name="ProvDetail_SelectSubtitle" xml:space="preserve"><value>Subsequent questions will use this provider</value></data>
+  <data name="ProvDetail_ManageCopilot" xml:space="preserve"><value>Manage Copilot login</value></data>
+  <data name="ProvDetail_EditProvider" xml:space="preserve"><value>Edit provider</value></data>
+  <data name="ProvDetail_ManageCopilotSubtitle" xml:space="preserve"><value>Connect GitHub or modify Copilot config</value></data>
+  <data name="ProvDetail_EditProviderSubtitle" xml:space="preserve"><value>Modify Base URL, API Key, model name and system prompt</value></data>
+  <data name="ProvDetail_SelectCommand_Name" xml:space="preserve"><value>Select provider</value></data>
+  <data name="ProvDetail_BaseUrlNotConfigured" xml:space="preserve"><value>Base URL not configured</value></data>
+
+  <!-- CopilotProviderPage -->
+  <data name="CopilotPage_TitleFallback" xml:space="preserve"><value>GitHub Copilot</value></data>
+  <data name="CopilotPage_Name" xml:space="preserve"><value>Copilot</value></data>
+  <data name="CopilotPage_NotFound" xml:space="preserve"><value>Provider not found</value></data>
+  <data name="CopilotPage_AlreadySelected" xml:space="preserve"><value>Currently selected</value></data>
+  <data name="CopilotPage_SelectThis" xml:space="preserve"><value>Select this provider</value></data>
+  <data name="CopilotPage_SelectSubtitle" xml:space="preserve"><value>Subsequent questions will use this GitHub Copilot provider</value></data>
+  <data name="CopilotPage_ReconnectGitHub" xml:space="preserve"><value>Reconnect GitHub</value></data>
+  <data name="CopilotPage_ConnectGitHub" xml:space="preserve"><value>Connect GitHub</value></data>
+  <data name="CopilotPage_ReconnectSubtitle" xml:space="preserve"><value>Use when authorization expired or need a different account</value></data>
+  <data name="CopilotPage_ConnectSubtitle" xml:space="preserve"><value>Log in via web page to use GitHub Copilot</value></data>
+  <data name="CopilotPage_EditCopilot" xml:space="preserve"><value>Edit Copilot config</value></data>
+  <data name="CopilotPage_EditCopilotSubtitle" xml:space="preserve"><value>Modify name, Client ID, model name and system prompt</value></data>
+  <data name="CopilotPage_DisconnectGitHub" xml:space="preserve"><value>Disconnect GitHub</value></data>
+  <data name="CopilotPage_DisconnectSubtitleHasToken" xml:space="preserve"><value>Remove locally saved GitHub authorization</value></data>
+  <data name="CopilotPage_DisconnectSubtitleNoToken" xml:space="preserve"><value>No GitHub authorization saved locally</value></data>
+  <data name="CopilotPage_GitHubConnected" xml:space="preserve"><value>GitHub connected</value></data>
+  <data name="CopilotPage_GitHubNotConnected" xml:space="preserve"><value>GitHub not connected</value></data>
+  <data name="CopilotPage_ClientIdNotSet" xml:space="preserve"><value>Client ID not set</value></data>
+  <data name="CopilotPage_ClientIdSet" xml:space="preserve"><value>Client ID set</value></data>
+  <data name="CopilotPage_SelectCommand_Name" xml:space="preserve"><value>Select provider</value></data>
+  <data name="CopilotPage_DisconnectCommand_Name" xml:space="preserve"><value>Disconnect</value></data>
+
+  <!-- ProviderEditorPage -->
+  <data name="ProvEditor_AddTitle" xml:space="preserve"><value>Add model provider</value></data>
+  <data name="ProvEditor_EditTitlePrefix" xml:space="preserve"><value>Edit </value></data>
+  <data name="ProvEditor_Name" xml:space="preserve"><value>Config</value></data>
+  <data name="ProvEditor_CannotReadConfig" xml:space="preserve"><value>Cannot read provider config.</value></data>
+  <data name="ProvEditor_FillName" xml:space="preserve"><value>Please fill in the provider name.</value></data>
+  <data name="ProvEditor_FillBaseUrl" xml:space="preserve"><value>Please fill in the Base URL.</value></data>
+  <data name="ProvEditor_FillModel" xml:space="preserve"><value>Please fill in the model name.</value></data>
+  <data name="ProvEditor_Saved" xml:space="preserve"><value>Saved </value></data>
+  <data name="ProvEditor_UnnamedProvider" xml:space="preserve"><value>Unnamed provider</value></data>
+  <data name="ProvEditor_ProviderN" xml:space="preserve"><value>Provider </value></data>
+  <!-- Adaptive Card labels -->
+  <data name="ProvEditor_AC_ProviderName" xml:space="preserve"><value>Provider name</value></data>
+  <data name="ProvEditor_AC_ProviderNameError" xml:space="preserve"><value>Please fill in the provider name</value></data>
+  <data name="ProvEditor_AC_BaseUrlError" xml:space="preserve"><value>Please fill in the Base URL</value></data>
+  <data name="ProvEditor_AC_ModelError" xml:space="preserve"><value>Please fill in the model name</value></data>
+  <data name="ProvEditor_AC_SystemPromptPlaceholder" xml:space="preserve"><value>You are a concise and reliable AI assistant.</value></data>
+  <data name="ProvEditor_AC_SaveButton" xml:space="preserve"><value>Save and select</value></data>
+
+  <!-- CopilotProviderEditorPage -->
+  <data name="CopilotEditor_AddTitle" xml:space="preserve"><value>Add GitHub Copilot</value></data>
+  <data name="CopilotEditor_EditTitlePrefix" xml:space="preserve"><value>Edit </value></data>
+  <data name="CopilotEditor_Name" xml:space="preserve"><value>Config</value></data>
+  <data name="CopilotEditor_CannotReadConfig" xml:space="preserve"><value>Cannot read Copilot config.</value></data>
+  <data name="CopilotEditor_FillName" xml:space="preserve"><value>Please fill in the provider name.</value></data>
+  <data name="CopilotEditor_FillModel" xml:space="preserve"><value>Please fill in the Copilot model name, e.g. gpt-4.1.</value></data>
+  <data name="CopilotEditor_Saved" xml:space="preserve"><value>Saved </value></data>
+  <!-- Adaptive Card labels -->
+  <data name="CopilotEditor_AC_ProviderName" xml:space="preserve"><value>Provider name</value></data>
+  <data name="CopilotEditor_AC_ProviderNameError" xml:space="preserve"><value>Please fill in the provider name</value></data>
+  <data name="CopilotEditor_AC_ClientIdLabel" xml:space="preserve"><value>GitHub OAuth Client ID (advanced)</value></data>
+  <data name="CopilotEditor_AC_ClientIdPlaceholder" xml:space="preserve"><value>Uses built-in Client ID by default; fork projects can replace with their own</value></data>
+  <data name="CopilotEditor_AC_ModelError" xml:space="preserve"><value>Please fill in the model name</value></data>
+  <data name="CopilotEditor_AC_SystemPromptPlaceholder" xml:space="preserve"><value>You are a concise and reliable AI assistant.</value></data>
+  <data name="CopilotEditor_AC_SaveButton" xml:space="preserve"><value>Save and select</value></data>
+
+  <!-- GitHubDeviceLoginPage -->
+  <data name="GitHubLogin_Title" xml:space="preserve"><value>Connect GitHub</value></data>
+  <data name="GitHubLogin_Name" xml:space="preserve"><value>Login</value></data>
+  <data name="GitHubLogin_Preparing" xml:space="preserve"><value>Preparing GitHub login...</value></data>
+  <data name="GitHubLogin_NotFound" xml:space="preserve"><value>Provider not found</value></data>
+  <data name="GitHubLogin_ContinuePrevious" xml:space="preserve"><value>Continuing with previous unexpired GitHub login verification code.</value></data>
+  <data name="GitHubLogin_FetchingCode" xml:space="preserve"><value>Requesting login verification code from GitHub...</value></data>
+  <data name="GitHubLogin_EnterCode" xml:space="preserve"><value>Please open the GitHub verification page in your browser and enter the code.</value></data>
+  <data name="GitHubLogin_WaitingAuth" xml:space="preserve"><value>Waiting for GitHub to complete authorization...</value></data>
+  <data name="GitHubLogin_Connected" xml:space="preserve"><value>GitHub connected.</value></data>
+  <data name="GitHubLogin_ConnectedWith" xml:space="preserve"><value>GitHub connected: </value></data>
+  <data name="GitHubLogin_ConfigError" xml:space="preserve"><value>GitHub login configuration error</value></data>
+  <data name="GitHubLogin_ConfigErrorSubtitle" xml:space="preserve"><value>This version lacks a built-in Client ID, please fill it in the config page</value></data>
+  <data name="GitHubLogin_MissingClientId" xml:space="preserve"><value>Missing GitHub OAuth Client ID</value></data>
+  <data name="GitHubLogin_MissingClientIdDetail" xml:space="preserve"><value>Normal users usually don't need to handle this value. This version should have a built-in Client ID; if you forked the project, you can also replace it with your own GitHub OAuth App Client ID in the config page.</value></data>
+  <data name="GitHubLogin_VerificationCode" xml:space="preserve"><value>Verification code: </value></data>
+  <data name="GitHubLogin_CodeSubtitle" xml:space="preserve"><value>Open </value></data>
+  <data name="GitHubLogin_CodeSubtitleSuffix" xml:space="preserve"><value>, enter the verification code then come back here to continue</value></data>
+  <data name="GitHubLogin_CopyCode" xml:space="preserve"><value>Copy verification code</value></data>
+  <data name="GitHubLogin_ConfirmingAuth" xml:space="preserve"><value>Confirming authorization...</value></data>
+  <data name="GitHubLogin_IHaveCompleted" xml:space="preserve"><value>I've completed authorization, continue</value></data>
+  <data name="GitHubLogin_WaitingForResult" xml:space="preserve"><value>Waiting for GitHub to return login result</value></data>
+  <data name="GitHubLogin_AuthCompletedClickHere" xml:space="preserve"><value>Click here after authorizing in the browser</value></data>
+  <data name="GitHubLogin_LoginStatus" xml:space="preserve"><value>Login status</value></data>
+  <data name="GitHubLogin_RestartCode" xml:space="preserve"><value>Get new verification code</value></data>
+  <data name="GitHubLogin_RestartCodeSubtitle" xml:space="preserve"><value>Only use when the code expired or you want a new one</value></data>
+  <data name="GitHubLogin_BrowserLoginGitHub" xml:space="preserve"><value>### Log in to GitHub in browser</value></data>
+  <data name="GitHubLogin_VerificationPage" xml:space="preserve"><value>Verification page: </value></data>
+  <data name="GitHubLogin_VerificationCodeLabel" xml:space="preserve"><value>Verification code: </value></data>
+  <data name="GitHubLogin_ProviderLabel" xml:space="preserve"><value>Provider: </value></data>
+  <data name="GitHubLogin_ExpiresAt" xml:space="preserve"><value>Expires at: </value></data>
+  <data name="GitHubLogin_ReturnAfterAuth" xml:space="preserve"><value>After authorizing in the browser, come back here and select "I've completed authorization, continue". Closing Command Palette and coming back later will still show this unexpired verification code.</value></data>
+  <data name="GitHubLogin_ContinueCommand_Name" xml:space="preserve"><value>Continue</value></data>
+  <data name="GitHubLogin_RestartCommand_Name" xml:space="preserve"><value>Get new verification code</value></data>
+
+  <!-- SettingsManager -->
+  <data name="Settings_CannotSaveToken" xml:space="preserve"><value>Cannot save GitHub authorization, please check if Windows credential storage is available.</value></data>
+  <data name="Settings_DefaultSystemPrompt" xml:space="preserve"><value>You are a concise and reliable AI assistant.</value></data>
+
+  <!-- SettingsPage -->
+  <data name="Settings_Title" xml:space="preserve"><value>Settings</value></data>
+  <data name="Settings_Name" xml:space="preserve"><value>Settings</value></data>
+  <data name="Settings_LanguageTitle" xml:space="preserve"><value>Interface language</value></data>
+  <data name="Settings_LanguageSubtitlePrefix" xml:space="preserve"><value>Current: </value></data>
+  <data name="Settings_LanguageSubtitleSuffix" xml:space="preserve"><value> · Click to switch</value></data>
+  <data name="Settings_LangAuto" xml:space="preserve"><value>Auto (follow system)</value></data>
+  <data name="Settings_LangSelectTitle" xml:space="preserve"><value>Select language</value></data>
+  <data name="Settings_LangSelectName" xml:space="preserve"><value>Language</value></data>
+  <data name="Settings_LangCurrentlySelected" xml:space="preserve"><value>✓ Currently selected</value></data>
+  <data name="Settings_LangClickToSelect" xml:space="preserve"><value>Click to select</value></data>
+  <data name="Settings_LangSelectCommand_Name" xml:space="preserve"><value>Select</value></data>
+
+  <!-- AiChatService -->
+  <data name="AiChat_EmptyPrompt" xml:space="preserve"><value>Please enter content to ask AI.</value></data>
+  <data name="AiChat_CopilotModelRequired" xml:space="preserve"><value>Please fill in the Copilot model name, e.g. gpt-4.1.</value></data>
+  <data name="AiChat_CopilotGitHubRequired" xml:space="preserve"><value>Please connect GitHub account in GitHub Copilot provider first.</value></data>
+  <data name="AiChat_BaseUrlRequired" xml:space="preserve"><value>Please fill in the Base URL in extension settings.</value></data>
+  <data name="AiChat_BaseUrlInvalidDetail" xml:space="preserve"><value>Base URL is not a valid HTTP/HTTPS address. Please enter an address like https://api.example.com or https://api.example.com/v1.</value></data>
+  <data name="AiChat_ApiKeyRequired" xml:space="preserve"><value>Please fill in the API Key in extension settings.</value></data>
+  <data name="AiChat_ModelRequired" xml:space="preserve"><value>Please fill in the model name in extension settings.</value></data>
+  <data name="AiChat_BaseUrlInvalid" xml:space="preserve"><value>Base URL is not a valid HTTP/HTTPS address.</value></data>
+  <data name="AiChat_RequestTimeout" xml:space="preserve"><value>Request timed out, please check your network or try again later.</value></data>
+  <data name="AiChat_NetworkError" xml:space="preserve"><value>Network request failed: {0}</value></data>
+  <data name="AiChat_JsonParseError" xml:space="preserve"><value>AI service returned unparseable JSON: {0}</value></data>
+  <data name="AiChat_EmptyResponse" xml:space="preserve"><value>AI service returned successfully but did not include displayable answer content.</value></data>
+  <data name="AiChat_AuthFailed" xml:space="preserve"><value>Authentication failed, please check API Key.</value></data>
+  <data name="AiChat_NotFound" xml:space="preserve"><value>Endpoint not found, please check if Base URL ends with /v1.</value></data>
+  <data name="AiChat_RateLimited" xml:space="preserve"><value>Requests too frequent or quota exceeded.</value></data>
+  <data name="AiChat_ServiceUnavailable" xml:space="preserve"><value>AI service is temporarily unavailable.</value></data>
+  <data name="AiChat_HttpError" xml:space="preserve"><value>AI service returned HTTP {0}.</value></data>
+  <data name="AiChat_ProviderMessage" xml:space="preserve"><value>{0}\n\nService returned: {1}</value></data>
+
+  <!-- CopilotChatService -->
+  <data name="CopilotChat_EmptyPrompt" xml:space="preserve"><value>Please enter content to ask AI.</value></data>
+  <data name="CopilotChat_ModelRequired" xml:space="preserve"><value>Please fill in the Copilot model name, e.g. gpt-4.1.</value></data>
+  <data name="CopilotChat_Timeout" xml:space="preserve"><value>GitHub Copilot request timed out, please check your network or try again later.</value></data>
+  <data name="CopilotChat_NetworkError" xml:space="preserve"><value>GitHub Copilot network request failed: {0}</value></data>
+  <data name="CopilotChat_JsonParseError" xml:space="preserve"><value>GitHub Copilot returned unparseable JSON: {0}</value></data>
+  <data name="CopilotChat_RequestFailedPrefix" xml:space="preserve"><value>GitHub Copilot request failed</value></data>
+  <data name="CopilotChat_GitHubRequired" xml:space="preserve"><value>Please connect GitHub account in GitHub Copilot provider first.</value></data>
+  <data name="CopilotChat_TokenParseError" xml:space="preserve"><value>GitHub Copilot token endpoint returned unparseable data.</value></data>
+  <data name="CopilotChat_TokenEmpty" xml:space="preserve"><value>GitHub Copilot token endpoint did not return a usable token. Please confirm your account has Copilot access.</value></data>
+  <data name="CopilotChat_EmptyResponse" xml:space="preserve"><value>GitHub Copilot returned successfully but did not include displayable answer content.</value></data>
+  <data name="CopilotChat_HttpError" xml:space="preserve"><value>GitHub Copilot request failed: HTTP {0}.</value></data>
+  <data name="CopilotChat_HttpErrorWithDetail" xml:space="preserve"><value>GitHub Copilot request failed: HTTP {0}: {1}</value></data>
+
+  <!-- CopilotAuthService -->
+  <data name="CopilotAuth_ClientIdRequired" xml:space="preserve"><value>Please fill in the GitHub OAuth App Client ID first.</value></data>
+  <data name="CopilotAuth_InitHttpError" xml:space="preserve"><value>GitHub login initialization failed: HTTP {0}.</value></data>
+  <data name="CopilotAuth_InitParseError" xml:space="preserve"><value>GitHub login initialization returned unparseable data.</value></data>
+  <data name="CopilotAuth_NoDeviceCode" xml:space="preserve"><value>GitHub did not return a usable login verification code.</value></data>
+  <data name="CopilotAuth_InvalidDeviceCode" xml:space="preserve"><value>GitHub login verification code is invalid, please restart login.</value></data>
+  <data name="CopilotAuth_PollHttpError" xml:space="preserve"><value>GitHub login polling failed: HTTP {0}.</value></data>
+  <data name="CopilotAuth_PollParseError" xml:space="preserve"><value>GitHub login polling returned unparseable data.</value></data>
+  <data name="CopilotAuth_CodeExpired" xml:space="preserve"><value>GitHub login verification code has expired, please restart login.</value></data>
+  <data name="CopilotAuth_DeviceFlowDisabled" xml:space="preserve"><value>This GitHub OAuth App has Device Flow disabled. Please enable it in GitHub App settings.</value></data>
+  <data name="CopilotAuth_InvalidClientId" xml:space="preserve"><value>GitHub Client ID is invalid, please check Copilot provider configuration.</value></data>
+  <data name="CopilotAuth_InitFailedWithError" xml:space="preserve"><value>GitHub login initialization failed: {0}.</value></data>
+  <data name="CopilotAuth_AccessDenied" xml:space="preserve"><value>GitHub login cancelled.</value></data>
+  <data name="CopilotAuth_ExpiredToken" xml:space="preserve"><value>GitHub login verification code has expired, please restart login.</value></data>
+  <data name="CopilotAuth_DeviceFlowDisabledNoHint" xml:space="preserve"><value>This GitHub OAuth App has Device Flow disabled.</value></data>
+  <data name="CopilotAuth_UnsupportedGrantType" xml:space="preserve"><value>GitHub login authorization type is not supported.</value></data>
+  <data name="CopilotAuth_EmptyError" xml:space="preserve"><value>GitHub temporarily did not return login result, please try again later.</value></data>
+  <data name="CopilotAuth_LoginFailedWithError" xml:space="preserve"><value>GitHub login failed: {0}.</value></data>
+
+  <!-- Additional AskAiPage keys -->
+  <data name="AskAi_GitHubWithLogin" xml:space="preserve"><value>GitHub: {0}</value></data>
+
+  <!-- ProviderEditorPage -->
+  <data name="ProvEditor_ProviderTypePlaceholder" xml:space="preserve"><value>openai or copilot</value></data>
 </root>

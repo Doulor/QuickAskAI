@@ -16,8 +16,8 @@ internal sealed partial class ProviderManagementPage : ListPage
     {
         _settingsManager = settingsManager;
         Icon = new IconInfo("");
-        Title = "模型提供商";
-        Name = "管理";
+        Title = ResourceHelper.GetString("ProvManage_Title");
+        Name = ResourceHelper.GetString("ProvManage_Name");
         ShowDetails = false;
     }
 
@@ -44,7 +44,7 @@ internal sealed partial class ProviderManagementPage : ListPage
             : new ProviderDetailPage(_settingsManager, profile.Id);
         return new ListItem(page)
         {
-            Title = isActive ? $"当前：{profile.Name}" : profile.Name,
+            Title = isActive ? ResourceHelper.GetString("ProvManage_CurrentPrefix") + profile.Name : profile.Name,
             Subtitle = BuildProviderSubtitle(profile),
             Icon = new IconInfo(isActive ? "" : profile.ProviderType.Equals("copilot", System.StringComparison.OrdinalIgnoreCase) ? "" : ""),
         };
@@ -52,15 +52,15 @@ internal sealed partial class ProviderManagementPage : ListPage
 
     private ListItem CreateAddOpenAiProviderItem() => new(new ProviderEditorPage(_settingsManager, _settingsManager.CreateEmptyProvider(), () => RaiseItemsChanged()))
     {
-        Title = "添加 OpenAI 兼容提供商",
-        Subtitle = "添加新的 Base URL、API Key 和模型名",
+        Title = ResourceHelper.GetString("ProvManage_AddOpenAI"),
+        Subtitle = ResourceHelper.GetString("ProvManage_AddOpenAISubtitle"),
         Icon = new IconInfo(""),
     };
 
     private ListItem CreateAddCopilotProviderItem() => new(new CopilotProviderEditorPage(_settingsManager, SettingsManager.CreateCopilotProvider(), () => RaiseItemsChanged()))
     {
-        Title = "添加 GitHub Copilot 提供商",
-        Subtitle = "使用 GitHub 网页登录连接 Copilot",
+        Title = ResourceHelper.GetString("ProvManage_AddCopilot"),
+        Subtitle = ResourceHelper.GetString("ProvManage_AddCopilotSubtitle"),
         Icon = new IconInfo(""),
     };
 
@@ -69,8 +69,8 @@ internal sealed partial class ProviderManagementPage : ListPage
         if (profile.ProviderType.Equals("copilot", System.StringComparison.OrdinalIgnoreCase))
         {
             var authState = SettingsManager.HasCopilotToken(profile)
-                ? string.IsNullOrWhiteSpace(profile.GitHubLogin) ? "GitHub 已连接" : $"GitHub: {profile.GitHubLogin}"
-                : "未连接 GitHub";
+                ? string.IsNullOrWhiteSpace(profile.GitHubLogin) ? ResourceHelper.GetString("ProvManage_GitHubConnected") : $"GitHub: {profile.GitHubLogin}"
+                : ResourceHelper.GetString("ProvManage_GitHubNotConnected");
             return $"{profile.Model} · {authState}";
         }
 
@@ -84,6 +84,6 @@ internal sealed partial class ProviderManagementPage : ListPage
             return uri.Host;
         }
 
-        return string.IsNullOrWhiteSpace(value) ? "未配置 Base URL" : value;
+        return string.IsNullOrWhiteSpace(value) ? ResourceHelper.GetString("ProvManage_BaseUrlNotConfigured") : value;
     }
 }

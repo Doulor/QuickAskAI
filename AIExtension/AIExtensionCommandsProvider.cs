@@ -16,7 +16,7 @@ public partial class AIExtensionCommandsProvider : CommandProvider
 
     public AIExtensionCommandsProvider()
     {
-        DisplayName = "快速询问AI";
+        DisplayName = ResourceHelper.GetString("CommandsProvider_DisplayName");
         Icon = IconHelpers.FromRelativePath("Assets\\ICON.png");
         Settings = _settingsManager.Settings;
         _commands = [

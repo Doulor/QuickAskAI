@@ -30,9 +30,9 @@ internal sealed partial class AskAiPage : DynamicListPage
         _conversationStore.EnsureUnusedSessionActive();
 
         Icon = IconHelpers.FromRelativePath("Assets\\ICON.png");
-        Title = "快速询问AI";
-        Name = "询问";
-        PlaceholderText = "输入问题，按 Enter 询问 AI";
+        Title = ResourceHelper.GetString("AskAi_Title");
+        Name = ResourceHelper.GetString("AskAi_Name");
+        PlaceholderText = ResourceHelper.GetString("AskAi_Placeholder");
         ShowDetails = true;
     }
 
@@ -77,7 +77,7 @@ internal sealed partial class AskAiPage : DynamicListPage
 
         var status = new StatusMessage
         {
-            Message = "正在询问 AI...",
+            Message = ResourceHelper.GetString("AskAi_StatusMessage"),
             State = MessageState.Info,
             Progress = new ProgressState { IsIndeterminate = true },
         };
@@ -96,7 +96,7 @@ internal sealed partial class AskAiPage : DynamicListPage
                 ShowCompletedResult(
                     requestVersion,
                     prompt,
-                    AiChatResponse.Failure($"请求处理失败：{ex.Message}", request.Model));
+                    AiChatResponse.Failure(ResourceHelper.GetString("AskAi_RequestFailed") + ex.Message, request.Model));
             }
             finally
             {
@@ -111,8 +111,8 @@ internal sealed partial class AskAiPage : DynamicListPage
     [
         new ListItem(new SubmitPromptCommand(this, query))
         {
-            Title = $"询问：{Preview(query, 80)}",
-            Subtitle = $"使用 {_settingsManager.ActiveProvider.Name} / {_settingsManager.ActiveProvider.Model}",
+            Title = ResourceHelper.GetString("AskAi_AskTitle") + Preview(query, 80),
+            Subtitle = ResourceHelper.GetString("AskAi_UsingProvider") + _settingsManager.ActiveProvider.Name + " / " + _settingsManager.ActiveProvider.Model,
             Icon = new IconInfo(""),
         },
     ];
@@ -136,28 +136,18 @@ internal sealed partial class AskAiPage : DynamicListPage
 
         items.Add(CreateConversationEntryItem());
         items.Add(CreateProviderManagementItem());
-        items.Add(CreateSettingsItem());
 
         return [.. items];
     }
 
-    private ListItem CreateSettingsItem()
-    {
-        return new ListItem(new SettingsPage(_settingsManager, () => RaiseItemsChanged()))
-        {
-            Title = "设置",
-            Subtitle = "语言偏好和扩展设置",
-            Icon = new IconInfo(""),
-        };
-    }
 
     private ListItem CreateConversationEntryItem()
     {
         var session = _conversationStore.ActiveSession;
         return new ListItem(new ConversationManagementPage(_conversationStore, RefreshFromActiveSession))
         {
-            Title = $"会话：{session.Title}",
-            Subtitle = $"{session.Messages.Count} 条消息 · 进入后可新建或选择历史会话",
+            Title = ResourceHelper.GetString("AskAi_ConversationTitle") + session.Title,
+            Subtitle = $"{session.Messages.Count} {ResourceHelper.GetString("AskAi_ConversationSubtitle")}",
             Icon = new IconInfo(""),
         };
     }
@@ -167,7 +157,7 @@ internal sealed partial class AskAiPage : DynamicListPage
         var provider = _settingsManager.ActiveProvider;
         return new ListItem(new ProviderManagementPage(_settingsManager))
         {
-            Title = $"模型提供商：{provider.Name}",
+            Title = ResourceHelper.GetString("AskAi_ProviderTitle") + provider.Name,
             Subtitle = BuildProviderSubtitle(provider),
             Icon = new IconInfo(""),
         };
@@ -175,7 +165,7 @@ internal sealed partial class AskAiPage : DynamicListPage
 
     private ListItem CreateBusyItem() => new(new NoOpCommand())
     {
-        Title = "正在询问 AI...",
+        Title = ResourceHelper.GetString("AskAi_BusyTitle"),
         Subtitle = Preview(_lastPrompt, 100),
         Icon = new IconInfo(""),
     };
@@ -189,40 +179,40 @@ internal sealed partial class AskAiPage : DynamicListPage
 
         var response = _lastResponse;
         var body = response.IsSuccess
-            ? $"{response.Content}\n\n---\n\n模型：{EscapeInline(response.Model)}\n\n服务：{EscapeInline(response.Endpoint)}"
+            ? response.Content + "\n\n---\n\n" + ResourceHelper.GetString("AskAi_ModelLabel") + EscapeInline(response.Model) + "\n\n" + ResourceHelper.GetString("AskAi_ServiceLabel") + EscapeInline(response.Endpoint)
             : CodeBlock(response.ErrorMessage);
 
         return new ListItem(response.IsSuccess ? new CopyTextCommand(response.Content) : new NoOpCommand())
         {
-            Title = response.IsSuccess ? "回答" : "请求失败",
-            Subtitle = response.IsSuccess ? "右侧显示完整回答；按 Enter 复制" : "右侧显示错误详情",
+            Title = response.IsSuccess ? ResourceHelper.GetString("AskAi_AnswerTitle") : ResourceHelper.GetString("AskAi_RequestFailedTitle"),
+            Subtitle = response.IsSuccess ? ResourceHelper.GetString("AskAi_AnswerSubtitle") : ResourceHelper.GetString("AskAi_ErrorSubtitle"),
             Icon = new IconInfo(response.IsSuccess ? "" : ""),
             Details = new Details
             {
-                Title = response.IsSuccess ? "回答" : "请求失败",
+                Title = response.IsSuccess ? ResourceHelper.GetString("AskAi_AnswerTitle") : ResourceHelper.GetString("AskAi_RequestFailedTitle"),
                 Body = body,
                 Size = ContentSize.Large,
             },
             MoreCommands = response.IsSuccess
-                ? [new CommandContextItem(new CopyTextCommand(response.Content)) { Title = "复制回答" }]
+                ? [new CommandContextItem(new CopyTextCommand(response.Content)) { Title = ResourceHelper.GetString("AskAi_CopyAnswer") }]
                 : [],
         };
     }
 
     private static string EscapeInline(string value) => string.IsNullOrWhiteSpace(value)
-        ? "未提供"
+        ? ResourceHelper.GetString("AskAi_NotProvided")
         : value.Replace("`", "\\`");
 
     private static string CodeBlock(string value)
     {
-        var safeValue = string.IsNullOrWhiteSpace(value) ? "未知错误。" : value.Replace("```", "` ` `");
+        var safeValue = string.IsNullOrWhiteSpace(value) ? ResourceHelper.GetString("AskAi_UnknownError") : value.Replace("```", "` ` `");
         return $"```text\n{safeValue}\n```";
     }
 
     private static ListItem CreateHelpItem() => new(new NoOpCommand())
     {
-        Title = "在顶部输入框输入问题",
-        Subtitle = "按 Enter 发送。左侧可直接选择或添加模型提供商。",
+        Title = ResourceHelper.GetString("AskAi_HelpTitle"),
+        Subtitle = ResourceHelper.GetString("AskAi_HelpSubtitle"),
         Icon = new IconInfo(""),
     };
 
@@ -292,12 +282,12 @@ internal sealed partial class AskAiPage : DynamicListPage
         if (provider.ProviderType.Equals("copilot", StringComparison.OrdinalIgnoreCase))
         {
             var authState = SettingsManager.HasCopilotToken(provider)
-                ? string.IsNullOrWhiteSpace(provider.GitHubLogin) ? "GitHub 已连接" : $"GitHub: {provider.GitHubLogin}"
-                : "未连接 GitHub";
-            return $"{provider.Model} · {authState} · 进入后可连接、选择或编辑";
+                ? string.IsNullOrWhiteSpace(provider.GitHubLogin) ? ResourceHelper.GetString("AskAi_GitHubConnected") : string.Format(ResourceHelper.GetString("AskAi_GitHubWithLogin"), provider.GitHubLogin)
+                : ResourceHelper.GetString("AskAi_GitHubNotConnected");
+            return $"{provider.Model} · {authState} · {ResourceHelper.GetString("AskAi_ProviderEnterToAdd")}";
         }
 
-        return $"{provider.Model} · {MaskBaseUrl(provider.BaseUrl)} · 进入后可添加、选择或编辑";
+        return $"{provider.Model} · {MaskBaseUrl(provider.BaseUrl)} · {ResourceHelper.GetString("AskAi_ProviderEnterToManage")}";
     }
 
     private static string MaskBaseUrl(string value)
@@ -307,7 +297,7 @@ internal sealed partial class AskAiPage : DynamicListPage
             return uri.Host;
         }
 
-        return string.IsNullOrWhiteSpace(value) ? "未配置 Base URL" : value;
+        return string.IsNullOrWhiteSpace(value) ? ResourceHelper.GetString("AskAi_BaseUrlNotConfigured") : value;
     }
 
     private sealed partial class SubmitPromptCommand : InvokableCommand
@@ -319,7 +309,7 @@ internal sealed partial class AskAiPage : DynamicListPage
         {
             _page = page;
             _prompt = prompt;
-            Name = "询问";
+            Name = ResourceHelper.GetString("AskAi_SubmitCommand_Name");
             Icon = new IconInfo("");
         }
 

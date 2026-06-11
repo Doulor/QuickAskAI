@@ -18,7 +18,7 @@ internal sealed partial class GitHubDeviceLoginPage : ListPage
     private readonly string _providerId;
     private readonly Action? _onChanged;
     private GitHubDeviceCodeResult? _deviceCode;
-    private string _statusMessage = "正在准备 GitHub 登录...";
+    private string _statusMessage = ResourceHelper.GetString("GitHubLogin_Preparing");
     private bool _isBusy;
 
     public GitHubDeviceLoginPage(SettingsManager settingsManager, string providerId, Action? onChanged = null)
@@ -29,8 +29,8 @@ internal sealed partial class GitHubDeviceLoginPage : ListPage
         _onChanged = onChanged;
 
         Icon = new IconInfo("");
-        Title = "连接 GitHub";
-        Name = "登录";
+        Title = ResourceHelper.GetString("GitHubLogin_Title");
+        Name = ResourceHelper.GetString("GitHubLogin_Name");
         ShowDetails = true;
 
         RestoreOrStartLogin();
@@ -43,7 +43,7 @@ internal sealed partial class GitHubDeviceLoginPage : ListPage
         var provider = Provider;
         if (provider is null)
         {
-            return [new ListItem(new NoOpCommand()) { Title = "提供商不存在", Icon = new IconInfo("") }];
+            return [new ListItem(new NoOpCommand()) { Title = ResourceHelper.GetString("GitHubLogin_NotFound"), Icon = new IconInfo("\uE713") }];
         }
 
         if (string.IsNullOrWhiteSpace(provider.GitHubClientId))
@@ -76,7 +76,7 @@ internal sealed partial class GitHubDeviceLoginPage : ListPage
         _deviceCode = GitHubDeviceLoginStore.TryGet(provider.Id, provider.GitHubClientId);
         if (_deviceCode is not null)
         {
-            _statusMessage = "继续使用上次未过期的 GitHub 登录验证码。";
+            _statusMessage = ResourceHelper.GetString("GitHubLogin_ContinuePrevious");
             IsLoading = false;
             return;
         }
@@ -101,7 +101,7 @@ internal sealed partial class GitHubDeviceLoginPage : ListPage
 
         _isBusy = true;
         IsLoading = true;
-        _statusMessage = "正在向 GitHub 获取登录验证码...";
+        _statusMessage = ResourceHelper.GetString("GitHubLogin_FetchingCode");
         RaiseItemsChanged();
 
         _ = Task.Run(async () =>
@@ -110,7 +110,7 @@ internal sealed partial class GitHubDeviceLoginPage : ListPage
             {
                 _deviceCode = await _authService.StartDeviceLoginAsync(provider.GitHubClientId).ConfigureAwait(false);
                 GitHubDeviceLoginStore.Save(provider.Id, provider.GitHubClientId, _deviceCode);
-                _statusMessage = "请在浏览器打开 GitHub 验证页面并输入验证码。";
+                _statusMessage = ResourceHelper.GetString("GitHubLogin_EnterCode");
             }
             catch (Exception ex)
             {
@@ -136,7 +136,7 @@ internal sealed partial class GitHubDeviceLoginPage : ListPage
 
         _isBusy = true;
         IsLoading = true;
-        _statusMessage = "正在等待 GitHub 完成授权...";
+        _statusMessage = ResourceHelper.GetString("GitHubLogin_WaitingAuth");
         RaiseItemsChanged();
 
         _ = Task.Run(async () =>
@@ -148,8 +148,8 @@ internal sealed partial class GitHubDeviceLoginPage : ListPage
                 _settingsManager.SaveCopilotToken(provider.Id, token.AccessToken, login, ClassifyToken(token.AccessToken));
                 GitHubDeviceLoginStore.Clear(provider.Id, provider.GitHubClientId);
                 _statusMessage = string.IsNullOrWhiteSpace(login)
-                    ? "GitHub 已连接。"
-                    : $"GitHub 已连接：{login}";
+                    ? ResourceHelper.GetString("GitHubLogin_Connected")
+                    : ResourceHelper.GetString("GitHubLogin_ConnectedWith") + login;
                 _onChanged?.Invoke();
             }
             catch (Exception ex)
@@ -167,10 +167,10 @@ internal sealed partial class GitHubDeviceLoginPage : ListPage
 
     private ListItem CreateMissingClientIdItem(ProviderProfile provider) => new(new CopilotProviderEditorPage(_settingsManager, provider, () => RaiseItemsChanged()))
     {
-        Title = "GitHub 登录配置异常",
-        Subtitle = "这个版本缺少内置 Client ID，请进入配置页填写",
+        Title = ResourceHelper.GetString("GitHubLogin_ConfigError"),
+        Subtitle = ResourceHelper.GetString("GitHubLogin_ConfigErrorSubtitle"),
         Icon = new IconInfo(""),
-        Details = CreateDetails("缺少 GitHub OAuth Client ID", "普通用户通常不需要处理这个值。这个版本应当内置 Client ID；如果你 fork 了项目，也可以在配置页替换为自己的 GitHub OAuth App Client ID。"),
+        Details = CreateDetails(ResourceHelper.GetString("GitHubLogin_MissingClientId"), ResourceHelper.GetString("GitHubLogin_MissingClientIdDetail")),
     };
 
     private ListItem CreateStatusItem(ProviderProfile provider) => new(new NoOpCommand())
@@ -178,7 +178,7 @@ internal sealed partial class GitHubDeviceLoginPage : ListPage
         Title = _statusMessage,
         Subtitle = provider.Name,
         Icon = new IconInfo(_isBusy ? "" : ""),
-        Details = CreateDetails("连接 GitHub", _statusMessage),
+        Details = CreateDetails(ResourceHelper.GetString("GitHubLogin_Title"), _statusMessage),
     };
 
     private ListItem CreateCodeItem(ProviderProfile provider)
@@ -186,33 +186,33 @@ internal sealed partial class GitHubDeviceLoginPage : ListPage
         var deviceCode = _deviceCode!;
         return new ListItem(new CopyTextCommand(deviceCode.UserCode))
         {
-            Title = $"验证码：{deviceCode.UserCode}",
-            Subtitle = $"打开 {deviceCode.VerificationUri}，输入验证码后返回这里继续",
+            Title = ResourceHelper.GetString("GitHubLogin_VerificationCode") + deviceCode.UserCode,
+            Subtitle = ResourceHelper.GetString("GitHubLogin_CodeSubtitle") + deviceCode.VerificationUri + ResourceHelper.GetString("GitHubLogin_CodeSubtitleSuffix"),
             Icon = new IconInfo(""),
-            Details = CreateDetails("连接 GitHub", BuildLoginMarkdown(provider, deviceCode)),
-            MoreCommands = [new CommandContextItem(new CopyTextCommand(deviceCode.UserCode)) { Title = "复制验证码" }],
+            Details = CreateDetails(ResourceHelper.GetString("GitHubLogin_Title"), BuildLoginMarkdown(provider, deviceCode)),
+            MoreCommands = [new CommandContextItem(new CopyTextCommand(deviceCode.UserCode)) { Title = ResourceHelper.GetString("GitHubLogin_CopyCode") }],
         };
     }
 
     private ListItem CreateContinueItem() => new(new CompleteLoginCommand(this))
     {
-        Title = _isBusy ? "正在确认授权..." : "我已完成授权，继续",
-        Subtitle = _isBusy ? "正在等待 GitHub 返回登录结果" : "浏览器中授权完成后点击这里",
+        Title = _isBusy ? ResourceHelper.GetString("GitHubLogin_ConfirmingAuth") : ResourceHelper.GetString("GitHubLogin_IHaveCompleted"),
+        Subtitle = _isBusy ? ResourceHelper.GetString("GitHubLogin_WaitingForResult") : ResourceHelper.GetString("GitHubLogin_AuthCompletedClickHere"),
         Icon = new IconInfo(""),
-        Details = CreateDetails("登录状态", _statusMessage),
+        Details = CreateDetails(ResourceHelper.GetString("GitHubLogin_LoginStatus"), _statusMessage),
     };
 
     private ListItem CreateCopyCodeItem() => new(new CopyTextCommand(_deviceCode?.UserCode ?? string.Empty))
     {
-        Title = "复制验证码",
+        Title = ResourceHelper.GetString("GitHubLogin_CopyCode"),
         Subtitle = _deviceCode?.UserCode ?? string.Empty,
         Icon = new IconInfo(""),
     };
 
     private ListItem CreateRestartItem() => new(new RestartLoginCommand(this))
     {
-        Title = "重新获取验证码",
-        Subtitle = "只有验证码过期或你想换一个验证码时使用",
+        Title = ResourceHelper.GetString("GitHubLogin_RestartCode"),
+        Subtitle = ResourceHelper.GetString("GitHubLogin_RestartCodeSubtitle"),
         Icon = new IconInfo(""),
     };
 
@@ -251,16 +251,16 @@ internal sealed partial class GitHubDeviceLoginPage : ListPage
     private static string BuildLoginMarkdown(ProviderProfile provider, GitHubDeviceCodeResult deviceCode)
     {
         var builder = new StringBuilder();
-        builder.AppendLine("### 浏览器登录 GitHub");
+        builder.AppendLine(ResourceHelper.GetString("GitHubLogin_BrowserLoginGitHub"));
         builder.AppendLine();
-        builder.Append("验证页面：").AppendLine(deviceCode.VerificationUri);
+        builder.Append(ResourceHelper.GetString("GitHubLogin_VerificationPage")).AppendLine(deviceCode.VerificationUri);
         builder.AppendLine();
-        builder.Append("验证码：").AppendLine(deviceCode.UserCode);
+        builder.Append(ResourceHelper.GetString("GitHubLogin_VerificationCodeLabel")).AppendLine(deviceCode.UserCode);
         builder.AppendLine();
-        builder.Append("提供商：").AppendLine(provider.Name);
-        builder.Append("过期时间：").AppendLine(deviceCode.ExpiresAt.ToLocalTime().ToString("HH:mm:ss", CultureInfo.CurrentCulture));
+        builder.Append(ResourceHelper.GetString("GitHubLogin_ProviderLabel")).AppendLine(provider.Name);
+        builder.Append(ResourceHelper.GetString("GitHubLogin_ExpiresAt")).AppendLine(deviceCode.ExpiresAt.ToLocalTime().ToString("HH:mm:ss", CultureInfo.CurrentCulture));
         builder.AppendLine();
-        builder.AppendLine("浏览器里授权完成后，回到这里选择“我已完成授权，继续”。关闭 Command Palette 后再回来也会继续显示这个未过期验证码。");
+        builder.AppendLine(ResourceHelper.GetString("GitHubLogin_ReturnAfterAuth"));
         return builder.ToString();
     }
 
@@ -271,7 +271,7 @@ internal sealed partial class GitHubDeviceLoginPage : ListPage
         public CompleteLoginCommand(GitHubDeviceLoginPage page)
         {
             _page = page;
-            Name = "继续";
+            Name = ResourceHelper.GetString("GitHubLogin_ContinueCommand_Name");
             Icon = new IconInfo("");
         }
 
@@ -289,7 +289,7 @@ internal sealed partial class GitHubDeviceLoginPage : ListPage
         public RestartLoginCommand(GitHubDeviceLoginPage page)
         {
             _page = page;
-            Name = "重新获取验证码";
+            Name = ResourceHelper.GetString("GitHubLogin_RestartCommand_Name");
             Icon = new IconInfo("");
         }
 

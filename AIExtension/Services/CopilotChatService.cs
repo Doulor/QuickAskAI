@@ -26,12 +26,12 @@ internal sealed class CopilotChatService
     {
         if (string.IsNullOrWhiteSpace(chatRequest.Prompt))
         {
-            return AiChatResponse.Failure("请输入要询问 AI 的内容。", chatRequest.Model, "GitHub Copilot");
+            return AiChatResponse.Failure(ResourceHelper.GetString("CopilotChat_EmptyPrompt"), chatRequest.Model, "GitHub Copilot");
         }
 
         if (string.IsNullOrWhiteSpace(chatRequest.Model))
         {
-            return AiChatResponse.Failure("请填写 Copilot 模型名，例如 gpt-4.1。", chatRequest.Model, "GitHub Copilot");
+            return AiChatResponse.Failure(ResourceHelper.GetString("CopilotChat_ModelRequired"), chatRequest.Model, "GitHub Copilot");
         }
 
         try
@@ -54,19 +54,19 @@ internal sealed class CopilotChatService
         }
         catch (TaskCanceledException) when (!cancellationToken.IsCancellationRequested)
         {
-            return AiChatResponse.Failure("GitHub Copilot 请求超时，请检查网络或稍后重试。", chatRequest.Model, "GitHub Copilot");
+            return AiChatResponse.Failure(ResourceHelper.GetString("CopilotChat_Timeout"), chatRequest.Model, "GitHub Copilot");
         }
         catch (HttpRequestException ex)
         {
-            return AiChatResponse.Failure($"GitHub Copilot 网络请求失败：{ex.Message}", chatRequest.Model, "GitHub Copilot");
+            return AiChatResponse.Failure(string.Format(ResourceHelper.GetString("CopilotChat_NetworkError"), ex.Message), chatRequest.Model, "GitHub Copilot");
         }
         catch (JsonException ex)
         {
-            return AiChatResponse.Failure($"GitHub Copilot 返回了无法解析的 JSON：{ex.Message}", chatRequest.Model, "GitHub Copilot");
+            return AiChatResponse.Failure(string.Format(ResourceHelper.GetString("CopilotChat_JsonParseError"), ex.Message), chatRequest.Model, "GitHub Copilot");
         }
         catch (Exception ex)
         {
-            return AiChatResponse.Failure(BuildSafeError("GitHub Copilot 请求失败", ex, chatRequest.ApiKey), chatRequest.Model, "GitHub Copilot");
+            return AiChatResponse.Failure(BuildSafeError(ResourceHelper.GetString("CopilotChat_RequestFailedPrefix"), ex, chatRequest.ApiKey), chatRequest.Model, "GitHub Copilot");
         }
     }
 
@@ -74,7 +74,7 @@ internal sealed class CopilotChatService
     {
         if (string.IsNullOrWhiteSpace(githubToken))
         {
-            throw new InvalidOperationException("请先在 GitHub Copilot 提供商中连接 GitHub 账号。");
+            throw new InvalidOperationException(ResourceHelper.GetString("CopilotChat_GitHubRequired"));
         }
 
         using var request = new HttpRequestMessage(HttpMethod.Get, CopilotTokenEndpoint);
@@ -90,11 +90,11 @@ internal sealed class CopilotChatService
         }
 
         var root = JsonNode.Parse(responseBody)?.AsObject()
-            ?? throw new InvalidOperationException("GitHub Copilot token 接口返回了无法解析的数据。");
+            ?? throw new InvalidOperationException(ResourceHelper.GetString("CopilotChat_TokenParseError"));
         var token = root["token"]?.GetValue<string>();
         if (string.IsNullOrWhiteSpace(token))
         {
-            throw new InvalidOperationException("GitHub Copilot token 接口没有返回可用 token，请确认账号拥有 Copilot 权益。");
+            throw new InvalidOperationException(ResourceHelper.GetString("CopilotChat_TokenEmpty"));
         }
 
         return token;
@@ -157,7 +157,7 @@ internal sealed class CopilotChatService
 
         if (string.IsNullOrWhiteSpace(content))
         {
-            return AiChatResponse.Failure("GitHub Copilot 返回成功，但没有包含可显示的回答内容。", model, "GitHub Copilot");
+            return AiChatResponse.Failure(ResourceHelper.GetString("CopilotChat_EmptyResponse"), model, "GitHub Copilot");
         }
 
         return AiChatResponse.Success(content.Trim(), model, "GitHub Copilot");
@@ -177,8 +177,8 @@ internal sealed class CopilotChatService
         }
 
         return string.IsNullOrWhiteSpace(detail)
-            ? $"GitHub Copilot 请求失败：HTTP {(int)statusCode}。"
-            : $"GitHub Copilot 请求失败：HTTP {(int)statusCode}：{detail}";
+            ? string.Format(ResourceHelper.GetString("CopilotChat_HttpError"), (int)statusCode)
+            : string.Format(ResourceHelper.GetString("CopilotChat_HttpErrorWithDetail"), (int)statusCode, detail);
     }
 
     private static string ExtractErrorDetail(string responseBody)

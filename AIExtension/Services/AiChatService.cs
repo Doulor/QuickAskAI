@@ -33,39 +33,39 @@ internal sealed class AiChatService
     {
         if (string.IsNullOrWhiteSpace(request.Prompt))
         {
-            return "请输入要询问 AI 的内容。";
+            return ResourceHelper.GetString("AiChat_EmptyPrompt");
         }
 
         if (IsCopilot(request))
         {
             if (string.IsNullOrWhiteSpace(request.Model))
             {
-                return "请填写 Copilot 模型名，例如 gpt-4.1。";
+                return ResourceHelper.GetString("AiChat_CopilotModelRequired");
             }
 
             return string.IsNullOrWhiteSpace(request.ApiKey)
-                ? "请先在 GitHub Copilot 提供商中连接 GitHub 账号。"
+                ? ResourceHelper.GetString("AiChat_CopilotGitHubRequired")
                 : null;
         }
 
         if (string.IsNullOrWhiteSpace(request.BaseUrl))
         {
-            return "请先在扩展设置里填写 Base URL。";
+            return ResourceHelper.GetString("AiChat_BaseUrlRequired");
         }
 
         if (!TryCreateEndpoint(request.BaseUrl, out _))
         {
-            return "Base URL 不是有效的 HTTP/HTTPS 地址，请填写类似 https://api.example.com 或 https://api.example.com/v1 的地址。";
+            return ResourceHelper.GetString("AiChat_BaseUrlInvalidDetail");
         }
 
         if (string.IsNullOrWhiteSpace(request.ApiKey))
         {
-            return "请先在扩展设置里填写 API Key。";
+            return ResourceHelper.GetString("AiChat_ApiKeyRequired");
         }
 
         if (string.IsNullOrWhiteSpace(request.Model))
         {
-            return "请先在扩展设置里填写模型名。";
+            return ResourceHelper.GetString("AiChat_ModelRequired");
         }
 
         return null;
@@ -86,7 +86,7 @@ internal sealed class AiChatService
 
         if (!TryCreateEndpoint(chatRequest.BaseUrl, out var endpoint))
         {
-            return AiChatResponse.Failure("Base URL 不是有效的 HTTP/HTTPS 地址。", chatRequest.Model);
+            return AiChatResponse.Failure(ResourceHelper.GetString("AiChat_BaseUrlInvalid"), chatRequest.Model);
         }
 
         using var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
@@ -110,15 +110,15 @@ internal sealed class AiChatService
         }
         catch (TaskCanceledException) when (!cancellationToken.IsCancellationRequested)
         {
-            return AiChatResponse.Failure("请求超时，请检查网络或稍后重试。", chatRequest.Model, endpoint.Host);
+            return AiChatResponse.Failure(ResourceHelper.GetString("AiChat_RequestTimeout"), chatRequest.Model, endpoint.Host);
         }
         catch (HttpRequestException ex)
         {
-            return AiChatResponse.Failure($"网络请求失败：{ex.Message}", chatRequest.Model, endpoint.Host);
+            return AiChatResponse.Failure(string.Format(ResourceHelper.GetString("AiChat_NetworkError"), ex.Message), chatRequest.Model, endpoint.Host);
         }
         catch (JsonException ex)
         {
-            return AiChatResponse.Failure($"AI 服务返回了无法解析的 JSON：{ex.Message}", chatRequest.Model, endpoint.Host);
+            return AiChatResponse.Failure(string.Format(ResourceHelper.GetString("AiChat_JsonParseError"), ex.Message), chatRequest.Model, endpoint.Host);
         }
     }
 
@@ -213,7 +213,7 @@ internal sealed class AiChatService
 
         if (string.IsNullOrWhiteSpace(content))
         {
-            return AiChatResponse.Failure("AI 服务返回成功，但没有包含可显示的回答内容。", model, endpoint);
+            return AiChatResponse.Failure(ResourceHelper.GetString("AiChat_EmptyResponse"), model, endpoint);
         }
 
         return AiChatResponse.Success(content.Trim(), model, endpoint);
@@ -224,16 +224,16 @@ internal sealed class AiChatService
         var providerMessage = RedactApiKey(ExtractProviderMessage(responseBody), apiKey);
         var statusMessage = statusCode switch
         {
-            HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden => "认证失败，请检查 API Key。",
-            HttpStatusCode.NotFound => "接口未找到，请检查 Base URL 是否以 /v1 结尾。",
-            (HttpStatusCode)429 => "请求过于频繁或额度不足。",
-            var code when (int)code >= 500 => "AI 服务暂时不可用。",
-            _ => $"AI 服务返回 HTTP {(int)statusCode}。",
+            HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden => ResourceHelper.GetString("AiChat_AuthFailed"),
+            HttpStatusCode.NotFound => ResourceHelper.GetString("AiChat_NotFound"),
+            (HttpStatusCode)429 => ResourceHelper.GetString("AiChat_RateLimited"),
+            var code when (int)code >= 500 => ResourceHelper.GetString("AiChat_ServiceUnavailable"),
+            _ => string.Format(ResourceHelper.GetString("AiChat_HttpError"), (int)statusCode),
         };
 
         return string.IsNullOrWhiteSpace(providerMessage)
             ? statusMessage
-            : $"{statusMessage}\n\n服务返回：{providerMessage}";
+            : string.Format(ResourceHelper.GetString("AiChat_ProviderMessage"), statusMessage, providerMessage);
     }
 
     private static string ExtractProviderMessage(string responseBody)

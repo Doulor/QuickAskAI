@@ -1,9 +1,272 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <data name="AppDisplayName" xml:space="preserve">
-    <value>快速询问AI</value>
-  </data>
-  <data name="AppDescription" xml:space="preserve">
-    <value>在 PowerToys 命令面板中快速向 AI 提问。支持 GitHub Copilot 和 OpenAI 兼容服务。</value>
-  </data>
+  <!-- Manifest -->
+  <data name="AppDisplayName" xml:space="preserve"><value>快速询问AI</value></data>
+  <data name="AppDescription" xml:space="preserve"><value>在 PowerToys 命令面板中快速向 AI 提问。支持 GitHub Copilot 和 OpenAI 兼容服务。</value></data>
+
+  <!-- Program.cs -->
+  <data name="LaunchInfoMessage" xml:space="preserve"><value>QuickAskAI 是 PowerToys 命令面板扩展。\n\n打开 PowerToys 命令面板，搜索 QuickAskAI 或 快速询问AI。</value></data>
+  <data name="LaunchInfoTitle" xml:space="preserve"><value>QuickAskAI</value></data>
+
+  <!-- AIExtensionCommandsProvider -->
+  <data name="CommandsProvider_DisplayName" xml:space="preserve"><value>快速询问AI</value></data>
+
+  <!-- AskAiPage -->
+  <data name="AskAi_Title" xml:space="preserve"><value>快速询问AI</value></data>
+  <data name="AskAi_Name" xml:space="preserve"><value>询问</value></data>
+  <data name="AskAi_Placeholder" xml:space="preserve"><value>输入问题，按 Enter 询问 AI</value></data>
+  <data name="AskAi_StatusMessage" xml:space="preserve"><value>正在询问 AI...</value></data>
+  <data name="AskAi_RequestFailed" xml:space="preserve"><value>请求处理失败：</value></data>
+  <data name="AskAi_AskTitle" xml:space="preserve"><value>询问：</value></data>
+  <data name="AskAi_UsingProvider" xml:space="preserve"><value>使用 </value></data>
+  <data name="AskAi_SettingsTitle" xml:space="preserve"><value>设置</value></data>
+  <data name="AskAi_SettingsSubtitle" xml:space="preserve"><value>语言偏好和扩展设置</value></data>
+  <data name="AskAi_ConversationTitle" xml:space="preserve"><value>会话：</value></data>
+  <data name="AskAi_ConversationSubtitle" xml:space="preserve"><value>条消息 · 进入后可新建或选择历史会话</value></data>
+  <data name="AskAi_ProviderTitle" xml:space="preserve"><value>模型提供商：</value></data>
+  <data name="AskAi_BusyTitle" xml:space="preserve"><value>正在询问 AI...</value></data>
+  <data name="AskAi_AnswerTitle" xml:space="preserve"><value>回答</value></data>
+  <data name="AskAi_RequestFailedTitle" xml:space="preserve"><value>请求失败</value></data>
+  <data name="AskAi_AnswerSubtitle" xml:space="preserve"><value>右侧显示完整回答；按 Enter 复制</value></data>
+  <data name="AskAi_ErrorSubtitle" xml:space="preserve"><value>右侧显示错误详情</value></data>
+  <data name="AskAi_AnswerDetailTitle" xml:space="preserve"><value>回答</value></data>
+  <data name="AskAi_ErrorDetailTitle" xml:space="preserve"><value>请求失败</value></data>
+  <data name="AskAi_ModelLabel" xml:space="preserve"><value>模型：</value></data>
+  <data name="AskAi_ServiceLabel" xml:space="preserve"><value>服务：</value></data>
+  <data name="AskAi_CopyAnswer" xml:space="preserve"><value>复制回答</value></data>
+  <data name="AskAi_NotProvided" xml:space="preserve"><value>未提供</value></data>
+  <data name="AskAi_UnknownError" xml:space="preserve"><value>未知错误。</value></data>
+  <data name="AskAi_HelpTitle" xml:space="preserve"><value>在顶部输入框输入问题</value></data>
+  <data name="AskAi_HelpSubtitle" xml:space="preserve"><value>按 Enter 发送。左侧可以直接选择或添加模型提供商。</value></data>
+  <data name="AskAi_GitHubConnected" xml:space="preserve"><value>GitHub 已连接</value></data>
+  <data name="AskAi_GitHubNotConnected" xml:space="preserve"><value>未连接 GitHub</value></data>
+  <data name="AskAi_ProviderEnterToAdd" xml:space="preserve"><value> · 进入后可连接、选择或编辑</value></data>
+  <data name="AskAi_ProviderEnterToManage" xml:space="preserve"><value> · 进入后可添加、选择或编辑</value></data>
+  <data name="AskAi_BaseUrlNotConfigured" xml:space="preserve"><value>未配置 Base URL</value></data>
+  <data name="AskAi_SubmitCommand_Name" xml:space="preserve"><value>询问</value></data>
+
+  <!-- ConversationStore -->
+  <data name="Conversation_NewSession" xml:space="preserve"><value>新会话</value></data>
+  <data name="Conversation_RequestFailed" xml:space="preserve"><value>请求失败：</value></data>
+
+  <!-- ConversationManagementPage -->
+  <data name="ConvManage_Title" xml:space="preserve"><value>会话</value></data>
+  <data name="ConvManage_Name" xml:space="preserve"><value>会话</value></data>
+  <data name="ConvManage_StartNew" xml:space="preserve"><value>开始新的会话</value></data>
+  <data name="ConvManage_SwitchToEmpty" xml:space="preserve"><value>切换到空白新会话</value></data>
+  <data name="ConvManage_NewSubtitle1" xml:space="preserve"><value>清空上下文，开启一轮新的连续对话</value></data>
+  <data name="ConvManage_NewSubtitle2" xml:space="preserve"><value>已经有一个未使用的新会话，不会重复创建</value></data>
+  <data name="ConvManage_CurrentPrefix" xml:space="preserve"><value>当前：</value></data>
+  <data name="ConvManage_MessagesLabel" xml:space="preserve"><value>条消息 · </value></data>
+  <data name="ConvManage_NewCommand_Name" xml:space="preserve"><value>开始新的会话</value></data>
+  <data name="ConvManage_DeleteCommand_Name" xml:space="preserve"><value>删除会话</value></data>
+
+  <!-- ConversationDetailPage -->
+  <data name="ConvDetail_TitleFallback" xml:space="preserve"><value>会话</value></data>
+  <data name="ConvDetail_Name" xml:space="preserve"><value>记录</value></data>
+  <data name="ConvDetail_NotFound" xml:space="preserve"><value>会话不存在</value></data>
+  <data name="ConvDetail_MessagesLabel" xml:space="preserve"><value>条消息 · </value></data>
+  <data name="ConvDetail_AlreadySelected" xml:space="preserve"><value>当前已选择</value></data>
+  <data name="ConvDetail_SelectThis" xml:space="preserve"><value>选择这个会话</value></data>
+  <data name="ConvDetail_SelectSubtitle" xml:space="preserve"><value>后续询问将继续使用这个会话上下文</value></data>
+  <data name="ConvDetail_NoMessages" xml:space="preserve"><value>_这个会话还没有消息。_</value></data>
+  <data name="ConvDetail_RoleYou" xml:space="preserve"><value>你</value></data>
+  <data name="ConvDetail_RoleSystem" xml:space="preserve"><value>系统</value></data>
+  <data name="ConvDetail_SelectCommand_Name" xml:space="preserve"><value>选择会话</value></data>
+
+  <!-- ProviderManagementPage -->
+  <data name="ProvManage_Title" xml:space="preserve"><value>模型提供商</value></data>
+  <data name="ProvManage_Name" xml:space="preserve"><value>管理</value></data>
+  <data name="ProvManage_CurrentPrefix" xml:space="preserve"><value>当前：</value></data>
+  <data name="ProvManage_AddOpenAI" xml:space="preserve"><value>添加 OpenAI 兼容提供商</value></data>
+  <data name="ProvManage_AddOpenAISubtitle" xml:space="preserve"><value>添加新的 Base URL、API Key 和模型名</value></data>
+  <data name="ProvManage_AddCopilot" xml:space="preserve"><value>添加 GitHub Copilot 提供商</value></data>
+  <data name="ProvManage_AddCopilotSubtitle" xml:space="preserve"><value>使用 GitHub 网页登录连接 Copilot</value></data>
+  <data name="ProvManage_GitHubConnected" xml:space="preserve"><value>GitHub 已连接</value></data>
+  <data name="ProvManage_GitHubNotConnected" xml:space="preserve"><value>未连接 GitHub</value></data>
+  <data name="ProvManage_BaseUrlNotConfigured" xml:space="preserve"><value>未配置 Base URL</value></data>
+
+  <!-- ProviderDetailPage -->
+  <data name="ProvDetail_TitleFallback" xml:space="preserve"><value>模型提供商</value></data>
+  <data name="ProvDetail_Name" xml:space="preserve"><value>提供商</value></data>
+  <data name="ProvDetail_NotFound" xml:space="preserve"><value>提供商不存在</value></data>
+  <data name="ProvDetail_AlreadySelected" xml:space="preserve"><value>当前已选择</value></data>
+  <data name="ProvDetail_SelectThis" xml:space="preserve"><value>选择这个提供商</value></data>
+  <data name="ProvDetail_SelectSubtitle" xml:space="preserve"><value>后续询问将使用这个提供商</value></data>
+  <data name="ProvDetail_ManageCopilot" xml:space="preserve"><value>管理 Copilot 登录</value></data>
+  <data name="ProvDetail_EditProvider" xml:space="preserve"><value>编辑提供商</value></data>
+  <data name="ProvDetail_ManageCopilotSubtitle" xml:space="preserve"><value>连接 GitHub 或修改 Copilot 配置</value></data>
+  <data name="ProvDetail_EditProviderSubtitle" xml:space="preserve"><value>修改 Base URL、API Key、模型名和系统提示词</value></data>
+  <data name="ProvDetail_SelectCommand_Name" xml:space="preserve"><value>选择提供商</value></data>
+  <data name="ProvDetail_BaseUrlNotConfigured" xml:space="preserve"><value>未配置 Base URL</value></data>
+
+  <!-- CopilotProviderPage -->
+  <data name="CopilotPage_TitleFallback" xml:space="preserve"><value>GitHub Copilot</value></data>
+  <data name="CopilotPage_Name" xml:space="preserve"><value>Copilot</value></data>
+  <data name="CopilotPage_NotFound" xml:space="preserve"><value>提供商不存在</value></data>
+  <data name="CopilotPage_AlreadySelected" xml:space="preserve"><value>当前已选择</value></data>
+  <data name="CopilotPage_SelectThis" xml:space="preserve"><value>选择这个提供商</value></data>
+  <data name="CopilotPage_SelectSubtitle" xml:space="preserve"><value>后续询问将使用这个 GitHub Copilot 提供商</value></data>
+  <data name="CopilotPage_ReconnectGitHub" xml:space="preserve"><value>重新连接 GitHub</value></data>
+  <data name="CopilotPage_ConnectGitHub" xml:space="preserve"><value>连接 GitHub</value></data>
+  <data name="CopilotPage_ReconnectSubtitle" xml:space="preserve"><value>当前授权失效或需要换号时使用</value></data>
+  <data name="CopilotPage_ConnectSubtitle" xml:space="preserve"><value>网页登录后即可使用 GitHub Copilot</value></data>
+  <data name="CopilotPage_EditCopilot" xml:space="preserve"><value>编辑 Copilot 配置</value></data>
+  <data name="CopilotPage_EditCopilotSubtitle" xml:space="preserve"><value>修改名称、Client ID、模型名和系统提示词</value></data>
+  <data name="CopilotPage_DisconnectGitHub" xml:space="preserve"><value>断开 GitHub 连接</value></data>
+  <data name="CopilotPage_DisconnectSubtitleHasToken" xml:space="preserve"><value>删除本机保存的 GitHub 授权</value></data>
+  <data name="CopilotPage_DisconnectSubtitleNoToken" xml:space="preserve"><value>当前未保存 GitHub 授权</value></data>
+  <data name="CopilotPage_GitHubConnected" xml:space="preserve"><value>GitHub 已连接</value></data>
+  <data name="CopilotPage_GitHubNotConnected" xml:space="preserve"><value>未连接 GitHub</value></data>
+  <data name="CopilotPage_ClientIdNotSet" xml:space="preserve"><value>未填写 Client ID</value></data>
+  <data name="CopilotPage_ClientIdSet" xml:space="preserve"><value>已填写 Client ID</value></data>
+  <data name="CopilotPage_SelectCommand_Name" xml:space="preserve"><value>选择提供商</value></data>
+  <data name="CopilotPage_DisconnectCommand_Name" xml:space="preserve"><value>断开连接</value></data>
+
+  <!-- ProviderEditorPage -->
+  <data name="ProvEditor_AddTitle" xml:space="preserve"><value>添加模型提供商</value></data>
+  <data name="ProvEditor_EditTitlePrefix" xml:space="preserve"><value>编辑 </value></data>
+  <data name="ProvEditor_Name" xml:space="preserve"><value>配置</value></data>
+  <data name="ProvEditor_CannotReadConfig" xml:space="preserve"><value>无法读取提供商配置。</value></data>
+  <data name="ProvEditor_FillName" xml:space="preserve"><value>请填写提供商名称。</value></data>
+  <data name="ProvEditor_FillBaseUrl" xml:space="preserve"><value>请填写 Base URL。</value></data>
+  <data name="ProvEditor_FillModel" xml:space="preserve"><value>请填写模型名。</value></data>
+  <data name="ProvEditor_Saved" xml:space="preserve"><value>已保存 </value></data>
+  <data name="ProvEditor_UnnamedProvider" xml:space="preserve"><value>未命名提供商</value></data>
+  <data name="ProvEditor_ProviderN" xml:space="preserve"><value>提供商 </value></data>
+  <!-- Adaptive Card labels -->
+  <data name="ProvEditor_AC_ProviderName" xml:space="preserve"><value>提供商名称</value></data>
+  <data name="ProvEditor_AC_ProviderNameError" xml:space="preserve"><value>请填写提供商名称</value></data>
+  <data name="ProvEditor_AC_BaseUrlError" xml:space="preserve"><value>请填写 Base URL</value></data>
+  <data name="ProvEditor_AC_ModelError" xml:space="preserve"><value>请填写模型名</value></data>
+  <data name="ProvEditor_AC_SystemPromptPlaceholder" xml:space="preserve"><value>你是一个简洁、可靠的中文 AI 助手。</value></data>
+  <data name="ProvEditor_AC_SaveButton" xml:space="preserve"><value>保存并选择</value></data>
+
+  <!-- CopilotProviderEditorPage -->
+  <data name="CopilotEditor_AddTitle" xml:space="preserve"><value>添加 GitHub Copilot</value></data>
+  <data name="CopilotEditor_EditTitlePrefix" xml:space="preserve"><value>编辑 </value></data>
+  <data name="CopilotEditor_Name" xml:space="preserve"><value>配置</value></data>
+  <data name="CopilotEditor_CannotReadConfig" xml:space="preserve"><value>无法读取 Copilot 配置。</value></data>
+  <data name="CopilotEditor_FillName" xml:space="preserve"><value>请填写提供商名称。</value></data>
+  <data name="CopilotEditor_FillModel" xml:space="preserve"><value>请填写 Copilot 模型名，例如 gpt-4.1。</value></data>
+  <data name="CopilotEditor_Saved" xml:space="preserve"><value>已保存 </value></data>
+  <!-- Adaptive Card labels -->
+  <data name="CopilotEditor_AC_ProviderName" xml:space="preserve"><value>提供商名称</value></data>
+  <data name="CopilotEditor_AC_ProviderNameError" xml:space="preserve"><value>请填写提供商名称</value></data>
+  <data name="CopilotEditor_AC_ClientIdLabel" xml:space="preserve"><value>GitHub OAuth Client ID（高级选项）</value></data>
+  <data name="CopilotEditor_AC_ClientIdPlaceholder" xml:space="preserve"><value>默认使用内置 Client ID；fork 项目后可替换为自己的 Client ID</value></data>
+  <data name="CopilotEditor_AC_ModelError" xml:space="preserve"><value>请填写模型名</value></data>
+  <data name="CopilotEditor_AC_SystemPromptPlaceholder" xml:space="preserve"><value>你是一个简洁、可靠的中文 AI 助手。</value></data>
+  <data name="CopilotEditor_AC_SaveButton" xml:space="preserve"><value>保存并选择</value></data>
+
+  <!-- GitHubDeviceLoginPage -->
+  <data name="GitHubLogin_Title" xml:space="preserve"><value>连接 GitHub</value></data>
+  <data name="GitHubLogin_Name" xml:space="preserve"><value>登录</value></data>
+  <data name="GitHubLogin_Preparing" xml:space="preserve"><value>正在准备 GitHub 登录...</value></data>
+  <data name="GitHubLogin_NotFound" xml:space="preserve"><value>提供商不存在</value></data>
+  <data name="GitHubLogin_ContinuePrevious" xml:space="preserve"><value>继续使用上次未过期的 GitHub 登录验证码。</value></data>
+  <data name="GitHubLogin_FetchingCode" xml:space="preserve"><value>正在向 GitHub 获取登录验证码...</value></data>
+  <data name="GitHubLogin_EnterCode" xml:space="preserve"><value>请在浏览器打开 GitHub 验证页面并输入验证码。</value></data>
+  <data name="GitHubLogin_WaitingAuth" xml:space="preserve"><value>正在等待 GitHub 完成授权...</value></data>
+  <data name="GitHubLogin_Connected" xml:space="preserve"><value>GitHub 已连接。</value></data>
+  <data name="GitHubLogin_ConnectedWith" xml:space="preserve"><value>GitHub 已连接：</value></data>
+  <data name="GitHubLogin_ConfigError" xml:space="preserve"><value>GitHub 登录配置异常</value></data>
+  <data name="GitHubLogin_ConfigErrorSubtitle" xml:space="preserve"><value>这个版本缺少内置 Client ID，请进入配置页填写</value></data>
+  <data name="GitHubLogin_MissingClientId" xml:space="preserve"><value>缺少 GitHub OAuth Client ID</value></data>
+  <data name="GitHubLogin_MissingClientIdDetail" xml:space="preserve"><value>普通用户通常不需要处理这个值。这个版本应当内置 Client ID；如果你 fork 了项目，也可以在配置页替换为自己的 GitHub OAuth App Client ID。</value></data>
+  <data name="GitHubLogin_VerificationCode" xml:space="preserve"><value>验证码：</value></data>
+  <data name="GitHubLogin_CodeSubtitle" xml:space="preserve"><value>打开 </value></data>
+  <data name="GitHubLogin_CodeSubtitleSuffix" xml:space="preserve"><value>，输入验证码后返回这里继续</value></data>
+  <data name="GitHubLogin_CopyCode" xml:space="preserve"><value>复制验证码</value></data>
+  <data name="GitHubLogin_ConfirmingAuth" xml:space="preserve"><value>正在确认授权...</value></data>
+  <data name="GitHubLogin_IHaveCompleted" xml:space="preserve"><value>我已完成授权，继续</value></data>
+  <data name="GitHubLogin_WaitingForResult" xml:space="preserve"><value>正在等待 GitHub 返回登录结果</value></data>
+  <data name="GitHubLogin_AuthCompletedClickHere" xml:space="preserve"><value>浏览器中授权完成后点击这里</value></data>
+  <data name="GitHubLogin_LoginStatus" xml:space="preserve"><value>登录状态</value></data>
+  <data name="GitHubLogin_RestartCode" xml:space="preserve"><value>重新获取验证码</value></data>
+  <data name="GitHubLogin_RestartCodeSubtitle" xml:space="preserve"><value>只有验证码过期或你想换一个验证码时使用</value></data>
+  <data name="GitHubLogin_BrowserLoginGitHub" xml:space="preserve"><value>### 浏览器登录 GitHub</value></data>
+  <data name="GitHubLogin_VerificationPage" xml:space="preserve"><value>验证页面：</value></data>
+  <data name="GitHubLogin_VerificationCodeLabel" xml:space="preserve"><value>验证码：</value></data>
+  <data name="GitHubLogin_ProviderLabel" xml:space="preserve"><value>提供商：</value></data>
+  <data name="GitHubLogin_ExpiresAt" xml:space="preserve"><value>过期时间：</value></data>
+  <data name="GitHubLogin_ReturnAfterAuth" xml:space="preserve"><value>浏览器里授权完成后，回到这里选择"我已完成授权，继续"。关闭 Command Palette 后再回来也会继续显示这个未过期验证码。</value></data>
+  <data name="GitHubLogin_ContinueCommand_Name" xml:space="preserve"><value>继续</value></data>
+  <data name="GitHubLogin_RestartCommand_Name" xml:space="preserve"><value>重新获取验证码</value></data>
+
+  <!-- SettingsManager -->
+  <data name="Settings_CannotSaveToken" xml:space="preserve"><value>无法保存 GitHub 授权，请检查 Windows 凭据存储是否可用。</value></data>
+  <data name="Settings_DefaultSystemPrompt" xml:space="preserve"><value>你是一个简洁、可靠的中文 AI 助手。</value></data>
+
+  <!-- SettingsPage -->
+  <data name="Settings_Title" xml:space="preserve"><value>设置</value></data>
+  <data name="Settings_Name" xml:space="preserve"><value>设置</value></data>
+  <data name="Settings_LanguageTitle" xml:space="preserve"><value>界面语言</value></data>
+  <data name="Settings_LanguageSubtitlePrefix" xml:space="preserve"><value>当前：</value></data>
+  <data name="Settings_LanguageSubtitleSuffix" xml:space="preserve"><value> · 点击切换</value></data>
+  <data name="Settings_LangAuto" xml:space="preserve"><value>自动（跟随系统）</value></data>
+  <data name="Settings_LangSelectTitle" xml:space="preserve"><value>选择语言</value></data>
+  <data name="Settings_LangSelectName" xml:space="preserve"><value>语言</value></data>
+  <data name="Settings_LangCurrentlySelected" xml:space="preserve"><value>✓ 当前选中</value></data>
+  <data name="Settings_LangClickToSelect" xml:space="preserve"><value>点击选择</value></data>
+  <data name="Settings_LangSelectCommand_Name" xml:space="preserve"><value>选择</value></data>
+
+  <!-- AiChatService -->
+  <data name="AiChat_EmptyPrompt" xml:space="preserve"><value>请输入要询问 AI 的内容。</value></data>
+  <data name="AiChat_CopilotModelRequired" xml:space="preserve"><value>请填写 Copilot 模型名，例如 gpt-4.1。</value></data>
+  <data name="AiChat_CopilotGitHubRequired" xml:space="preserve"><value>请先在 GitHub Copilot 提供商中连接 GitHub 账号。</value></data>
+  <data name="AiChat_BaseUrlRequired" xml:space="preserve"><value>请先在扩展设置里填写 Base URL。</value></data>
+  <data name="AiChat_BaseUrlInvalidDetail" xml:space="preserve"><value>Base URL 不是有效的 HTTP/HTTPS 地址，请填写类似 https://api.example.com 或 https://api.example.com/v1 的地址。</value></data>
+  <data name="AiChat_ApiKeyRequired" xml:space="preserve"><value>请先在扩展设置里填写 API Key。</value></data>
+  <data name="AiChat_ModelRequired" xml:space="preserve"><value>请先在扩展设置里填写模型名。</value></data>
+  <data name="AiChat_BaseUrlInvalid" xml:space="preserve"><value>Base URL 不是有效的 HTTP/HTTPS 地址。</value></data>
+  <data name="AiChat_RequestTimeout" xml:space="preserve"><value>请求超时，请检查网络或稍后重试。</value></data>
+  <data name="AiChat_NetworkError" xml:space="preserve"><value>网络请求失败：{0}</value></data>
+  <data name="AiChat_JsonParseError" xml:space="preserve"><value>AI 服务返回了无法解析的 JSON：{0}</value></data>
+  <data name="AiChat_EmptyResponse" xml:space="preserve"><value>AI 服务返回成功，但没有包含可显示的回答内容。</value></data>
+  <data name="AiChat_AuthFailed" xml:space="preserve"><value>认证失败，请检查 API Key。</value></data>
+  <data name="AiChat_NotFound" xml:space="preserve"><value>接口未找到，请检查 Base URL 是否以 /v1 结尾。</value></data>
+  <data name="AiChat_RateLimited" xml:space="preserve"><value>请求过于频繁或额度不足。</value></data>
+  <data name="AiChat_ServiceUnavailable" xml:space="preserve"><value>AI 服务暂时不可用。</value></data>
+  <data name="AiChat_HttpError" xml:space="preserve"><value>AI 服务返回 HTTP {0}。</value></data>
+  <data name="AiChat_ProviderMessage" xml:space="preserve"><value>{0}\n\n服务返回：{1}</value></data>
+
+  <!-- CopilotChatService -->
+  <data name="CopilotChat_EmptyPrompt" xml:space="preserve"><value>请输入要询问 AI 的内容。</value></data>
+  <data name="CopilotChat_ModelRequired" xml:space="preserve"><value>请填写 Copilot 模型名，例如 gpt-4.1。</value></data>
+  <data name="CopilotChat_Timeout" xml:space="preserve"><value>GitHub Copilot 请求超时，请检查网络或稍后重试。</value></data>
+  <data name="CopilotChat_NetworkError" xml:space="preserve"><value>GitHub Copilot 网络请求失败：{0}</value></data>
+  <data name="CopilotChat_JsonParseError" xml:space="preserve"><value>GitHub Copilot 返回了无法解析的 JSON：{0}</value></data>
+  <data name="CopilotChat_RequestFailedPrefix" xml:space="preserve"><value>GitHub Copilot 请求失败</value></data>
+  <data name="CopilotChat_GitHubRequired" xml:space="preserve"><value>请先在 GitHub Copilot 提供商中连接 GitHub 账号。</value></data>
+  <data name="CopilotChat_TokenParseError" xml:space="preserve"><value>GitHub Copilot token 接口返回了无法解析的数据。</value></data>
+  <data name="CopilotChat_TokenEmpty" xml:space="preserve"><value>GitHub Copilot token 接口没有返回可用 token，请确认账号拥有 Copilot 权益。</value></data>
+  <data name="CopilotChat_EmptyResponse" xml:space="preserve"><value>GitHub Copilot 返回成功，但没有包含可显示的回答内容。</value></data>
+  <data name="CopilotChat_HttpError" xml:space="preserve"><value>GitHub Copilot 请求失败：HTTP {0}。</value></data>
+  <data name="CopilotChat_HttpErrorWithDetail" xml:space="preserve"><value>GitHub Copilot 请求失败：HTTP {0}：{1}</value></data>
+
+  <!-- CopilotAuthService -->
+  <data name="CopilotAuth_ClientIdRequired" xml:space="preserve"><value>请先填写 GitHub OAuth App 的 Client ID。</value></data>
+  <data name="CopilotAuth_InitHttpError" xml:space="preserve"><value>GitHub 登录初始化失败：HTTP {0}。</value></data>
+  <data name="CopilotAuth_InitParseError" xml:space="preserve"><value>GitHub 登录初始化返回了无法解析的数据。</value></data>
+  <data name="CopilotAuth_NoDeviceCode" xml:space="preserve"><value>GitHub 没有返回可用的登录验证码。</value></data>
+  <data name="CopilotAuth_InvalidDeviceCode" xml:space="preserve"><value>GitHub 登录验证码无效，请重新开始登录。</value></data>
+  <data name="CopilotAuth_PollHttpError" xml:space="preserve"><value>GitHub 登录轮询失败：HTTP {0}。</value></data>
+  <data name="CopilotAuth_PollParseError" xml:space="preserve"><value>GitHub 登录轮询返回了无法解析的数据。</value></data>
+  <data name="CopilotAuth_CodeExpired" xml:space="preserve"><value>GitHub 登录验证码已过期，请重新开始登录。</value></data>
+  <data name="CopilotAuth_DeviceFlowDisabled" xml:space="preserve"><value>这个 GitHub OAuth App 没有启用 Device Flow，请在 GitHub App 设置里打开。</value></data>
+  <data name="CopilotAuth_InvalidClientId" xml:space="preserve"><value>GitHub Client ID 无效，请检查 Copilot 提供商配置。</value></data>
+  <data name="CopilotAuth_InitFailedWithError" xml:space="preserve"><value>GitHub 登录初始化失败：{0}。</value></data>
+  <data name="CopilotAuth_AccessDenied" xml:space="preserve"><value>GitHub 登录已取消。</value></data>
+  <data name="CopilotAuth_ExpiredToken" xml:space="preserve"><value>GitHub 登录验证码已过期，请重新开始登录。</value></data>
+  <data name="CopilotAuth_DeviceFlowDisabledNoHint" xml:space="preserve"><value>这个 GitHub OAuth App 没有启用 Device Flow。</value></data>
+  <data name="CopilotAuth_UnsupportedGrantType" xml:space="preserve"><value>GitHub 登录授权类型不受支持。</value></data>
+  <data name="CopilotAuth_EmptyError" xml:space="preserve"><value>GitHub 暂时没有返回登录结果，请稍后重试。</value></data>
+  <data name="CopilotAuth_LoginFailedWithError" xml:space="preserve"><value>GitHub 登录失败：{0}。</value></data>
+
+  <!-- Additional AskAiPage keys -->
+  <data name="AskAi_GitHubWithLogin" xml:space="preserve"><value>GitHub: {0}</value></data>
+
+  <!-- ProviderEditorPage -->
+  <data name="ProvEditor_ProviderTypePlaceholder" xml:space="preserve"><value>openai 或 copilot</value></data>
 </root>

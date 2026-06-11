@@ -24,7 +24,7 @@ internal sealed class ConversationStore
         _sessions = LoadSessions();
         if (_sessions.Count == 0)
         {
-            _sessions.Add(CreateSession("新会话"));
+            _sessions.Add(CreateSession(ResourceHelper.GetString("Conversation_NewSession")));
             ActiveSessionId = _sessions[0].Id;
             Save();
         }
@@ -48,7 +48,7 @@ internal sealed class ConversationStore
             return unusedSession;
         }
 
-        var session = CreateSession("新会话");
+        var session = CreateSession(ResourceHelper.GetString("Conversation_NewSession"));
         _sessions.Insert(0, session);
         ActiveSessionId = session.Id;
         Save();
@@ -82,7 +82,7 @@ internal sealed class ConversationStore
         {
             if (_sessions.Count == 0)
             {
-                _sessions.Add(CreateSession("新会话"));
+                _sessions.Add(CreateSession(ResourceHelper.GetString("Conversation_NewSession")));
             }
 
             ActiveSessionId = _sessions[0].Id;
@@ -96,7 +96,7 @@ internal sealed class ConversationStore
     {
         AddMessage("user", content);
         var session = ActiveSession;
-        if (session.Messages.Count == 1 || session.Title == "新会话")
+        if (session.Messages.Count == 1 || session.Title == ResourceHelper.GetString("Conversation_NewSession"))
         {
             session.Title = CreateTitle(content);
         }
@@ -112,7 +112,7 @@ internal sealed class ConversationStore
 
     public void AddErrorMessage(string content)
     {
-        AddMessage("assistant", $"请求失败：{content}");
+        AddMessage("assistant", ResourceHelper.GetString("Conversation_RequestFailed") + content);
         Save();
     }
 
@@ -195,7 +195,7 @@ internal sealed class ConversationStore
         var session = new ConversationSession
         {
             Id = node?["id"]?.ToString() ?? string.Empty,
-            Title = node?["title"]?.ToString() ?? "新会话",
+            Title = node?["title"]?.ToString() ?? ResourceHelper.GetString("Conversation_NewSession"),
             CreatedAt = ReadDate(node?["createdAt"]?.ToString()),
             UpdatedAt = ReadDate(node?["updatedAt"]?.ToString()),
         };

@@ -22,8 +22,8 @@ internal sealed partial class CopilotProviderEditorPage : ContentPage
         _profile.ProviderType = "copilot";
 
         Icon = new IconInfo("");
-        Title = string.IsNullOrWhiteSpace(_profile.Name) ? "添加 GitHub Copilot" : $"编辑 {_profile.Name}";
-        Name = "配置";
+        Title = string.IsNullOrWhiteSpace(_profile.Name) ? ResourceHelper.GetString("CopilotEditor_AddTitle") : ResourceHelper.GetString("CopilotEditor_EditTitlePrefix") + _profile.Name;
+        Name = ResourceHelper.GetString("CopilotEditor_Name");
     }
 
     public override IContent[] GetContent() => [new CopilotProviderEditorForm(this, _profile)];
@@ -35,7 +35,7 @@ internal sealed partial class CopilotProviderEditorPage : ContentPage
             var payload = JsonNode.Parse(inputs)?.AsObject();
             if (payload is null)
             {
-                return CommandResult.ShowToast("无法读取 Copilot 配置。");
+                return CommandResult.ShowToast(ResourceHelper.GetString("CopilotEditor_CannotReadConfig"));
             }
 
             _profile.Name = ReadString(payload, "Name", _profile.Name);
@@ -49,20 +49,20 @@ internal sealed partial class CopilotProviderEditorPage : ContentPage
 
             if (string.IsNullOrWhiteSpace(_profile.Name))
             {
-                return CommandResult.ShowToast("请填写提供商名称。");
+                return CommandResult.ShowToast(ResourceHelper.GetString("CopilotEditor_FillName"));
             }
 
             if (string.IsNullOrWhiteSpace(_profile.Model))
             {
-                return CommandResult.ShowToast("请填写 Copilot 模型名，例如 gpt-4.1。");
+                return CommandResult.ShowToast(ResourceHelper.GetString("CopilotEditor_FillModel"));
             }
 
             _settingsManager.SaveProvider(_profile);
-            return CommandResult.ShowToast($"已保存 {_profile.Name}");
+            return CommandResult.ShowToast(ResourceHelper.GetString("CopilotEditor_Saved") + _profile.Name);
         }
         catch (JsonException)
         {
-            return CommandResult.ShowToast("无法读取 Copilot 配置。");
+            return CommandResult.ShowToast(ResourceHelper.GetString("CopilotEditor_CannotReadConfig"));
         }
     }
 
@@ -89,17 +89,17 @@ internal sealed partial class CopilotProviderEditorPage : ContentPage
                 {
                   "type": "Input.Text",
                   "id": "Name",
-                  "label": "提供商名称",
+                  "label": "${AC_ProviderName}",
                   "isRequired": true,
-                  "errorMessage": "请填写提供商名称",
+                  "errorMessage": "${AC_ProviderNameError}",
                   "placeholder": "GitHub Copilot",
                   "value": "${Name}"
                 },
                 {
                   "type": "Input.Text",
                   "id": "GitHubClientId",
-                  "label": "GitHub OAuth Client ID（高级选项）",
-                  "placeholder": "默认使用内置 Client ID；fork 项目后可替换为自己的 Client ID",
+                  "label": "${AC_ClientIdLabel}",
+                  "placeholder": "${AC_ClientIdPlaceholder}",
                   "value": "${GitHubClientId}"
                 },
                 {
@@ -107,7 +107,7 @@ internal sealed partial class CopilotProviderEditorPage : ContentPage
                   "id": "Model",
                   "label": "Model",
                   "isRequired": true,
-                  "errorMessage": "请填写模型名",
+                  "errorMessage": "${AC_ModelError}",
                   "placeholder": "gpt-4.1",
                   "value": "${Model}"
                 },
@@ -116,14 +116,14 @@ internal sealed partial class CopilotProviderEditorPage : ContentPage
                   "id": "SystemPrompt",
                   "label": "System Prompt",
                   "isMultiline": true,
-                  "placeholder": "你是一个简洁、可靠的中文 AI 助手。",
+                  "placeholder": "${AC_SystemPromptPlaceholder}",
                   "value": "${SystemPrompt}"
                 }
               ],
               "actions": [
                 {
                   "type": "Action.Submit",
-                  "title": "保存并选择"
+                  "title": "${AC_SaveButton}"
                 }
               ]
             }
@@ -134,6 +134,13 @@ internal sealed partial class CopilotProviderEditorPage : ContentPage
                 ["GitHubClientId"] = profile.GitHubClientId,
                 ["Model"] = profile.Model,
                 ["SystemPrompt"] = profile.SystemPrompt,
+                ["AC_ProviderName"] = ResourceHelper.GetString("CopilotEditor_AC_ProviderName"),
+                ["AC_ProviderNameError"] = ResourceHelper.GetString("CopilotEditor_AC_ProviderNameError"),
+                ["AC_ClientIdLabel"] = ResourceHelper.GetString("CopilotEditor_AC_ClientIdLabel"),
+                ["AC_ClientIdPlaceholder"] = ResourceHelper.GetString("CopilotEditor_AC_ClientIdPlaceholder"),
+                ["AC_ModelError"] = ResourceHelper.GetString("CopilotEditor_AC_ModelError"),
+                ["AC_SystemPromptPlaceholder"] = ResourceHelper.GetString("CopilotEditor_AC_SystemPromptPlaceholder"),
+                ["AC_SaveButton"] = ResourceHelper.GetString("CopilotEditor_AC_SaveButton"),
             }.ToJsonString();
         }
 

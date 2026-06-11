@@ -25,8 +25,8 @@ if not exist "QuickAskAI.msix" (
     exit /b 1
 )
 
-if not exist "QuickAskAI.cer" (
-    echo [ERROR] QuickAskAI.cer not found.
+if not exist "QuickAskAI-StoreIdentity.cer" (
+    echo [ERROR] QuickAskAI-StoreIdentity.cer not found.
     echo Please extract the entire release zip before running this script.
     echo.
     pause
@@ -37,12 +37,12 @@ echo Stopping existing extension...
 taskkill /f /im AIExtension.exe >nul 2>&1
 
 echo Removing previous installation...
-powershell -Command "$p=Get-AppxPackage -Name AIExtension; if($p){Remove-AppxPackage -Package $p.PackageFullName}" >nul 2>&1
+powershell -Command "$p=Get-AppxPackage -Name Doulor.QuickAskAI; if($p){Remove-AppxPackage -Package $p.PackageFullName}" >nul 2>&1
 
 echo Installing signing certificate...
-certutil -addstore Root QuickAskAI.cer >nul 2>&1
+certutil -addstore Root QuickAskAI-StoreIdentity.cer >nul 2>&1
 if %errorlevel% neq 0 (
-    certutil -verifystore Root QuickAskAI >nul 2>&1
+    certutil -verifystore Root QuickAskAI-StoreIdentity >nul 2>&1
     if %errorlevel% neq 0 (
         echo [ERROR] Failed to install the signing certificate.
         echo.

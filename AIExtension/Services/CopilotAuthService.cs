@@ -37,7 +37,7 @@ internal sealed class CopilotAuthService
     {
         if (string.IsNullOrWhiteSpace(clientId))
         {
-            throw new InvalidOperationException("请先填写 GitHub OAuth App 的 Client ID。");
+            throw new InvalidOperationException(ResourceHelper.GetString("CopilotAuth_ClientIdRequired"));
         }
 
         using var request = new HttpRequestMessage(HttpMethod.Post, DeviceCodeEndpoint)
@@ -54,11 +54,11 @@ internal sealed class CopilotAuthService
         var responseBody = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
         {
-            throw new InvalidOperationException($"GitHub 登录初始化失败：HTTP {(int)response.StatusCode}。");
+            throw new InvalidOperationException(string.Format(ResourceHelper.GetString("CopilotAuth_InitHttpError"), (int)response.StatusCode));
         }
 
         var root = JsonNode.Parse(responseBody)?.AsObject()
-            ?? throw new InvalidOperationException("GitHub 登录初始化返回了无法解析的数据。");
+            ?? throw new InvalidOperationException(ResourceHelper.GetString("CopilotAuth_InitParseError"));
         var error = ReadString(root, "error");
         if (!string.IsNullOrWhiteSpace(error))
         {
@@ -69,7 +69,7 @@ internal sealed class CopilotAuthService
         var userCode = ReadString(root, "user_code");
         if (string.IsNullOrWhiteSpace(deviceCode) || string.IsNullOrWhiteSpace(userCode))
         {
-            throw new InvalidOperationException("GitHub 没有返回可用的登录验证码。");
+            throw new InvalidOperationException(ResourceHelper.GetString("CopilotAuth_NoDeviceCode"));
         }
 
         return new GitHubDeviceCodeResult
@@ -88,12 +88,12 @@ internal sealed class CopilotAuthService
     {
         if (string.IsNullOrWhiteSpace(clientId))
         {
-            throw new InvalidOperationException("请先填写 GitHub OAuth App 的 Client ID。");
+            throw new InvalidOperationException(ResourceHelper.GetString("CopilotAuth_ClientIdRequired"));
         }
 
         if (string.IsNullOrWhiteSpace(deviceCode.DeviceCode))
         {
-            throw new InvalidOperationException("GitHub 登录验证码无效，请重新开始登录。");
+            throw new InvalidOperationException(ResourceHelper.GetString("CopilotAuth_InvalidDeviceCode"));
         }
 
         var interval = Math.Max(1, deviceCode.Interval);
@@ -116,11 +116,11 @@ internal sealed class CopilotAuthService
             var responseBody = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
             if (!response.IsSuccessStatusCode)
             {
-                throw new InvalidOperationException($"GitHub 登录轮询失败：HTTP {(int)response.StatusCode}。");
+                throw new InvalidOperationException(string.Format(ResourceHelper.GetString("CopilotAuth_PollHttpError"), (int)response.StatusCode));
             }
 
             var root = JsonNode.Parse(responseBody)?.AsObject()
-                ?? throw new InvalidOperationException("GitHub 登录轮询返回了无法解析的数据。");
+                ?? throw new InvalidOperationException(ResourceHelper.GetString("CopilotAuth_PollParseError"));
             var accessToken = ReadString(root, "access_token");
             if (!string.IsNullOrWhiteSpace(accessToken))
             {
@@ -149,7 +149,7 @@ internal sealed class CopilotAuthService
             throw new InvalidOperationException(MapTokenError(error));
         }
 
-        throw new InvalidOperationException("GitHub 登录验证码已过期，请重新开始登录。");
+        throw new InvalidOperationException(ResourceHelper.GetString("CopilotAuth_CodeExpired"));
     }
 
     public async Task<string> GetUserLoginAsync(string token, CancellationToken cancellationToken = default)
@@ -194,20 +194,20 @@ internal sealed class CopilotAuthService
 
     private static string MapDeviceCodeError(string error) => error switch
     {
-        "device_flow_disabled" => "这个 GitHub OAuth App 没有启用 Device Flow，请在 GitHub App 设置里打开。",
-        "incorrect_client_credentials" => "GitHub Client ID 无效，请检查 Copilot 提供商配置。",
-        _ => $"GitHub 登录初始化失败：{error}。",
+        "device_flow_disabled" => ResourceHelper.GetString("CopilotAuth_DeviceFlowDisabled"),
+        "incorrect_client_credentials" => ResourceHelper.GetString("CopilotAuth_InvalidClientId"),
+        _ => string.Format(ResourceHelper.GetString("CopilotAuth_InitFailedWithError"), error),
     };
 
     private static string MapTokenError(string error) => error switch
     {
-        "access_denied" => "GitHub 登录已取消。",
-        "expired_token" => "GitHub 登录验证码已过期，请重新开始登录。",
-        "incorrect_client_credentials" => "GitHub Client ID 无效，请检查 Copilot 提供商配置。",
-        "incorrect_device_code" => "GitHub 登录验证码无效，请重新开始登录。",
-        "device_flow_disabled" => "这个 GitHub OAuth App 没有启用 Device Flow。",
-        "unsupported_grant_type" => "GitHub 登录授权类型不受支持。",
-        var value when string.IsNullOrWhiteSpace(value) => "GitHub 暂时没有返回登录结果，请稍后重试。",
-        var value => $"GitHub 登录失败：{value}。",
+        "access_denied" => ResourceHelper.GetString("CopilotAuth_AccessDenied"),
+        "expired_token" => ResourceHelper.GetString("CopilotAuth_ExpiredToken"),
+        "incorrect_client_credentials" => ResourceHelper.GetString("CopilotAuth_InvalidClientId"),
+        "incorrect_device_code" => ResourceHelper.GetString("CopilotAuth_InvalidDeviceCode"),
+        "device_flow_disabled" => ResourceHelper.GetString("CopilotAuth_DeviceFlowDisabledNoHint"),
+        "unsupported_grant_type" => ResourceHelper.GetString("CopilotAuth_UnsupportedGrantType"),
+        var value when string.IsNullOrWhiteSpace(value) => ResourceHelper.GetString("CopilotAuth_EmptyError"),
+        var value => string.Format(ResourceHelper.GetString("CopilotAuth_LoginFailedWithError"), value),
     };
 }

@@ -20,8 +20,8 @@ internal sealed partial class ConversationDetailPage : ListPage
         _sessionId = sessionId;
         _onChanged = onChanged;
         Icon = new IconInfo("");
-        Title = Session?.Title ?? "会话";
-        Name = "记录";
+        Title = Session?.Title ?? ResourceHelper.GetString("ConvDetail_TitleFallback");
+        Name = ResourceHelper.GetString("ConvDetail_Name");
         ShowDetails = true;
     }
 
@@ -32,7 +32,7 @@ internal sealed partial class ConversationDetailPage : ListPage
         var session = Session;
         if (session is null)
         {
-            return [new ListItem(new NoOpCommand()) { Title = "会话不存在", Icon = new IconInfo("") }];
+            return [new ListItem(new NoOpCommand()) { Title = ResourceHelper.GetString("ConvDetail_NotFound"), Icon = new IconInfo("") }];
         }
 
         return [
@@ -44,7 +44,7 @@ internal sealed partial class ConversationDetailPage : ListPage
     private ListItem CreateHistoryItem(ConversationSession session) => new(new NoOpCommand())
     {
         Title = session.Title,
-        Subtitle = $"{session.Messages.Count} 条消息 · {session.UpdatedAt:MM-dd HH:mm}",
+        Subtitle = $"{session.Messages.Count} {ResourceHelper.GetString("ConvDetail_MessagesLabel")}{session.UpdatedAt:MM-dd HH:mm}",
         Icon = new IconInfo(session.Id == _conversationStore.ActiveSession.Id ? "" : ""),
         Details = new Details
         {
@@ -56,8 +56,8 @@ internal sealed partial class ConversationDetailPage : ListPage
 
     private ListItem CreateSelectItem(ConversationSession session) => new(new SelectConversationCommand(this, session.Id))
     {
-        Title = session.Id == _conversationStore.ActiveSession.Id ? "当前已选择" : "选择这个会话",
-        Subtitle = "后续询问将继续使用这个会话上下文",
+        Title = session.Id == _conversationStore.ActiveSession.Id ? ResourceHelper.GetString("ConvDetail_AlreadySelected") : ResourceHelper.GetString("ConvDetail_SelectThis"),
+        Subtitle = ResourceHelper.GetString("ConvDetail_SelectSubtitle"),
         Icon = new IconInfo(""),
     };
 
@@ -72,7 +72,7 @@ internal sealed partial class ConversationDetailPage : ListPage
     {
         if (session.Messages.Count == 0)
         {
-            return "_这个会话还没有消息。_";
+            return ResourceHelper.GetString("ConvDetail_NoMessages");
         }
 
         var builder = new StringBuilder();
@@ -80,9 +80,9 @@ internal sealed partial class ConversationDetailPage : ListPage
         {
             var label = message.Role switch
             {
-                "user" => "你",
+                "user" => ResourceHelper.GetString("ConvDetail_RoleYou"),
                 "assistant" => "AI",
-                "system" => "系统",
+                "system" => ResourceHelper.GetString("ConvDetail_RoleSystem"),
                 _ => message.Role,
             };
 
@@ -106,7 +106,7 @@ internal sealed partial class ConversationDetailPage : ListPage
         {
             _page = page;
             _sessionId = sessionId;
-            Name = "选择会话";
+            Name = ResourceHelper.GetString("ConvDetail_SelectCommand_Name");
             Icon = new IconInfo("");
         }
 

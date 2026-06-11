@@ -2,12 +2,11 @@
 // The Microsoft Corporation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
+using System.Threading;
 using Microsoft.CommandPalette.Extensions;
 using Shmuelie.WinRTServer;
 using Shmuelie.WinRTServer.CsWinRT;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace AIExtension;
 
@@ -37,7 +36,8 @@ public class Program
         }
         else
         {
-            Console.WriteLine("Not being launched as a Extension... exiting.");
+            // Direct launch — no-op
         }
     }
+
 }

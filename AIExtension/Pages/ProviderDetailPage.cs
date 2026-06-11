@@ -17,8 +17,8 @@ internal sealed partial class ProviderDetailPage : ListPage
         _settingsManager = settingsManager;
         _providerId = providerId;
         Icon = new IconInfo("");
-        Title = Provider?.Name ?? "模型提供商";
-        Name = "提供商";
+        Title = Provider?.Name ?? ResourceHelper.GetString("ProvDetail_TitleFallback");
+        Name = ResourceHelper.GetString("ProvDetail_Name");
         ShowDetails = false;
     }
 
@@ -29,7 +29,7 @@ internal sealed partial class ProviderDetailPage : ListPage
         var provider = Provider;
         if (provider is null)
         {
-            return [new ListItem(new NoOpCommand()) { Title = "提供商不存在", Icon = new IconInfo("") }];
+            return [new ListItem(new NoOpCommand()) { Title = ResourceHelper.GetString("ProvDetail_NotFound"), Icon = new IconInfo("") }];
         }
 
         return [
@@ -48,8 +48,8 @@ internal sealed partial class ProviderDetailPage : ListPage
 
     private ListItem CreateSelectItem(ProviderProfile provider) => new(new SelectProviderCommand(this, provider.Id))
     {
-        Title = provider.Id == _settingsManager.ActiveProvider.Id ? "当前已选择" : "选择这个提供商",
-        Subtitle = "后续询问将使用这个提供商",
+        Title = provider.Id == _settingsManager.ActiveProvider.Id ? ResourceHelper.GetString("ProvDetail_AlreadySelected") : ResourceHelper.GetString("ProvDetail_SelectThis"),
+        Subtitle = ResourceHelper.GetString("ProvDetail_SelectSubtitle"),
         Icon = new IconInfo(""),
     };
 
@@ -60,10 +60,10 @@ internal sealed partial class ProviderDetailPage : ListPage
             : new ProviderEditorPage(_settingsManager, provider, () => RaiseItemsChanged());
         return new ListItem(page)
         {
-            Title = provider.ProviderType.Equals("copilot", System.StringComparison.OrdinalIgnoreCase) ? "管理 Copilot 登录" : "编辑提供商",
+            Title = provider.ProviderType.Equals("copilot", System.StringComparison.OrdinalIgnoreCase) ? ResourceHelper.GetString("ProvDetail_ManageCopilot") : ResourceHelper.GetString("ProvDetail_EditProvider"),
             Subtitle = provider.ProviderType.Equals("copilot", System.StringComparison.OrdinalIgnoreCase)
-                ? "连接 GitHub 或修改 Copilot 配置"
-                : "修改 Base URL、API Key、模型名和系统提示词",
+                ? ResourceHelper.GetString("ProvDetail_ManageCopilotSubtitle")
+                : ResourceHelper.GetString("ProvDetail_EditProviderSubtitle"),
             Icon = new IconInfo(""),
         };
     }
@@ -81,7 +81,7 @@ internal sealed partial class ProviderDetailPage : ListPage
             return uri.Host;
         }
 
-        return string.IsNullOrWhiteSpace(value) ? "未配置 Base URL" : value;
+        return string.IsNullOrWhiteSpace(value) ? ResourceHelper.GetString("ProvDetail_BaseUrlNotConfigured") : value;
     }
 
     private sealed partial class SelectProviderCommand : InvokableCommand
@@ -93,7 +93,7 @@ internal sealed partial class ProviderDetailPage : ListPage
         {
             _page = page;
             _providerId = providerId;
-            Name = "选择提供商";
+            Name = ResourceHelper.GetString("ProvDetail_SelectCommand_Name");
             Icon = new IconInfo("");
         }
 

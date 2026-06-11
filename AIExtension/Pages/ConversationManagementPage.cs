@@ -19,18 +19,18 @@ internal sealed partial class ConversationManagementPage : ListPage
         _conversationStore = conversationStore;
         _onChanged = onChanged;
         Icon = new IconInfo("");
-        Title = "会话";
-        Name = "会话";
+        Title = ResourceHelper.GetString("ConvManage_Title");
+        Name = ResourceHelper.GetString("ConvManage_Name");
         ShowDetails = false;
     }
 
     public override IListItem[] GetItems()
     {
         var unusedSession = _conversationStore.Sessions.FirstOrDefault(session => session.Messages.Count == 0);
-        var newSessionTitle = unusedSession is null ? "开始新的会话" : "切换到空白新会话";
+        var newSessionTitle = unusedSession is null ? ResourceHelper.GetString("ConvManage_StartNew") : ResourceHelper.GetString("ConvManage_SwitchToEmpty");
         var newSessionSubtitle = unusedSession is null
-            ? "清空上下文，开启一轮新的连续对话"
-            : "已经有一个未使用的新会话，不会重复创建";
+            ? ResourceHelper.GetString("ConvManage_NewSubtitle1")
+            : ResourceHelper.GetString("ConvManage_NewSubtitle2");
 
         var items = new System.Collections.Generic.List<IListItem>
         {
@@ -47,8 +47,8 @@ internal sealed partial class ConversationManagementPage : ListPage
             var isActive = session.Id == _conversationStore.ActiveSession.Id;
             items.Add(new ListItem(new ConversationDetailPage(_conversationStore, session.Id, _onChanged))
             {
-                Title = isActive ? $"当前：{session.Title}" : session.Title,
-                Subtitle = $"{session.Messages.Count} 条消息 · {session.UpdatedAt:MM-dd HH:mm}",
+                Title = isActive ? ResourceHelper.GetString("ConvManage_CurrentPrefix") + session.Title : session.Title,
+                Subtitle = $"{session.Messages.Count} {ResourceHelper.GetString("ConvManage_MessagesLabel")}{session.UpdatedAt:MM-dd HH:mm}",
                 Icon = new IconInfo(isActive ? "" : ""),
                 MoreCommands = [
                     new CommandContextItem(new DeleteConversationCommand(this, session.Id)),
@@ -73,7 +73,7 @@ internal sealed partial class ConversationManagementPage : ListPage
         public NewConversationCommand(ConversationManagementPage page)
         {
             _page = page;
-            Name = "开始新的会话";
+            Name = ResourceHelper.GetString("ConvManage_NewCommand_Name");
             Icon = new IconInfo("");
         }
 
@@ -93,7 +93,7 @@ internal sealed partial class ConversationManagementPage : ListPage
         {
             _page = page;
             _sessionId = sessionId;
-            Name = "删除会话";
+            Name = ResourceHelper.GetString("ConvManage_DeleteCommand_Name");
             Icon = new IconInfo("");
         }
 

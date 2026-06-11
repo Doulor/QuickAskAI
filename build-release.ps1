@@ -20,8 +20,11 @@ $layout = Join-Path $repoRoot "AIExtension\bin\$Platform\$Configuration\$tfm\$ri
 $releaseRoot = Join-Path $repoRoot "release"
 $artifactRoot = Join-Path $releaseRoot "artifacts"
 $certDir = Join-Path $releaseRoot "cert"
-$pfxPath = Join-Path $certDir "QuickAskAI.pfx"
-$cerPath = Join-Path $certDir "QuickAskAI.cer"
+$manifestPath = Join-Path $repoRoot "AIExtension\Package.appxmanifest"
+[xml]$manifest = Get-Content -LiteralPath $manifestPath
+$publisherSubject = $manifest.Package.Identity.Publisher
+$pfxPath = Join-Path $certDir "QuickAskAI-StoreIdentity.pfx"
+$cerPath = Join-Path $certDir "QuickAskAI-StoreIdentity.cer"
 $certPassword = "QuickAskAI"
 $packageName = "QuickAskAI-$Version-$Platform"
 $packageDir = Join-Path $artifactRoot $packageName
@@ -31,22 +34,22 @@ $scriptsDir = Join-Path $releaseRoot "layout-scripts"
 
 Get-Process AIExtension -ErrorAction SilentlyContinue | Stop-Process -Force
 
-# Generate self-signed certificate if not already present
-# For Microsoft Store submission, replace this with the certificate from Partner Center
+# Generate a self-signed certificate whose subject matches Package/Identity/Publisher.
+# Microsoft Store re-signs submitted packages, but local sideload/WACK testing needs a valid signature.
 if (-not (Test-Path -LiteralPath $pfxPath)) {
     New-Item -ItemType Directory -Path $certDir -Force | Out-Null
     $cert = New-SelfSignedCertificate `
         -Type Custom `
-        -Subject "CN=Doulor" `
+        -Subject $publisherSubject `
         -KeyUsage DigitalSignature `
-        -FriendlyName "QuickAskAI" `
+        -FriendlyName "QuickAskAI Store Identity" `
         -CertStoreLocation "Cert:\CurrentUser\My" `
         -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.3") `
         -KeyExportPolicy Exportable
     $securePassword = ConvertTo-SecureString -String $certPassword -Force -AsPlainText
     Export-PfxCertificate -Cert $cert -FilePath $pfxPath -Password $securePassword | Out-Null
     Export-Certificate -Cert $cert -FilePath $cerPath -Type CERT | Out-Null
-    Write-Host "Generated self-signed certificate for MSIX signing." -ForegroundColor Green
+    Write-Host "Generated self-signed certificate for MSIX signing: $publisherSubject" -ForegroundColor Green
 }
 
 & $dotnet build $project -c $Configuration -p:Platform=$Platform
@@ -72,12 +75,10 @@ $msixPath = Join-Path $packageDir $msixName
 & $makeAppx pack /d $layout /p $msixPath /l
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-# Sign the MSIX using cert from the user's certificate store
-# For Microsoft Store submission: Partner Center will re-sign the package automatically
-# Local installation testing requires signing; comment out the next 3 lines if not needed
+# Sign the MSIX using a certificate whose subject matches Package/Identity/Publisher.
 $signtool = "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.0.26100.0\x64\SignTool.exe"
-& $signtool sign /fd SHA256 /n "Doulor" /a $msixPath
-if ($LASTEXITCODE -ne 0) { Write-Host "Warning: Signing failed, but Store submission will re-sign automatically" -ForegroundColor Yellow }
+& $signtool sign /fd SHA256 /f $pfxPath /p $certPassword $msixPath
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 # Copy release files to the package directory
 Copy-Item -LiteralPath $cerPath -Destination $packageDir -Force

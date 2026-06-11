@@ -3,13 +3,13 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections.Generic;
+using System.Text.Json.Nodes;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 
 namespace AIExtension;
 
-internal sealed partial class SettingsPage : ListPage
+internal sealed partial class SettingsPage : ContentPage
 {
     private readonly SettingsManager _settingsManager;
     private readonly Action _onChanged;
@@ -18,96 +18,80 @@ internal sealed partial class SettingsPage : ListPage
     {
         _settingsManager = settingsManager;
         _onChanged = onChanged;
-        Icon = new IconInfo("");
-        Title = "设置";
-        Name = "设置";
-        ShowDetails = false;
+        Icon = new IconInfo("\uE713");
+        Title = ResourceHelper.GetString("Settings_Title");
+        Name = ResourceHelper.GetString("Settings_Name");
     }
 
-    public override IListItem[] GetItems()
+    public override IContent[] GetContent() => [new LanguageSettingsForm(this)];
+
+    private string GetCurrentLanguage() => _settingsManager.Language;
+
+    private void ApplyLanguage(string lang)
     {
-        var items = new List<IListItem>
-        {
-            CreateLanguageItem(),
-        };
-        return [.. items];
+        _settingsManager.Language = lang;
+        _onChanged?.Invoke();
     }
 
-    private ListItem CreateLanguageItem()
+    private sealed partial class LanguageSettingsForm : FormContent
     {
-        var currentLang = _settingsManager.Language;
-        var currentLabel = currentLang switch
+        private readonly SettingsPage _page;
+
+        public LanguageSettingsForm(SettingsPage page)
         {
-            "en-US" => "English",
-            "zh-CN" => "中文",
-            _ => "自动（跟随系统）"
-        };
-
-        return new ListItem(new LanguageSelectorPage(_settingsManager, _onChanged))
-        {
-            Title = "界面语言",
-            Subtitle = $"当前：{currentLabel} · 点击切换",
-            Icon = new IconInfo(""),
-        };
-    }
-}
-
-internal sealed partial class LanguageSelectorPage : ListPage
-{
-    private readonly SettingsManager _settingsManager;
-    private readonly Action _onChanged;
-
-    public LanguageSelectorPage(SettingsManager settingsManager, Action onChanged)
-    {
-        _settingsManager = settingsManager;
-        _onChanged = onChanged;
-        Icon = new IconInfo("");
-        Title = "选择语言";
-        Name = "语言";
-        ShowDetails = false;
-    }
-
-    public override IListItem[] GetItems()
-    {
-        var currentLang = _settingsManager.Language;
-        var items = new List<IListItem>
-        {
-            CreateLanguageSelectItem("auto", "自动（跟随系统）", currentLang),
-            CreateLanguageSelectItem("zh-CN", "中文", currentLang),
-            CreateLanguageSelectItem("en-US", "English", currentLang),
-        };
-        return [.. items];
-    }
-
-    private ListItem CreateLanguageSelectItem(string lang, string label, string currentLang)
-    {
-        var isSelected = lang == currentLang;
-        return new ListItem(new SetLanguageCommand(_settingsManager, lang, _onChanged))
-        {
-            Title = label,
-            Subtitle = isSelected ? "✓ 当前选中" : "点击选择",
-            Icon = new IconInfo(isSelected ? "" : "○"),
-        };
-    }
-
-    private sealed partial class SetLanguageCommand : InvokableCommand
-    {
-        private readonly SettingsManager _settingsManager;
-        private readonly string _lang;
-        private readonly Action _onChanged;
-
-        public SetLanguageCommand(SettingsManager settingsManager, string lang, Action onChanged)
-        {
-            _settingsManager = settingsManager;
-            _lang = lang;
-            _onChanged = onChanged;
-            Name = "选择";
+            _page = page;
+            TemplateJson = """
+            {
+              "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+              "type": "AdaptiveCard",
+              "version": "1.5",
+              "body": [
+                {
+                  "type": "Input.ChoiceSet",
+                  "id": "Language",
+                  "label": "${AC_LanguageLabel}",
+                  "style": "expanded",
+                  "value": "${Language}",
+                  "choices": [
+                    { "title": "${AC_LangAuto}", "value": "auto" },
+                    { "title": "${AC_LangZhCN}", "value": "zh-CN" },
+                    { "title": "${AC_LangEnUS}", "value": "en-US" }
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": "Action.Submit",
+                  "title": "${AC_SaveButton}"
+                }
+              ]
+            }
+            """;
+            DataJson = BuildDataJson();
         }
 
-        public override ICommandResult Invoke()
+        private string BuildDataJson()
         {
-            _settingsManager.Language = _lang;
-            _onChanged?.Invoke();
+            return new JsonObject
+            {
+                ["Language"] = _page.GetCurrentLanguage(),
+                ["AC_LanguageLabel"] = ResourceHelper.GetString("Settings_LanguageTitle"),
+                ["AC_LangAuto"] = ResourceHelper.GetString("Settings_LangAuto"),
+                ["AC_LangZhCN"] = "中文",
+                ["AC_LangEnUS"] = "English",
+                ["AC_SaveButton"] = ResourceHelper.GetString("Settings_LangSelectCommand_Name"),
+            }.ToJsonString();
+        }
+
+        public override CommandResult SubmitForm(string inputs)
+        {
+            var payload = JsonNode.Parse(inputs)?.AsObject();
+            var lang = payload?["Language"]?.ToString();
+            if (!string.IsNullOrWhiteSpace(lang))
+            {
+                _page.ApplyLanguage(lang);
+            }
+
             return CommandResult.KeepOpen();
         }
     }

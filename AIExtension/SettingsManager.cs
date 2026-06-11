@@ -19,7 +19,7 @@ internal sealed class SettingsManager
 {
     private const string LegacyGitHubClientId = "Ov23liDa9NDfYl29YozQ";
     private const string DefaultGitHubClientId = "Iv1.b507a08c87ecfe98";
-    private readonly Settings _settings = new();
+    private readonly AppCommandSettings _settings;
     private readonly string _profilesPath;
     private readonly string _appSettingsPath;
     private readonly List<ProviderProfile> _profiles;
@@ -33,8 +33,11 @@ internal sealed class SettingsManager
 
         _profiles = LoadProfiles();
         _appSettings = LoadAppSettings();
+        ResourceHelper.ApplyLanguage(Language);
         MigrateLegacyCopilotClientIds();
         MigrateCopilotApiKeysToCredentialStore();
+
+        _settings = new AppCommandSettings(new SettingsPage(this, () => ResourceHelper.ApplyLanguage(Language)));
     }
 
     public ICommandSettings Settings => _settings;
@@ -46,6 +49,7 @@ internal sealed class SettingsManager
         {
             _appSettings.Language = value;
             SaveAppSettings();
+            ResourceHelper.ApplyLanguage(value);
         }
     }
 
@@ -128,7 +132,7 @@ internal sealed class SettingsManager
 
         if (!CopilotCredentialStore.TrySaveToken(providerId, token))
         {
-            throw new InvalidOperationException("无法保存 GitHub 授权，请检查 Windows 凭据存储是否可用。");
+            throw new InvalidOperationException(ResourceHelper.GetString("Settings_CannotSaveToken"));
         }
 
         provider.AuthType = "device-code";
@@ -231,7 +235,7 @@ internal sealed class SettingsManager
     {
         var profile = input.Clone();
         profile.Id = string.IsNullOrWhiteSpace(profile.Id) ? CreateId() : profile.Id;
-        profile.Name = string.IsNullOrWhiteSpace(profile.Name) ? "未命名提供商" : profile.Name.Trim();
+        profile.Name = string.IsNullOrWhiteSpace(profile.Name) ? ResourceHelper.GetString("ProvEditor_UnnamedProvider") : profile.Name.Trim();
         profile.ProviderType = NormalizeProviderType(profile.ProviderType);
         profile.BaseUrl = profile.BaseUrl.Trim();
         profile.ApiKey = profile.ApiKey.Trim();
@@ -271,11 +275,11 @@ internal sealed class SettingsManager
     public ProviderProfile CreateEmptyProvider() => new()
     {
         Id = CreateId(),
-        Name = $"提供商 {_profiles.Count + 1}",
+        Name = ResourceHelper.GetString("ProvEditor_ProviderN") + (_profiles.Count + 1),
         ProviderType = "openai",
         BaseUrl = "https://api.openai.com/v1",
         Model = "gpt-4.1-mini",
-        SystemPrompt = "你是一个简洁、可靠的中文 AI 助手。",
+        SystemPrompt = ResourceHelper.GetString("Settings_DefaultSystemPrompt"),
         Temperature = "0.7",
     };
 
@@ -287,7 +291,7 @@ internal sealed class SettingsManager
         AuthType = "device-code",
         GitHubClientId = DefaultGitHubClientId,
         Model = "gpt-4.1",
-        SystemPrompt = "你是一个简洁、可靠的中文 AI 助手。",
+        SystemPrompt = ResourceHelper.GetString("Settings_DefaultSystemPrompt"),
         Temperature = string.Empty,
     };
 
@@ -385,7 +389,7 @@ internal sealed class SettingsManager
         ProviderType = "openai",
         BaseUrl = "https://api.openai.com/v1",
         Model = "gpt-4.1-mini",
-        SystemPrompt = "你是一个简洁、可靠的中文 AI 助手。",
+        SystemPrompt = ResourceHelper.GetString("Settings_DefaultSystemPrompt"),
         Temperature = "0.7",
     };
 
@@ -439,5 +443,15 @@ internal sealed class SettingsManager
     private sealed class AppSettings
     {
         public string Language { get; set; } = "auto";
+    }
+
+    private sealed class AppCommandSettings : ICommandSettings
+    {
+        public AppCommandSettings(IContentPage settingsPage)
+        {
+            SettingsPage = settingsPage;
+        }
+
+        public IContentPage SettingsPage { get; }
     }
 }

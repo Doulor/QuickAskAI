@@ -18,8 +18,8 @@ internal sealed partial class CopilotProviderPage : ListPage
         _settingsManager = settingsManager;
         _providerId = providerId;
         Icon = new IconInfo("");
-        Title = Provider?.Name ?? "GitHub Copilot";
-        Name = "Copilot";
+        Title = Provider?.Name ?? ResourceHelper.GetString("CopilotPage_TitleFallback");
+        Name = ResourceHelper.GetString("CopilotPage_Name");
         ShowDetails = false;
     }
 
@@ -30,7 +30,7 @@ internal sealed partial class CopilotProviderPage : ListPage
         var provider = Provider;
         if (provider is null)
         {
-            return [new ListItem(new NoOpCommand()) { Title = "提供商不存在", Icon = new IconInfo("") }];
+            return [new ListItem(new NoOpCommand()) { Title = ResourceHelper.GetString("CopilotPage_NotFound"), Icon = new IconInfo("\uE713") }];
         }
 
         return [
@@ -51,8 +51,8 @@ internal sealed partial class CopilotProviderPage : ListPage
 
     private ListItem CreateSelectItem(ProviderProfile provider) => new(new SelectProviderCommand(this, provider.Id))
     {
-        Title = provider.Id == _settingsManager.ActiveProvider.Id ? "当前已选择" : "选择这个提供商",
-        Subtitle = "后续询问将使用这个 GitHub Copilot 提供商",
+        Title = provider.Id == _settingsManager.ActiveProvider.Id ? ResourceHelper.GetString("CopilotPage_AlreadySelected") : ResourceHelper.GetString("CopilotPage_SelectThis"),
+        Subtitle = ResourceHelper.GetString("CopilotPage_SelectSubtitle"),
         Icon = new IconInfo(""),
     };
 
@@ -61,23 +61,23 @@ internal sealed partial class CopilotProviderPage : ListPage
         var isConnected = SettingsManager.HasCopilotToken(provider);
         return new ListItem(new GitHubDeviceLoginPage(_settingsManager, provider.Id, () => RaiseItemsChanged()))
         {
-            Title = isConnected ? "重新连接 GitHub" : "连接 GitHub",
-            Subtitle = isConnected ? "当前授权失效或需要换号时使用" : "网页登录后即可使用 GitHub Copilot",
+            Title = isConnected ? ResourceHelper.GetString("CopilotPage_ReconnectGitHub") : ResourceHelper.GetString("CopilotPage_ConnectGitHub"),
+            Subtitle = isConnected ? ResourceHelper.GetString("CopilotPage_ReconnectSubtitle") : ResourceHelper.GetString("CopilotPage_ConnectSubtitle"),
             Icon = new IconInfo(""),
         };
     }
 
     private ListItem CreateEditItem(ProviderProfile provider) => new(new CopilotProviderEditorPage(_settingsManager, provider, () => RaiseItemsChanged()))
     {
-        Title = "编辑 Copilot 配置",
-        Subtitle = "修改名称、Client ID、模型名和系统提示词",
+        Title = ResourceHelper.GetString("CopilotPage_EditCopilot"),
+        Subtitle = ResourceHelper.GetString("CopilotPage_EditCopilotSubtitle"),
         Icon = new IconInfo(""),
     };
 
     private ListItem CreateDisconnectItem(ProviderProfile provider) => new(new DisconnectCommand(this, provider.Id))
     {
-        Title = "断开 GitHub 连接",
-        Subtitle = SettingsManager.HasCopilotToken(provider) ? "删除本机保存的 GitHub 授权" : "当前未保存 GitHub 授权",
+        Title = ResourceHelper.GetString("CopilotPage_DisconnectGitHub"),
+        Subtitle = SettingsManager.HasCopilotToken(provider) ? ResourceHelper.GetString("CopilotPage_DisconnectSubtitleHasToken") : ResourceHelper.GetString("CopilotPage_DisconnectSubtitleNoToken"),
         Icon = new IconInfo(""),
     };
 
@@ -96,9 +96,9 @@ internal sealed partial class CopilotProviderPage : ListPage
     private static string BuildSubtitle(ProviderProfile provider)
     {
         var authState = SettingsManager.HasCopilotToken(provider)
-            ? string.IsNullOrWhiteSpace(provider.GitHubLogin) ? "GitHub 已连接" : $"GitHub: {provider.GitHubLogin}"
-            : "未连接 GitHub";
-        var clientState = string.IsNullOrWhiteSpace(provider.GitHubClientId) ? "未填写 Client ID" : "已填写 Client ID";
+            ? string.IsNullOrWhiteSpace(provider.GitHubLogin) ? ResourceHelper.GetString("CopilotPage_GitHubConnected") : $"GitHub: {provider.GitHubLogin}"
+            : ResourceHelper.GetString("CopilotPage_GitHubNotConnected");
+        var clientState = string.IsNullOrWhiteSpace(provider.GitHubClientId) ? ResourceHelper.GetString("CopilotPage_ClientIdNotSet") : ResourceHelper.GetString("CopilotPage_ClientIdSet");
         return $"{provider.Model} · {authState} · {clientState}";
     }
 
@@ -111,7 +111,7 @@ internal sealed partial class CopilotProviderPage : ListPage
         {
             _page = page;
             _providerId = providerId;
-            Name = "选择提供商";
+            Name = ResourceHelper.GetString("CopilotPage_SelectCommand_Name");
             Icon = new IconInfo("");
         }
 
@@ -131,7 +131,7 @@ internal sealed partial class CopilotProviderPage : ListPage
         {
             _page = page;
             _providerId = providerId;
-            Name = "断开连接";
+            Name = ResourceHelper.GetString("CopilotPage_DisconnectCommand_Name");
             Icon = new IconInfo("");
         }
 

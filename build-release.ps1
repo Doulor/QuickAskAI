@@ -15,12 +15,12 @@ if (Test-Path -LiteralPath $userDotnet) {
 
 $tfm = "net9.0-windows10.0.26100.0"
 $rid = if ($Platform -eq "ARM64") { "win-arm64" } else { "win-x64" }
-$project = Join-Path $repoRoot "AIExtension\AIExtension.csproj"
-$layout = Join-Path $repoRoot "AIExtension\bin\$Platform\$Configuration\$tfm\$rid"
+$project = Join-Path $repoRoot "QuickAskAI\QuickAskAI.csproj"
+$layout = Join-Path $repoRoot "QuickAskAI\bin\$Platform\$Configuration\$tfm\$rid"
 $releaseRoot = Join-Path $repoRoot "release"
 $artifactRoot = Join-Path $releaseRoot "artifacts"
 $certDir = Join-Path $releaseRoot "cert"
-$manifestPath = Join-Path $repoRoot "AIExtension\Package.appxmanifest"
+$manifestPath = Join-Path $repoRoot "QuickAskAI\Package.appxmanifest"
 [xml]$manifest = Get-Content -LiteralPath $manifestPath
 $publisherSubject = $manifest.Package.Identity.Publisher
 $pfxPath = Join-Path $certDir "QuickAskAI-StoreIdentity.pfx"
@@ -32,7 +32,7 @@ $zipPath = Join-Path $artifactRoot "$packageName.zip"
 $msixName = "QuickAskAI.msix"
 $scriptsDir = Join-Path $releaseRoot "layout-scripts"
 
-Get-Process AIExtension -ErrorAction SilentlyContinue | Stop-Process -Force
+Get-Process QuickAskAI -ErrorAction SilentlyContinue | Stop-Process -Force
 
 # Generate a self-signed certificate whose subject matches Package/Identity/Publisher.
 # Microsoft Store re-signs submitted packages, but local sideload/WACK testing needs a valid signature.

@@ -277,20 +277,20 @@ OpenAI 兼容 provider 的 API Key 会保存在本地配置文件中：
 
 | 路径 | 作用 |
 | --- | --- |
-| `AIExtension/Program.cs` | 扩展进程入口，负责托管 COM server |
-| `AIExtension/AIExtension.cs` | 扩展对象入口 |
-| `AIExtension/AIExtensionCommandsProvider.cs` | Command Palette 命令提供者 |
-| `AIExtension/Services/CopilotChatService.cs` | GitHub Copilot HTTP API 调用逻辑 |
-| `AIExtension/Pages/` | 主要页面实现，包括提问页、会话页、提供商管理页等 |
-| `AIExtension/SettingsManager.cs` | 配置读取、保存和管理 |
-| `AIExtension/Package.appxmanifest` | AppX/MSIX manifest，声明扩展身份、COM server 和 Command Palette app extension |
-| `AIExtension/Assets/` | 应用图标和打包资源 |
+| `QuickAskAI/Program.cs` | 扩展进程入口，负责托管 COM server |
+| `QuickAskAI/QuickAskAIExtension.cs` | 扩展对象入口 |
+| `AIExtension/QuickAskAICommandsProvider.cs` | Command Palette 命令提供者 |
+| `QuickAskAI/Services/CopilotChatService.cs` | GitHub Copilot HTTP API 调用逻辑 |
+| `QuickAskAI/Pages/` | 主要页面实现，包括提问页、会话页、提供商管理页等 |
+| `QuickAskAI/SettingsManager.cs` | 配置读取、保存和管理 |
+| `QuickAskAI/Package.appxmanifest` | AppX/MSIX manifest，声明扩展身份、COM server 和 Command Palette app extension |
+| `QuickAskAI/Assets/` | 应用图标和打包资源 |
 | `build-release.ps1` | 生成 GitHub Release zip 的脚本 |
 | `release/layout-scripts/` | release 包内附带的安装、卸载和说明脚本 |
 
 ### Command Palette 扩展加载机制
 
-普通用户容易误解的一点是：这个插件不是双击 `AIExtension.exe` 启动的。
+普通用户容易误解的一点是：这个插件不是双击 `QuickAskAI.exe` 启动的。
 
 PowerToys Command Palette 需要通过 Windows app extension 机制发现扩展。因此 release 包中的 `install.ps1` 会调用类似下面的命令注册 layout：
 
@@ -323,21 +323,21 @@ Add-AppxPackage -Register .\AppxManifest.xml -ForceApplicationShutdown -ForceUpd
 构建 x64 Debug：
 
 ```powershell
-dotnet build .\AIExtension.sln -p:Platform=x64
+dotnet build .\QuickAskAI.sln -p:Platform=x64
 ```
 
 如果你的 .NET SDK 安装在用户目录，也可以显式指定：
 
 ```powershell
 $env:DOTNET_ROOT = Join-Path $env:USERPROFILE ".dotnet"
-& "$env:DOTNET_ROOT\dotnet.exe" build .\AIExtension.sln -p:Platform=x64
+& "$env:DOTNET_ROOT\dotnet.exe" build .\QuickAskAI.sln -p:Platform=x64
 ```
 
 构建完成后，注册 Debug layout：
 
 ```powershell
-Get-Process AIExtension -ErrorAction SilentlyContinue | Stop-Process -Force
-Add-AppxPackage -Register .\AIExtension\bin\x64\Debug\net9.0-windows10.0.26100.0\win-x64\AppxManifest.xml -ForceApplicationShutdown -ForceUpdateFromAnyVersion
+Get-Process QuickAskAI -ErrorAction SilentlyContinue | Stop-Process -Force
+Add-AppxPackage -Register .\QuickAskAI\bin\x64\Debug\net9.0-windows10.0.26100.0\win-x64\AppxManifest.xml -ForceApplicationShutdown -ForceUpdateFromAnyVersion
 ```
 
 然后在 Command Palette 中执行 `Reload Command Palette extensions`。

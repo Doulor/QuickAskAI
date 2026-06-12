@@ -30,7 +30,11 @@ The current release uses a self-signed MSIX package. Right-click `install.bat` i
 
 ## Download
 
-Download the latest version from GitHub Releases:
+**Microsoft Store (Recommended):**
+
+<https://apps.microsoft.com/detail/9N14WRKDMM5G>
+
+**GitHub Releases:**
 
 <https://github.com/Doulor/AIExtension-for-Powertoys-CMDPalette/releases>
 
@@ -109,14 +113,14 @@ To build from source, you need Windows 10 19041 or later, .NET 9 SDK, Windows 11
 Build x64 Debug:
 
 ```powershell
-dotnet build AIExtension\AIExtension.csproj -p:Platform=x64
+dotnet build QuickAskAI\QuickAskAI.csproj -p:Platform=x64
 ```
 
 Register the Debug layout (requires Developer Mode):
 
 ```powershell
-Get-Process AIExtension -ErrorAction SilentlyContinue | Stop-Process -Force
-Add-AppxPackage -Register .\AIExtension\bin\x64\Debug\net9.0-windows10.0.26100.0\win-x64\AppxManifest.xml -ForceApplicationShutdown -ForceUpdateFromAnyVersion
+Get-Process QuickAskAI -ErrorAction SilentlyContinue | Stop-Process -Force
+Add-AppxPackage -Register .\QuickAskAI\bin\x64\Debug\net9.0-windows10.0.26100.0\win-x64\AppxManifest.xml -ForceApplicationShutdown -ForceUpdateFromAnyVersion
 ```
 
 Build a GitHub Release zip:

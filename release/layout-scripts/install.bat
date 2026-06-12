@@ -34,7 +34,7 @@ if not exist "QuickAskAI-StoreIdentity.cer" (
 )
 
 echo Stopping existing extension...
-taskkill /f /im AIExtension.exe >nul 2>&1
+taskkill /f /im QuickAskAI.exe >nul 2>&1
 
 echo Removing previous installation...
 powershell -Command "$p=Get-AppxPackage -Name Doulor.QuickAskAI; if($p){Remove-AppxPackage -Package $p.PackageFullName}" >nul 2>&1

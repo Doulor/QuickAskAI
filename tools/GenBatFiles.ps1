@@ -38,10 +38,10 @@ if not exist "QuickAskAI.cer" (
 )
 
 echo Stopping existing extension...
-taskkill /f /im AIExtension.exe >nul 2>&1
+taskkill /f /im QuickAskAI.exe >nul 2>&1
 
 echo Removing previous installation...
-powershell -Command "$p=Get-AppxPackage -Name AIExtension; if($p){Remove-AppxPackage -Package $p.PackageFullName}" >nul 2>&1
+powershell -Command "$p=Get-AppxPackage -Name Doulor.QuickAskAI; if($p){Remove-AppxPackage -Package $p.PackageFullName}" >nul 2>&1
 
 echo Installing signing certificate...
 certutil -addstore Root QuickAskAI.cer >nul 2>&1
@@ -99,10 +99,10 @@ echo ============================================
 echo.
 
 echo Stopping QuickAskAI...
-taskkill /f /im AIExtension.exe >nul 2>&1
+taskkill /f /im QuickAskAI.exe >nul 2>&1
 
 echo Removing QuickAskAI...
-powershell -Command "$p=Get-AppxPackage -Name AIExtension; if($p){Remove-AppxPackage -Package $p.PackageFullName;Write-Host 'QuickAskAI removed.'}else{Write-Host 'QuickAskAI is not installed.'}"
+powershell -Command "$p=Get-AppxPackage -Name Doulor.QuickAskAI; if($p){Remove-AppxPackage -Package $p.PackageFullName;Write-Host 'QuickAskAI removed.'}else{Write-Host 'QuickAskAI is not installed.'}"
 
 echo Removing signing certificate...
 certutil -delstore Root QuickAskAI >nul 2>&1

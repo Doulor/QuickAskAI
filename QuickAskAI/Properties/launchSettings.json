@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "QuickAskAI (Package)": {
+      "commandName": "MsixPackage",
+      "doNotLaunchApp": true
+    },
+    "QuickAskAI (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

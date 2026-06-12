@@ -18,7 +18,7 @@ echo ============================================
 echo.
 
 echo Stopping QuickAskAI...
-taskkill /f /im AIExtension.exe >nul 2>&1
+taskkill /f /im QuickAskAI.exe >nul 2>&1
 
 echo Removing QuickAskAI...
 powershell -Command "$p=Get-AppxPackage -Name Doulor.QuickAskAI; if($p){Remove-AppxPackage -Package $p.PackageFullName;Write-Host 'QuickAskAI removed.'}else{Write-Host 'QuickAskAI is not installed.'}"

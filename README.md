@@ -6,6 +6,12 @@
 
 从 1.2.0 开始，GitHub Copilot provider 不再启动随包的本地 `copilot.exe`，而是使用 GitHub 登录得到的 token 直接调用 Copilot HTTP API。这样 release 包更小，运行时少一个本地 CLI 子进程，也避开了部分电脑上 `copilot.exe` 首次解压失败的问题。
 
+## 预览
+
+| 主界面 | 提问与回答 |
+| --- | --- |
+| ![主界面](README%20ICON/ch1.jpg) | ![提问与回答](README%20ICON/ch2.jpg) |
+
 ## 适合谁使用
 
 - 想在 Windows 命令面板里快速问 AI 的用户。
@@ -26,15 +32,13 @@
 
 你需要一台 Windows 10 19041 或更高版本的电脑，并安装 Microsoft PowerToys。安装后，请打开 PowerToys 设置，确认 Command Palette 已启用。
 
-当前 Release 使用自签名 MSIX 分发包。右键解压出来的 `install.bat`，选择”以管理员身份运行”即可。脚本会自动安装签名证书和插件，不需要开启开发人员模式。
-
 ## 下载
 
 **Microsoft Store（推荐）：**
 
 <https://apps.microsoft.com/detail/9N14WRKDMM5G>
 
-**GitHub Releases：**
+**GitHub Releases：(不推荐，需自签名)**
 
 <https://github.com/Doulor/AIExtension-for-Powertoys-CMDPalette/releases>
 
@@ -44,7 +48,6 @@
 QuickAskAI-v版本号-x64.zip
 ```
 
-不要下载 `Source code.zip` 或 `Source code.tar.gz`，那是源码包，普通用户不能直接拿来安装。
 
 ## 安装和加载到 Command Palette
 
@@ -97,14 +100,6 @@ QuickAskAI-v版本号-x64.zip
 | GitHub Copilot HTTP 运行数据 | 不再使用本地 `copilot.exe` 或 CLI 解压缓存 |
 
 `providers.json` 可能包含你的 OpenAI 兼容服务 API key，请不要公开分享这个文件。GitHub Copilot 登录得到的 token 不写入 `providers.json`，而是保存在 Windows 凭据存储中。
-
-## 常见问题
-
-### GitHub Copilot 首次使用需要本机 CLI 吗？
-
-不需要。新版插件不再启动随包的 GitHub Copilot CLI，而是使用 GitHub 登录得到的 token 直接调用 Copilot HTTP 接口。因此不会再受 `copilot.exe` 首次解压、`EXDEV: cross-device link not permitted` 或 Node SEA 初始化失败影响。
-
-如果从旧版本升级后 Copilot 请求返回 `HTTP 404: Not Found`，请先在插件里断开 GitHub，然后重新选择 `连接 GitHub`。新版会使用 VS Code Copilot 的公开 client id 重新登录，旧版自建 OAuth App 登录得到的 token 不能兑换 Copilot API token。
 
 ## 给开发者
 

@@ -6,6 +6,12 @@ QuickAskAI is an AI prompt extension for Microsoft PowerToys Command Palette. Af
 
 Starting with 1.2.0, the GitHub Copilot provider no longer starts the bundled local `copilot.exe`. It uses the token from GitHub sign-in and calls the Copilot HTTP API directly. This makes the release package smaller, removes one local CLI process at runtime, and avoids first-run `copilot.exe` extraction failures on some PCs.
 
+## Preview
+
+| Main Interface | Ask & Answer |
+| --- | --- |
+| ![Main Interface](README%20ICON/en1.png) | ![Ask & Answer](README%20ICON/en2.png) |
+
 ## Who This Is For
 
 - Windows users who want a quick AI prompt box inside PowerToys Command Palette.
@@ -34,7 +40,7 @@ The current release uses a self-signed MSIX package. Right-click `install.bat` i
 
 <https://apps.microsoft.com/detail/9N14WRKDMM5G>
 
-**GitHub Releases:**
+**GitHub Releases (Not Recommended, requires self-signing):**
 
 <https://github.com/Doulor/AIExtension-for-Powertoys-CMDPalette/releases>
 
@@ -43,8 +49,6 @@ In the Assets section of the release page, download the file named like this:
 ```text
 QuickAskAI-v<version>-x64.zip
 ```
-
-Do not download `Source code.zip` or `Source code.tar.gz`. Those files are source archives for developers and cannot be installed directly by regular users.
 
 ## Install And Load It In Command Palette
 
@@ -97,14 +101,6 @@ QuickAskAI stores settings and chat history locally on your PC.
 | GitHub Copilot HTTP runtime data | No local `copilot.exe` or CLI extraction cache is used |
 
 `providers.json` may contain API keys for OpenAI-compatible providers. Do not share it publicly. GitHub Copilot tokens are not stored in `providers.json`; they are stored in Windows Credential Manager.
-
-## Troubleshooting
-
-### Does GitHub Copilot require a local CLI?
-
-No. Newer builds no longer start the bundled GitHub Copilot CLI. The extension uses the token from GitHub sign-in and calls the Copilot HTTP API directly, so it is not affected by `copilot.exe` first-run extraction, `EXDEV: cross-device link not permitted`, or Node SEA initialization failures.
-
-If Copilot requests return `HTTP 404: Not Found` after upgrading from an older build, disconnect GitHub in the extension and connect again. Newer builds sign in with the public VS Code Copilot client id; tokens minted by the older custom OAuth app cannot be exchanged for Copilot API tokens.
 
 ## For Developers
 

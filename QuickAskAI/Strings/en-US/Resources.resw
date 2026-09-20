@@ -210,6 +210,13 @@
   <data name="Settings_LangCurrentlySelected" xml:space="preserve"><value>✓ Currently selected</value></data>
   <data name="Settings_LangClickToSelect" xml:space="preserve"><value>Click to select</value></data>
   <data name="Settings_LangSelectCommand_Name" xml:space="preserve"><value>Select</value></data>
+  <data name="Settings_ChatModeTitle" xml:space="preserve"><value>Default chat mode</value></data>
+  <data name="Settings_ChatModeContinue" xml:space="preserve"><value>Continue last chat (ask follow-up questions in the previous chat)</value></data>
+  <data name="Settings_ChatModeTimeout" xml:space="preserve"><value>Start a new chat after idle timeout (recommended)</value></data>
+  <data name="Settings_ChatModeNew" xml:space="preserve"><value>Start a new chat for every question</value></data>
+  <data name="Settings_ChatTimeoutTitle" xml:space="preserve"><value>Idle timeout in minutes (used only with "Start a new chat after idle timeout")</value></data>
+  <data name="Settings_ChatTimeoutError" xml:space="preserve"><value>Please enter a number between 1 and 1440</value></data>
+  <data name="Settings_ChatSaveButton" xml:space="preserve"><value>Save</value></data>
 
   <!-- AiChatService -->
   <data name="AiChat_EmptyPrompt" xml:space="preserve"><value>Please enter content to ask AI.</value></data>

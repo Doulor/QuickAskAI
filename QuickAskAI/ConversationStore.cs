@@ -55,9 +55,24 @@ internal sealed class ConversationStore
         return session;
     }
 
-    public ConversationSession EnsureUnusedSessionActive()
+    public void ApplyChatMode(string chatMode, int timeoutMinutes)
     {
-        return StartNewSession();
+        switch (chatMode)
+        {
+            case "new":
+                StartNewSession();
+                break;
+            case "timeout" when IsSessionStale(timeoutMinutes):
+                StartNewSession();
+                break;
+        }
+    }
+
+    private bool IsSessionStale(int timeoutMinutes)
+    {
+        var session = ActiveSession;
+        return session.Messages.Count > 0
+            && DateTimeOffset.Now - session.UpdatedAt >= TimeSpan.FromMinutes(timeoutMinutes);
     }
 
     public void SelectSession(string id)

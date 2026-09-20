@@ -19,6 +19,7 @@ internal sealed class SettingsManager
 {
     private const string LegacyGitHubClientId = "Ov23liDa9NDfYl29YozQ";
     private const string DefaultGitHubClientId = "Iv1.b507a08c87ecfe98";
+    private const int DefaultChatTimeoutMinutes = 30;
     private readonly AppCommandSettings _settings;
     private readonly string _profilesPath;
     private readonly string _appSettingsPath;
@@ -51,6 +52,36 @@ internal sealed class SettingsManager
             SaveAppSettings();
             ResourceHelper.ApplyLanguage(value);
         }
+    }
+
+    public string ChatMode
+    {
+        get => _appSettings.ChatMode;
+        set
+        {
+            _appSettings.ChatMode = NormalizeChatMode(value);
+            SaveAppSettings();
+        }
+    }
+
+    public int ChatTimeoutMinutes
+    {
+        get => _appSettings.ChatTimeoutMinutes;
+        set
+        {
+            _appSettings.ChatTimeoutMinutes = Math.Clamp(value, 1, 1440);
+            SaveAppSettings();
+        }
+    }
+
+    public static string NormalizeChatMode(string? mode)
+    {
+        return mode?.Trim() switch
+        {
+            { } value when value.Equals("new", StringComparison.OrdinalIgnoreCase) => "new",
+            { } value when value.Equals("timeout", StringComparison.OrdinalIgnoreCase) => "timeout",
+            _ => "continue",
+        };
     }
 
     public event EventHandler? ProvidersChanged;
@@ -413,6 +444,8 @@ internal sealed class SettingsManager
                 return new AppSettings
                 {
                     Language = node?["language"]?.ToString() ?? "auto",
+                    ChatMode = NormalizeChatMode(node?["chatMode"]?.ToString()),
+                    ChatTimeoutMinutes = ReadTimeoutMinutes(node?["chatTimeoutMinutes"]),
                 };
             }
         }
@@ -423,7 +456,18 @@ internal sealed class SettingsManager
         {
         }
 
-        return new AppSettings { Language = "auto" };
+        return new AppSettings();
+    }
+
+    private static int ReadTimeoutMinutes(JsonNode? node)
+    {
+        if (node is null)
+        {
+            return DefaultChatTimeoutMinutes;
+        }
+
+        var text = node.ToString();
+        return int.TryParse(text, out var minutes) ? minutes : DefaultChatTimeoutMinutes;
     }
 
     private void SaveAppSettings()
@@ -434,6 +478,8 @@ internal sealed class SettingsManager
         {
             writer.WriteStartObject();
             writer.WriteString("language", _appSettings.Language);
+            writer.WriteString("chatMode", _appSettings.ChatMode);
+            writer.WriteNumber("chatTimeoutMinutes", _appSettings.ChatTimeoutMinutes);
             writer.WriteEndObject();
         }
 
@@ -443,6 +489,10 @@ internal sealed class SettingsManager
     private sealed class AppSettings
     {
         public string Language { get; set; } = "auto";
+
+        public string ChatMode { get; set; } = "continue";
+
+        public int ChatTimeoutMinutes { get; set; } = DefaultChatTimeoutMinutes;
     }
 
     private sealed class AppCommandSettings : ICommandSettings

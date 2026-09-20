@@ -210,6 +210,13 @@
   <data name="Settings_LangCurrentlySelected" xml:space="preserve"><value>✓ 当前选中</value></data>
   <data name="Settings_LangClickToSelect" xml:space="preserve"><value>点击选择</value></data>
   <data name="Settings_LangSelectCommand_Name" xml:space="preserve"><value>选择</value></data>
+  <data name="Settings_ChatModeTitle" xml:space="preserve"><value>默认会话模式</value></data>
+  <data name="Settings_ChatModeContinue" xml:space="preserve"><value>沿用上一个会话（后续提问继续在上一个会话里）</value></data>
+  <data name="Settings_ChatModeTimeout" xml:space="preserve"><value>空闲超时后新建会话（推荐）</value></data>
+  <data name="Settings_ChatModeNew" xml:space="preserve"><value>每次提问都新建会话</value></data>
+  <data name="Settings_ChatTimeoutTitle" xml:space="preserve"><value>空闲超时时间（分钟，仅对“空闲超时后新建会话”生效）</value></data>
+  <data name="Settings_ChatTimeoutError" xml:space="preserve"><value>请输入 1 到 1440 之间的分钟数</value></data>
+  <data name="Settings_ChatSaveButton" xml:space="preserve"><value>保存</value></data>
 
   <!-- AiChatService -->
   <data name="AiChat_EmptyPrompt" xml:space="preserve"><value>请输入要询问 AI 的内容。</value></data>

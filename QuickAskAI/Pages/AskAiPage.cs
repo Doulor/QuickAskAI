@@ -27,7 +27,7 @@ internal sealed partial class AskAiPage : DynamicListPage
         _conversationStore = conversationStore;
         _chatService = chatService;
         _settingsManager.ProvidersChanged += OnProvidersChanged;
-        _conversationStore.EnsureUnusedSessionActive();
+        _conversationStore.ApplyChatMode(_settingsManager.ChatMode, _settingsManager.ChatTimeoutMinutes);
 
         Icon = IconHelpers.FromRelativePath("Assets\\ICON.png");
         Title = ResourceHelper.GetString("AskAi_Title");
@@ -55,6 +55,7 @@ internal sealed partial class AskAiPage : DynamicListPage
     internal ICommandResult SubmitPrompt(string prompt)
     {
         prompt = prompt.Trim();
+        _conversationStore.ApplyChatMode(_settingsManager.ChatMode, _settingsManager.ChatTimeoutMinutes);
         var messages = _conversationStore.ActiveSession.Messages
             .Concat([new ChatMessage { Role = "user", Content = prompt }])
             .ToArray();

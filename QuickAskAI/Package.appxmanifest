@@ -11,7 +11,7 @@
   <Identity
     Name="Doulor.QuickAskAI"
     Publisher="CN=5C8008C8-1050-4708-808B-18F2CF9F9C64"
-    Version="1.2.1.0" />
+    Version="1.2.2.0" />
   <!-- When you're ready to publish your extension, you'll need to change the
        Publisher= to match your own identity -->
 
@@ -47,7 +47,7 @@
       <Extensions>
         <com:Extension Category="windows.comServer">
           <com:ComServer>
-            <com:ExeServer Executable="AIExtension.exe" Arguments="-RegisterProcessAsComServer" DisplayName="ms-resource:AppDisplayName">
+            <com:ExeServer Executable="QuickAskAI.exe" Arguments="-RegisterProcessAsComServer" DisplayName="ms-resource:AppDisplayName">
               <com:Class Id="9430d8e9-b108-4318-a8a8-164c4bc71385" DisplayName="ms-resource:AppDisplayName" />
             </com:ExeServer>
           </com:ComServer>

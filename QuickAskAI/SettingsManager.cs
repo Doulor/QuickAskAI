@@ -19,6 +19,7 @@ internal sealed class SettingsManager
 {
     private const string LegacyGitHubClientId = "Ov23liDa9NDfYl29YozQ";
     private const string DefaultGitHubClientId = "Iv1.b507a08c87ecfe98";
+    private const string DefaultChatMode = "timeout";
     private const int DefaultChatTimeoutMinutes = 30;
     private readonly AppCommandSettings _settings;
     private readonly string _profilesPath;
@@ -80,7 +81,8 @@ internal sealed class SettingsManager
         {
             { } value when value.Equals("new", StringComparison.OrdinalIgnoreCase) => "new",
             { } value when value.Equals("timeout", StringComparison.OrdinalIgnoreCase) => "timeout",
-            _ => "continue",
+            { } value when value.Equals("continue", StringComparison.OrdinalIgnoreCase) => "continue",
+            _ => DefaultChatMode,
         };
     }
 
@@ -490,7 +492,7 @@ internal sealed class SettingsManager
     {
         public string Language { get; set; } = "auto";
 
-        public string ChatMode { get; set; } = "continue";
+        public string ChatMode { get; set; } = DefaultChatMode;
 
         public int ChatTimeoutMinutes { get; set; } = DefaultChatTimeoutMinutes;
     }

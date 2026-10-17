@@ -26,7 +26,7 @@ Starting with 1.2.0, the GitHub Copilot provider no longer starts the bundled lo
 - OpenAI-compatible Chat Completions providers with configurable Base URL, API key, model name, system prompt, and temperature.
 - Multiple provider profiles, so you can switch between different AI services.
 - Conversation context, new sessions, session switching, and chat history.
-- Configurable default chat mode in the extension settings: continue the last chat, automatically start a new chat after an idle timeout (30 minutes by default, adjustable), or start a new chat for every question.
+- Configurable default chat mode in the extension settings: automatically start a new chat after an idle timeout (the default, 30 minutes, adjustable), continue the last chat, or start a new chat for every question.
 - Copyable answers.
 
 ## Before You Install
